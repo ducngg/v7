@@ -48,7 +48,7 @@ am
 ẳng
 ẵng
 ặng
-ặm
+ăm
 ắm
 ằm
 ẳm
@@ -314,12 +314,6 @@ um
 ựt
 ức
 ực
-y
-ý
-ỳ
-ỷ
-ỹ
-ỵ
 ai
 ái
 ài
@@ -472,8 +466,16 @@ uền
 uển
 uễn
 uện
+uênh
+uếnh
+uềnh
+uểnh
+uễnh
+uệnh
 uết
 uệt
+uếch
+uệch
 uy
 úy
 ùy
@@ -596,7 +598,7 @@ ao
 ảo
 ão
 ạo
-ạu
+au
 áu
 àu
 ảu
@@ -700,3 +702,5 @@ oong
 ỏong
 õong
 ọong
+óoc
+ọoc

@@ -702,3 +702,24 @@ rhymes = [
     'õong',
     'ọon',
 ]
+
+consonants = [
+    'b', 
+    'c', 'ch', 
+    'd', 'đ', 
+    'g', 'gh', 'gi', 
+    'h', 
+    'k', 'kh', 
+    'l', 
+    'm', 
+    'n', 'ng', 'nh', 
+    'ph', 
+    'qu', 
+    'r', 
+    's', 
+    't', 'th',
+    'v', 
+    'x', 
+]
+
+print(
