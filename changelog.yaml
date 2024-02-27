@@ -3,3 +3,7 @@ changes:
     research: 'Structure of a word in Vietnamese language'
     change: ''
     description: ''
+  - timestamp: '2024-02-27 9:52 PM'
+    research: ''
+    change: 'Done function Vietname.CRT to seperate a Vietnamese word to its Consonant, Rhyme family, and Tone'
+    description: ''
