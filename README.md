@@ -68,6 +68,8 @@ Example words for the seventh tone include: xuất, cấp, tất, chiếc, thíc
 
 Example words for the eighth tone include: nhập, phục, đột, chục, mạch, kịp... (with rhyme families being âm, ung, ôn, ung, anh, im respectively)
 
+**Note: This is the reason why the project name is v7: `Việt` with the 8th tone (count from index 0 is 7)**
+
 ### Further Reading:
 [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)
 
