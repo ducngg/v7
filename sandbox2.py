@@ -1,8 +1,65 @@
 from vietnamese import Vietnamese
 from long_text import *
 import utils
+import time
 
-corpus = "ghi ghệ duềnh quẹo giềng giêng giết giến giêm pin pía pô khuếch giũa ngoèo óoc"
 
-for word in utils.separate_words(corpus):
-    print(Vietnamese.AVT(word))
+def main():
+    # text = text1()
+    # text = utils.separate_words(text.lower())
+    
+    # text = utils.getVietnameseTextFrom_vndictyaml()
+    
+    start_time = time.time()
+    
+    with open("data/corpus-title.txt", 'r') as file:
+        # Iterate over each line in the file
+        max_line = 1000000
+        passed = 0
+        total = 0
+        diff = 0
+        l = 0
+        for line in file:
+            # Process each line here
+            # if l > max_line:
+            #     break
+            
+            for word in utils.separate_words(line.strip().lower()):
+                cf, rf, t = Vietnamese.analyze(word)
+                total += 1
+                if cf and not rf:
+                    # print(f"Not Vietnamese: {word}")
+                    continue
+                vword = Vietnamese.synthesize(cf, rf, t)
+        
+                if word not in vword:
+                    diff += 1
+                    if rf in ['uy', 'oa', 'oe', 'oong']: # A lot of quý-quí, hóa-hoá, dọa-doạ -> not print
+                        print('d', end=' ')
+                    else:
+                        print(f"\nRare diff: raw word: `{word}` | Syn(Ana(word)) `{vword}`")
+                else:
+                    passed += 1
+                    # print('.', end='')
+            
+            l += 1
+            if l % 50000 == 0:
+                processed_time = time.time() - start_time
+                print(f'\n\n~~~ {processed_time}s')
+                print(f'Passed: {passed}')
+                print(f'Differences: {diff}')
+                print(f'TotalW: {total}')
+                print(f'Speed: {total/processed_time} word/s')
+                print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
+
+        processed_time = time.time() - start_time
+        print(f'\nPassed: {passed}')
+        print(f'Differences: {diff}')
+        print(f'TotalW: {total}')
+        print(f'Speed: {total/processed_time} word/s')
+        
+    
+    
+if __name__ == "__main__":
+    main()
+    

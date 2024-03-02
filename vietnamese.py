@@ -10,14 +10,9 @@ class Alphabet():
 
 class Vietnamese(Alphabet):
     """
-    Controversial rhyme family not yet added: 
-    - `oao` in `ngoao`/`quạo`
-    - `oau` in `quạu`
-    - `uym` in `tuýp`
-    - `uới` in `quới`.
-    
-    And the words like `Đắk Lắk, Kạn, Kon, Giuộc...`
+    Controversial very rare words like `Đắk Lắk, Kạn, Kon, ...`
     """
+    tones = [0, 1, 2, 3, 4, 5, 6, 7]
     
     rhymes_isolated = [
         'a',
@@ -522,10 +517,18 @@ class Vietnamese(Alphabet):
         'uỷnh',
         'uỹnh',
         'uỵnh',
+        'uym',
+        'uým',
+        'uỳm',
+        'uỷm',
+        'uỹm',
+        'uỵm',
         'uýt',
         'uỵt',
         'uých',
         'uỵch',
+        'uýp',
+        'uỵp',
         'ua',
         'úa',
         'ùa',
@@ -698,6 +701,12 @@ class Vietnamese(Alphabet):
         'uổi',
         'uỗi',
         'uội',
+        'uơi',
+        'uới',
+        'uời',
+        'uởi',
+        'uỡi',
+        'uợi',
         'ươi',
         'ưới',
         'ười',
@@ -718,6 +727,18 @@ class Vietnamese(Alphabet):
         'uyện',
         'uyết',
         'uyệt',
+        'oao',
+        'oáo',
+        'oào',
+        'oảo',
+        'oão',
+        'oạo',
+        'oạu',
+        'oáu',
+        'oàu',
+        'oảu',
+        'oãu',
+        'oạu',
         'oeo',
         'oéo',
         'oèo',
@@ -1242,10 +1263,18 @@ class Vietnamese(Alphabet):
         'uỷnh',
         'uỹnh',
         'uỵnh',
+        'uym',
+        'uým',
+        'uỳm',
+        'uỷm',
+        'uỹm',
+        'uỵm',
         'uýt',
         'uỵt',
         'uých',
         'uỵch',
+        'uýp',
+        'uỵp',
         'ua',
         'úa',
         'ùa',
@@ -1418,6 +1447,12 @@ class Vietnamese(Alphabet):
         'uổi',
         'uỗi',
         'uội',
+        'uơi',
+        'uới',
+        'uời',
+        'uởi',
+        'uỡi',
+        'uợi',
         'ươi',
         'ưới',
         'ười',
@@ -1438,6 +1473,18 @@ class Vietnamese(Alphabet):
         'uyện',
         'uyết',
         'uyệt',
+        'oao',
+        'oáo',
+        'oào',
+        'oảo',
+        'oão',
+        'oạo',
+        'oạu',
+        'oáu',
+        'oàu',
+        'oảu',
+        'oãu',
+        'oạu',
         'oeo',
         'oéo',
         'oèo',
@@ -1529,6 +1576,7 @@ class Vietnamese(Alphabet):
         'uy',
         'uyn',
         'uynh',
+        'uym',
         'ua',
         'uôn',
         'uông',
@@ -1555,9 +1603,12 @@ class Vietnamese(Alphabet):
         'oay',
         'uây',
         'uôi',
+        'uơi',
         'ươi',
         'uya',
         'uyên',
+        'oao',
+        'oau',
         'oeo',
         'uyu',
         'oong',
@@ -1632,6 +1683,7 @@ class Vietnamese(Alphabet):
         'uy',
         'uyn',
         'uynh',
+        'uym',
         'ua',
         'uôn',
         'uông',
@@ -1658,9 +1710,12 @@ class Vietnamese(Alphabet):
         'oay',
         'uây',
         'uôi',
+        'uơi',
         'ươi',
         'uya',
         'uyên',
+        'oao',
+        'oau',
         'oeo',
         'uyu',
         'oong',
@@ -1735,6 +1790,7 @@ class Vietnamese(Alphabet):
         'uy',
         'uyn',
         'uynh',
+        'uym',
         'ua',
         'uôn',
         'uông',
@@ -1761,9 +1817,12 @@ class Vietnamese(Alphabet):
         'oay',
         'uây',
         'uôi',
+        'uơi',
         'ươi',
         'uya',
         'uyên',
+        'oao',
+        'oau',
         'oeo',
         'uyu',
         'oong',
@@ -1819,6 +1878,7 @@ class Vietnamese(Alphabet):
         'ui', #
         'ưi', #
         'ua', #
+        'uông', #
         'ưa',
         'ươn',
         'ương',
@@ -1891,6 +1951,7 @@ class Vietnamese(Alphabet):
         'uy',
         'uyn',
         'uynh',
+        'uym',
         'ua',
         'uôn',
         'uông',
@@ -1909,9 +1970,12 @@ class Vietnamese(Alphabet):
         'oay',
         'uây',
         'uôi',
+        'uơi',
         'ươi',
         'uya',
         'uyên',
+        'oao',
+        'oau',
         'oeo',
         'uyu',
         'oong',
@@ -1973,6 +2037,7 @@ class Vietnamese(Alphabet):
         'uy',
         'uyn',
         'uynh',
+        'uym',
         'ua',
         'uôn',
         'uông',
@@ -1985,17 +2050,18 @@ class Vietnamese(Alphabet):
         'ao',
         'au',
         'âu',
-        'eo',
-        'êu',
         'ưu',
         'ươu',
         'oai',
         'oay',
         'uây',
         'uôi',
+        'uơi',
         'ươi',
         'uya',
         'uyên',
+        'oao',
+        'oau',
         'oeo',
         'uyu',
         'oong',
@@ -2022,6 +2088,7 @@ class Vietnamese(Alphabet):
         'iu',
         'iêu',
     ]
+    # rhymes_families_with_q_start_with_o = ['oa', 'oan', 'oanh', 'oang', 'oam', 'oăn', 'oăng', 'oăm', 'oe', 'oen', 'oai', 'oay', 'oao', 'oau', 'oeo']
     rhymes_families_with_q = [
         'ua',
         'uan',
@@ -2041,13 +2108,17 @@ class Vietnamese(Alphabet):
         'uy', 'ui', #
         'uyn',
         'uynh',
+        'uym',
         'uông', # Special: quốc
         'uơ',
         'uai',
         'uay',
         'uây',
+        'uơi', # Special: quới
         'uya', #
         'uyên', 
+        'uao',
+        'uau',
         'ueo',
         'uyu', #
     ]
@@ -2130,6 +2201,7 @@ class Vietnamese(Alphabet):
         'ươi',
         'oong',
     ]
+    
     consonants = [
         'b', 
         'c', 'ch', 
@@ -2185,6 +2257,114 @@ class Vietnamese(Alphabet):
         'v', 
         'x', 
     ]
+    
+    diacritic_position = {
+        'a': 0,
+        'an': 0,
+        'anh': 0,
+        'ang': 0,
+        'am': 0,
+        'ăn': 0,
+        'ăng': 0,
+        'ăm': 0,
+        'ân': 0,
+        'âng': 0,
+        'âm': 0,
+        'e': 0,
+        'en': 0,
+        'eng': 0,
+        'em': 0,
+        'ê': 0,
+        'ên': 0,
+        'ênh': 0,
+        'êm': 0,
+        'i': 0,
+        'in': 0,
+        'inh': 0,
+        'im': 0,
+        'o': 0,
+        'on': 0,
+        'ong': 0,
+        'om': 0,
+        'ô': 0,
+        'ôn': 0,
+        'ông': 0,
+        'ôm': 0,
+        'ơ': 0,
+        'ơn': 0,
+        'ơm': 0,
+        'u': 0,
+        'un': 0,
+        'ung': 0,
+        'um': 0,
+        'ư': 0,
+        'ưn': 0,
+        'ưng': 0,
+        'ưm': 0,
+        'ai': 0,
+        'ay': 0,
+        'ây': 0,
+        'oi': 0,
+        'ôi': 0,
+        'ơi': 0,
+        'ui': 0,
+        'ưi': 0,
+        'oa': 0, ## q -> 1
+        'oan': 1,
+        'oanh': 1,
+        'oang': 1,
+        'oam': 1,
+        'oăn': 1,
+        'oăng': 1,
+        'oăm': 1,
+        'uân': 1,
+        'uâng': 1,
+        'oe': 0,
+        'oen': 1,
+        'uê': 1,
+        'uên': 1,
+        'uênh': 1, 
+        'uy': 0, ## q -> 1
+        'uyn': 1,
+        'uynh': 1,
+        'uym': 1,
+        'ua': 0,
+        'uôn': 1,
+        'uông': 1,
+        'uôm': 1,
+        'uơ': 1,
+        'ia': 0,
+        'iên': 1,
+        'iêng': 1,
+        'iêm': 1,
+        'ưa': 0,
+        'ươn': 1,
+        'ương': 1,
+        'ươm': 1,
+        'ao': 0,
+        'au': 0,
+        'âu': 0,
+        'eo': 0,
+        'êu': 0,
+        'iu': 0,
+        'ưu': 0,
+        'iêu': 1,
+        'ươu': 1,
+        'oai': 1,
+        'oay': 1,
+        'uây': 1,
+        'uôi': 1,
+        'uơi': 1,
+        'ươi': 1,
+        'uya': 1,
+        'uyên': 2,
+        'oao': 1,
+        'oau': 1,
+        'oeo': 1,
+        'uyu': 1,
+        'oong': 1,
+    }
+    
     diacritic_0_chars = ['a', 'ă', 'â', 'e', 'ê', 'i', 'o', 'ô', 'ơ', 'u', 'ư', 'y']
     diacritic_1_chars = ['á', 'ắ', 'ấ', 'é', 'ế', 'í', 'ó', 'ố', 'ớ', 'ú', 'ứ', 'ý']
     diacritic_2_chars = ['à', 'ằ', 'ầ', 'è', 'ề', 'ì', 'ò', 'ồ', 'ờ', 'ù', 'ừ', 'ỳ']
@@ -2192,14 +2372,175 @@ class Vietnamese(Alphabet):
     diacritic_4_chars = ['ã', 'ẵ', 'ẫ', 'ẽ', 'ễ', 'ĩ', 'õ', 'ỗ', 'ỡ', 'ũ', 'ữ', 'ỹ']
     diacritic_5_chars = ['ạ', 'ặ', 'ậ', 'ẹ', 'ệ', 'ị', 'ọ', 'ộ', 'ợ', 'ụ', 'ự', 'ỵ']
     
-    i_s = ['i', 'í', 'ì', 'ỷ', 'ỹ', 'ỵ']
+    def chars_with_diacritic(char):
+        if char not in Vietnamese.diacritic_0_chars:
+            return None
+        char_index = Vietnamese.diacritic_0_chars.index(char)
+        return [
+            char,
+            Vietnamese.diacritic_1_chars[char_index],
+            Vietnamese.diacritic_2_chars[char_index],
+            Vietnamese.diacritic_3_chars[char_index],
+            Vietnamese.diacritic_4_chars[char_index],
+            Vietnamese.diacritic_5_chars[char_index],
+        ]
+        
+    
+        
+    i_s = ['i', 'í', 'ì', 'ỉ', 'ĩ', 'ị']
     y_s = ['y', 'ý', 'ỳ', 'ỷ', 'ỹ', 'ỵ']
     a_s = []
     aw_s = []
     aa_s = []
     # ... add later if necessary
     
+    db = {}
+    def db_init_consonants():
+        Vietnamese.db = {consonant: {} for consonant in Vietnamese.consonant_families}
     
+    def db_init_rhymes():
+        db = Vietnamese.db
+        for consonant in db.keys():
+            if consonant == 'z':
+                db[consonant] = {rhyme: {} for rhyme in Vietnamese.rhymes_families_with_gi}
+            else:
+                db[consonant] = {rhyme: {} for rhyme in Vietnamese.rhymes_families}
+    
+    def db_init_tones():
+        db = Vietnamese.db
+        for consonant in db.keys():
+            for rhyme in db[consonant].keys():
+                pass
+                
+    def rhyme_with_tones(rhyme_family: str, consonant_family: str):
+        """
+        
+        """
+        if rhyme_family not in Vietnamese.rhymes_families or consonant_family not in Vietnamese.consonant_families:
+            return None
+        
+        # Position of the diacritic sign in a rhyme
+        diacritic_index = Vietnamese.diacritic_position[rhyme_family]
+        
+        # Special case: quá, quý, quẻ instead of óa, úy, ỏe
+        if consonant_family == 'k' and rhyme_family in ['oa', 'uy', 'oe']:
+            diacritic_index = 1
+            
+        # Position of the diacritic sign in a rhyme
+        chars_with_diacritic = Vietnamese.chars_with_diacritic(rhyme_family[diacritic_index])
+            
+        # Take 6 tones first
+        rhyme_6_tones = [
+            rhyme_family[:diacritic_index] + toned + rhyme_family[diacritic_index + 1:]
+            for toned in chars_with_diacritic
+        ]
+        
+        # 2 `entering` tones
+        """
+        Enterable rhyme are the rhyme that ends with a consonant.
+        Rhyme: *n, *ng, *m, *nh
+        Entering form: *t, *c, *p, *ch
+        """
+        if rhyme_family[-2:] == 'ng':
+            entering_tones = [
+                rhyme_6_tones[1][:-2] + 'c',
+                rhyme_6_tones[5][:-2] + 'c',
+            ]
+        elif rhyme_family[-2:] == 'nh':
+            entering_tones = [
+                rhyme_6_tones[1][:-2] + 'ch',
+                rhyme_6_tones[5][:-2] + 'ch',
+            ]
+        elif rhyme_family[-1:] == 'n':
+            entering_tones = [
+                rhyme_6_tones[1][:-1] + 't',
+                rhyme_6_tones[5][:-1] + 't',
+            ]
+        elif rhyme_family[-1:] == 'm':
+            entering_tones = [
+                rhyme_6_tones[1][:-1] + 'p',
+                rhyme_6_tones[5][:-1] + 'p',
+            ]
+        else:
+            entering_tones = []
+        
+        final_rhymes = rhyme_6_tones + entering_tones
+        
+        return final_rhymes
+    
+    @staticmethod
+    def word_with_tones(consonant_family, rhyme_family):
+        if rhyme_family not in Vietnamese.rhymes_families or consonant_family not in Vietnamese.consonant_families:
+            return None
+        
+        final_consonant = consonant_family
+        
+        if consonant_family in ['0']:
+            final_consonant = ''
+        elif consonant_family in ['z']:
+            if rhyme_family in ['i', 'in', 'iên', 'iêng']:
+                final_consonant = 'g'
+            else:
+                final_consonant = 'gi'
+        elif consonant_family in ['g', 'ng']:
+            if rhyme_family in Vietnamese.rhymes_families_with_ngh_gh:
+                final_consonant = consonant_family + 'h'
+        elif consonant_family in ['k']:
+            if rhyme_family in Vietnamese.rhymes_families_with_c:
+                final_consonant = 'c'
+            elif rhyme_family in Vietnamese.rhymes_families_with_k:
+                final_consonant = 'k'
+            else:
+                final_consonant = 'q'
+            
+        rhyme_with_tones = Vietnamese.rhyme_with_tones(rhyme_family, consonant_family)
+        
+        if final_consonant == 'q':
+            # All rhyme starts with `o` change to `u` => All rhymes start with `u`
+            rhyme_with_tones = ['u' + rhyme_with_tone[1:] for rhyme_with_tone in rhyme_with_tones]
+        elif final_consonant == '':
+            if rhyme_family in ['iên', 'iêng', 'iêm', 'iêu']:
+                rhyme_with_tones = [Vietnamese.i2y(rhyme_with_tone) for rhyme_with_tone in rhyme_with_tones]
+        
+        # Quốc
+        if consonant_family == 'k' and rhyme_family == 'uông':
+            return [
+                [final_consonant + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones],
+                ['q' + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones]
+            ]
+        # Not accept `gy`
+        elif consonant_family != 'z' and rhyme_family == 'i' :
+            return [
+                [final_consonant + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones],
+                [final_consonant + Vietnamese.i2y(rhyme_with_tone) for rhyme_with_tone in rhyme_with_tones]
+            ]
+        else:
+            return [[final_consonant + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones]] 
+    
+    @staticmethod
+    def synthesize(consonant_family: str, rhyme_family: str, tone: int):
+        """
+        Reverse function of `analyze()`.
+
+        Args:
+            consonant_family (str): See `Vietnamese.consonant_families`.
+            rhyme_family (str): See `Vietnamese.rhymes_families`.
+            tone (int): See `Vietnamese.tones`.
+
+        Returns:
+            List of the words those are formed by combining the three parameters.
+            - ['quyết'] <- synthesize('k', 'uyên', 6)
+            - ['gì'] <- synthesize('z', 'i', 2)
+            - ['cưỡi'] <- synthesize('k', 'ươi', 4)
+            - ['kị', 'kỵ'] <- synthesize('k', 'i', 5)
+            - ['cuốc', 'quốc'] <- synthesize('k', 'uông', 6)
+            - ['nghiêm'] <- synthesize('ng', 'iêm', 0)
+        """
+        tone = int(tone)
+        if rhyme_family not in Vietnamese.rhymes_families or consonant_family not in Vietnamese.consonant_families or tone not in Vietnamese.tones:
+            return []
+        else:
+            return [word_with_tones[tone] for word_with_tones in Vietnamese.word_with_tones(consonant_family, rhyme_family)]
     
     @staticmethod
     def y2i(rhyme: str):
@@ -2217,6 +2558,22 @@ class Vietnamese(Alphabet):
             return rhyme
         else:
             return Vietnamese.i_s[diacritic] + rhyme[1:]
+    
+    def i2y(rhyme: str):
+        """
+        Change the initial `i` to `y`, example:
+        - iên -> yên
+        - ĩ -> ỹ
+        - iếm -> yếm
+        - ai -> ai (not initial i)
+        - oai -> oai (not initial i)
+        """
+        try:
+            diacritic = Vietnamese.i_s.index(rhyme[0])
+        except ValueError:
+            return rhyme
+        else:
+            return Vietnamese.y_s[diacritic] + rhyme[1:]
         
     @staticmethod
     def clean_trash(word: str):
@@ -2244,11 +2601,7 @@ class Vietnamese(Alphabet):
         If multiple diacritics are present, the function will return `(None, None, None)` because this is not a Vietnamese word.
         
         """
-        diacritic_1_chars = ['á', 'ắ', 'ấ', 'é', 'ế', 'í', 'ó', 'ố', 'ớ', 'ú', 'ứ', 'ý']
-        diacritic_2_chars = ['à', 'ằ', 'ầ', 'è', 'ề', 'ì', 'ò', 'ồ', 'ờ', 'ù', 'ừ', 'ỳ']
-        diacritic_3_chars = ['ả', 'ẳ', 'ẩ', 'ẻ', 'ể', 'ỉ', 'ỏ', 'ổ', 'ở', 'ủ', 'ử', 'ỷ']
-        diacritic_4_chars = ['ã', 'ẵ', 'ẫ', 'ẽ', 'ễ', 'ĩ', 'õ', 'ỗ', 'ỡ', 'ũ', 'ữ', 'ỹ']
-        diacritic_5_chars = ['ạ', 'ặ', 'ậ', 'ẹ', 'ệ', 'ị', 'ọ', 'ộ', 'ợ', 'ụ', 'ự', 'ỵ']
+        
         current_diacritic = 0
         idx_in_word = 0
         char_idx = 0
@@ -2257,28 +2610,28 @@ class Vietnamese(Alphabet):
             if occurences > 1:
                 # Not a Vietnamese word
                 return None, None, None
-            if char in diacritic_1_chars:
-                char_idx = diacritic_1_chars.index(char)
+            if char in Vietnamese.diacritic_1_chars:
+                char_idx = Vietnamese.diacritic_1_chars.index(char)
                 occurences += 1
                 current_diacritic = 1
                 idx_in_word = idx
-            elif char in diacritic_2_chars:
-                char_idx = diacritic_2_chars.index(char)
+            elif char in Vietnamese.diacritic_2_chars:
+                char_idx = Vietnamese.diacritic_2_chars.index(char)
                 occurences += 1
                 current_diacritic = 2
                 idx_in_word = idx
-            elif char in diacritic_3_chars:
-                char_idx = diacritic_3_chars.index(char)
+            elif char in Vietnamese.diacritic_3_chars:
+                char_idx = Vietnamese.diacritic_3_chars.index(char)
                 occurences += 1
                 current_diacritic = 3
                 idx_in_word = idx
-            elif char in diacritic_4_chars:
-                char_idx = diacritic_4_chars.index(char)
+            elif char in Vietnamese.diacritic_4_chars:
+                char_idx = Vietnamese.diacritic_4_chars.index(char)
                 occurences += 1
                 current_diacritic = 4
                 idx_in_word = idx
-            elif char in diacritic_5_chars:
-                char_idx = diacritic_5_chars.index(char)
+            elif char in Vietnamese.diacritic_5_chars:
+                char_idx = Vietnamese.diacritic_5_chars.index(char)
                 occurences += 1
                 current_diacritic = 5
                 idx_in_word = idx
@@ -2289,7 +2642,7 @@ class Vietnamese(Alphabet):
         return current_diacritic, idx_in_word, char_idx
             
     @staticmethod
-    def consonantFamily_rhymeFamily_tone(word: str):
+    def analyze(word: str):
         """
         Return the consonant family, rhyme family, and tone of the word.
         - Consonant families: ∈`Vietnamese.consonant_families` 
@@ -2338,9 +2691,11 @@ class Vietnamese(Alphabet):
         if word[:1] == 'c' and word[1:] in Vietnamese.rhymes_families_with_c:
             return 'k', word[1:], tone
         if word[:1] == 'q' and word[1:] in Vietnamese.rhymes_families_with_q:
-            # `qua` is actually `koa`, `quen` is actually `koen`, `queo` is actually `koeo`
+            # `qua` is actually `koa`, `quen` is actually `koen`, quau is actually `koau`, `queo` is actually `koeo`
             if word[2] == 'a' or word[2] == 'ă' or word[2] == 'e':
                 return 'k', 'o' + word[2:], tone
+            if word[1:] == 'ui':
+                return 'k', 'uy', tone
             return 'k', word[1:], tone
         if word[:1] == 'k' and word[1:] in Vietnamese.rhymes_families_with_k:
             return 'k', Vietnamese.y2i(word[1:]), tone
@@ -2372,9 +2727,10 @@ class Vietnamese(Alphabet):
         return original_word, None, None
     
     # (Consonant family, Rhyme family, Tone)
-    CRT = consonantFamily_rhymeFamily_tone
+    CRT = analyze
     
     # (Âm, Vần, Thanh)
-    AVT = consonantFamily_rhymeFamily_tone
+    AVT = analyze
 
-    
+    # Quốc ngữ -> vvv (consonant_family, rhyme_family, tone)
+    qn2vvv = analyze

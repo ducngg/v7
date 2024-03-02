@@ -10,8 +10,7 @@ for word in utils.separate_words(text):
     cf, rf, t = Vietnamese.CRT(word.lower())
     if rf is not None:
         rhymes.add(rf)
-    else:
-        print(word)
+        print(f'{word} -> {cf, rf, t}')
 
 print(len(rhymes))
 print(len(Vietnamese.rhymes_families))
