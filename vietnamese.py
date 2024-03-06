@@ -1,4 +1,10 @@
 import re
+import copy
+import time
+import utils
+import json
+import sys
+from functools import reduce
 
 class Alphabet():
     ALL = 'abcdefghijklmnopqrstuvwxyz'
@@ -6,7 +12,6 @@ class Alphabet():
     CONSONANTS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
     VOWELS = ['a', 'e', 'i', 'o', 'u']
     VOWELS_Y = ['a', 'e', 'i', 'o', 'u', 'y']
-
 
 class Vietnamese(Alphabet):
     """
@@ -563,6 +568,14 @@ class Vietnamese(Alphabet):
         'uở',
         'uỡ',
         'uợ',
+        'uơn',
+        'uớn',
+        'uờn',
+        'uởn',
+        'uỡn',
+        'uợn',
+        'uớt',
+        'uợt',
         'ia',
         'ía',
         'ìa',
@@ -1309,6 +1322,14 @@ class Vietnamese(Alphabet):
         'uở',
         'uỡ',
         'uợ',
+        'uơn',
+        'uớn',
+        'uờn',
+        'uởn',
+        'uỡn',
+        'uợn',
+        'uớt',
+        'uợt',
         'ia',
         'ía',
         'ìa',
@@ -1582,6 +1603,7 @@ class Vietnamese(Alphabet):
         'uông',
         'uôm',
         'uơ',
+        'uơn',
         'ia',
         'iên',
         'iêng',
@@ -1689,6 +1711,7 @@ class Vietnamese(Alphabet):
         'uông',
         'uôm',
         'uơ',
+        'uơn',
         'ia',
         'yên',
         'yêng',
@@ -1796,6 +1819,7 @@ class Vietnamese(Alphabet):
         'uông',
         'uôm',
         'uơ',
+        'uơn',
         'ia',
         'iên',
         'iêng',
@@ -1957,6 +1981,7 @@ class Vietnamese(Alphabet):
         'uông',
         'uôm',
         'uơ',
+        'uơn',
         'ưa',
         'ươn',
         'ương',
@@ -2043,6 +2068,7 @@ class Vietnamese(Alphabet):
         'uông',
         'uôm',
         'uơ',
+        'uơn',
         'ưa',
         'ươn',
         'ương',
@@ -2106,11 +2132,12 @@ class Vietnamese(Alphabet):
         'uên',
         'uênh', #
         'uy', 'ui', #
-        'uyn',
+        'uyn', 'uin', #
         'uynh',
         'uym',
         'uông', # Special: quốc
         'uơ',
+        'uơn', # Special: quớt
         'uai',
         'uay',
         'uây',
@@ -2333,6 +2360,7 @@ class Vietnamese(Alphabet):
         'uông': 1,
         'uôm': 1,
         'uơ': 1,
+        'uơn': 1,
         'ia': 0,
         'iên': 1,
         'iêng': 1,
@@ -2394,23 +2422,6 @@ class Vietnamese(Alphabet):
     aa_s = []
     # ... add later if necessary
     
-    db = {}
-    def db_init_consonants():
-        Vietnamese.db = {consonant: {} for consonant in Vietnamese.consonant_families}
-    
-    def db_init_rhymes():
-        db = Vietnamese.db
-        for consonant in db.keys():
-            if consonant == 'z':
-                db[consonant] = {rhyme: {} for rhyme in Vietnamese.rhymes_families_with_gi}
-            else:
-                db[consonant] = {rhyme: {} for rhyme in Vietnamese.rhymes_families}
-    
-    def db_init_tones():
-        db = Vietnamese.db
-        for consonant in db.keys():
-            for rhyme in db[consonant].keys():
-                pass
                 
     def rhyme_with_tones(rhyme_family: str, consonant_family: str):
         """
@@ -2508,8 +2519,8 @@ class Vietnamese(Alphabet):
                 [final_consonant + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones],
                 ['q' + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones]
             ]
-        # Not accept `gy`
-        elif consonant_family != 'z' and rhyme_family == 'i' :
+        # Not accept `gy`, `ghy`, `nghy`, ...
+        elif consonant_family not in ['z', 'g', 'ng', 'b', 'ch', 'd', 'đ', 'kh', 'p', 'ph', 'r', 'tr', 'x'] and rhyme_family == 'i' :
             return [
                 [final_consonant + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones],
                 [final_consonant + Vietnamese.i2y(rhyme_with_tone) for rhyme_with_tone in rhyme_with_tones]
@@ -2696,6 +2707,8 @@ class Vietnamese(Alphabet):
                 return 'k', 'o' + word[2:], tone
             if word[1:] == 'ui':
                 return 'k', 'uy', tone
+            if word[1:] == 'uin':
+                return 'k', 'uyn', tone
             return 'k', word[1:], tone
         if word[:1] == 'k' and word[1:] in Vietnamese.rhymes_families_with_k:
             return 'k', Vietnamese.y2i(word[1:]), tone
@@ -2734,3 +2747,121 @@ class Vietnamese(Alphabet):
 
     # Quốc ngữ -> vvv (consonant_family, rhyme_family, tone)
     qn2vvv = analyze
+
+class Dictionary():
+    db = {} # database
+    db = {consonant: {} for consonant in Vietnamese.consonant_families}
+    for consonant in db.keys():
+        if consonant == 'z':
+            real_rhymes = Vietnamese.rhymes_families_with_gi.copy()
+            real_rhymes[real_rhymes.index('')] = 'i'
+            real_rhymes[real_rhymes.index('êng')] = 'iêng'
+            real_rhymes[real_rhymes.index('ên')] = 'iên'
+            real_rhymes[real_rhymes.index('n')] = 'in'
+            db[consonant] = {rhyme: [] for rhyme in real_rhymes}
+        else:
+            db[consonant] = {rhyme: [] for rhyme in Vietnamese.rhymes_families}
+    for consonant in db.keys():
+        for rhyme in db[consonant].keys():
+            _01234567_01234567 = Vietnamese.word_with_tones(consonant, rhyme)
+            n_tones = len(_01234567_01234567[0])
+            tone_obj = {}
+            for t in range(n_tones):
+                tt = []
+                for _01234567 in _01234567_01234567:
+                    tt.append(_01234567[t])
+                tone_obj[t] = tt
+            db[consonant][rhyme] = tone_obj
+        
+    db_freq = copy.deepcopy(db)
+    for consonant in db_freq.keys():
+        for rhyme in db_freq[consonant].keys():
+            for tone in db_freq[consonant][rhyme].keys():
+                db_freq[consonant][rhyme][tone] = list(map(lambda word: {'value': word, 'freq': 0}, db[consonant][rhyme][tone]))
+        
+    @staticmethod
+    def get(consonant, rhyme=None, tone=0, max=5):
+        if consonant not in Vietnamese.consonant_families:
+            return None
+        
+        if rhyme not in [None, 'any', 'Any']:
+            if rhyme not in Vietnamese.rhymes_families:
+                return None
+            possibilities = Dictionary.db_freq[consonant][rhyme][tone]
+            possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
+        else:
+            possibilities = []
+            for rh in Dictionary.db_freq[consonant].keys():
+                try:
+                    possibilities += Dictionary.db_freq[consonant][rh][tone]
+                except Exception:
+                    pass                
+            possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
+        
+        return possibilities[:max]
+        # return [word_obj['value'] for word_obj in possibilities[:max]]
+    
+    @staticmethod
+    def update_db_freq(corpus='tôi là chó một con chó đen thui nhưng có nhiều con chó theo tôi'):
+        start_time = time.time()
+        with open("data/corpus-title.txt", 'r') as file:
+            # Iterate over each line in the file
+            max_line = 10000000
+            l = 0
+            total = 0
+            processed = 0
+            
+            for line in file:
+                # Process each line here
+                l += 1
+                if l > max_line:
+                    break
+                
+                line = utils.standardize_data(line)
+                
+                for word in line.split():
+                    cf, rf, t = Vietnamese.analyze(word)
+                    total += 1
+                    if cf and not rf:
+                        continue
+            
+                    else:
+                        for word_obj in Dictionary.db_freq[cf][rf][t]:
+                            if word_obj['value'] == word:
+                                word_obj['freq'] += 1
+                        processed += 1
+                        # print('.', end='')
+                
+                if l % 50000 == 0:
+                    processed_time = time.time() - start_time
+                    print(f'\n\n~~~ {processed_time:.2f}s ~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                    print(f'Total     : {total}')
+                    print(f'Processed : {processed}')
+                    print(f'Speed: {total/processed_time:.2f} word/s')
+                    print('~~~~~~~~~~~~~~~~~~~~~ saved checkpoint ~~~~~~~~~~~~~~~~~~\n')
+                    Dictionary.save_db_json()
+                    
+    @staticmethod
+    def save_db_json():
+        with open('db.json', 'w') as f:
+            json.dump(Dictionary.db_freq, f, indent=4)
+
+      
+if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        pass
+    else:
+        if sys.argv[1] == 'update_json':
+            # Running big corpus to save the word database into a JSON file
+            print('Running on text data...')
+            Dictionary.update_db_freq()
+            print('Done update db.json based on text data...')
+        
+else: 
+    # Read json file for Dictionary.db_freq
+    with open('db.json', 'r') as f:
+        Dictionary.db_freq = json.load(f)
+        for consonant in Dictionary.db_freq.keys():
+            for rhyme in Dictionary.db_freq[consonant].keys():
+                Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
+    

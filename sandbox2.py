@@ -18,6 +18,7 @@ def main():
         passed = 0
         total = 0
         diff = 0
+        rarediff = 0
         l = 0
         for line in file:
             # Process each line here
@@ -37,6 +38,7 @@ def main():
                     if rf in ['uy', 'oa', 'oe', 'oong']: # A lot of quý-quí, hóa-hoá, dọa-doạ -> not print
                         print('d', end=' ')
                     else:
+                        rarediff += 1
                         print(f"\nRare diff: raw word: `{word}` | Syn(Ana(word)) `{vword}`")
                 else:
                     passed += 1
@@ -48,6 +50,7 @@ def main():
                 print(f'\n\n~~~ {processed_time}s')
                 print(f'Passed: {passed}')
                 print(f'Differences: {diff}')
+                print(f'Rare fifferences: {rarediff}')
                 print(f'TotalW: {total}')
                 print(f'Speed: {total/processed_time} word/s')
                 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
@@ -55,6 +58,7 @@ def main():
         processed_time = time.time() - start_time
         print(f'\nPassed: {passed}')
         print(f'Differences: {diff}')
+        print(f'Rare fifferences: {rarediff}')
         print(f'TotalW: {total}')
         print(f'Speed: {total/processed_time} word/s')
         

@@ -1,5 +1,6 @@
 import re
 from functools import reduce
+import sys
 
 def separate_words(paragraph):
     # Define the regular expression pattern to split the paragraph into words
@@ -23,3 +24,37 @@ def getVietnameseTextFrom_vndictyaml(verbosity=0):
             print(len(separate_words(text)))
 
     return text
+
+def get_object_size(obj):
+    """
+    Recursively calculate the total size of all nested objects.
+    """
+    # Initialize the size of the object
+    total_size = sys.getsizeof(obj)
+    
+    # If the object is a list or a dictionary, recursively calculate the size of its elements
+    if isinstance(obj, (list, dict)):
+        for item in obj:
+            total_size += get_object_size(obj[item]) if isinstance(obj, dict) else get_object_size(item)
+    
+    return total_size
+
+# Hàm chuẩn hoá câu
+def standardize_data(row):
+    # Xóa dấu chấm, phẩy, hỏi ở cuối câu
+    row = re.sub(r"[\.,\?]+$-", "", row)
+    # Xóa tất cả dấu chấm, phẩy, chấm phẩy, chấm thang, ... trong câu
+    row = row.replace(",", " ").replace(".", " ") \
+        .replace(";", " ").replace("“", " ") \
+        .replace(":", " ").replace("”", " ") \
+        .replace('"', " ").replace("'", " ") \
+        .replace("!", " ").replace("?", " ") \
+        .replace("-", " ").replace("?", " ") \
+        .replace("(", " ").replace(")", " ") \
+        .replace("/", " ").replace("[", " ") \
+        .replace("]", " ").replace("{", " ") \
+        .replace("{", " ")
+        
+        
+    row = row.strip().lower()
+    return row
