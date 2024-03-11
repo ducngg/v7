@@ -5,6 +5,7 @@ import utils
 import json
 import sys
 from functools import reduce
+from itertools import product
 
 class Alphabet():
     ALL = 'abcdefghijklmnopqrstuvwxyz'
@@ -2779,27 +2780,44 @@ class Dictionary():
             for tone in db_freq[consonant][rhyme].keys():
                 db_freq[consonant][rhyme][tone] = list(map(lambda word: {'value': word, 'freq': 0}, db[consonant][rhyme][tone]))
         
+    dictionary = 0
+    
+
     @staticmethod
-    def get(consonant, rhyme=None, tone=0, max=5):
-        if consonant not in Vietnamese.consonant_families:
-            return None
-        
-        if rhyme not in [None, 'any', 'Any']:
-            if rhyme not in Vietnamese.rhymes_families:
+    def get(crts, max=25):
+        words_possibilities = []
+        for consonant, rhyme, tone in crts:
+                    
+            if consonant not in Vietnamese.consonant_families and tone not in Vietnamese.tones:
                 return None
-            possibilities = Dictionary.db_freq[consonant][rhyme][tone]
-            possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
-        else:
-            possibilities = []
-            for rh in Dictionary.db_freq[consonant].keys():
-                try:
-                    possibilities += Dictionary.db_freq[consonant][rh][tone]
-                except Exception:
-                    pass                
-            possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
+            
+            if rhyme not in [None, 'any', 'Any']:
+                if rhyme not in Vietnamese.rhymes_families:
+                    return None
+                possibilities = Dictionary.db_freq[consonant][rhyme][tone]
+                possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
+            else:
+                possibilities = []
+                for rh in Dictionary.db_freq[consonant].keys():
+                    try:
+                        possibilities += Dictionary.db_freq[consonant][rh][tone]
+                    except Exception:
+                        pass
+                    
+                # Filter out words that never appeared
+                possibilities = list(filter(lambda word_obj: word_obj['freq'] > 1, possibilities))
+                possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
+                
+            word_possibilities = [word_obj['value'] for word_obj in possibilities[:max]]
+            words_possibilities.append(word_possibilities)
         
-        return possibilities[:max]
-        # return [word_obj['value'] for word_obj in possibilities[:max]]
+        return words_possibilities
+    
+    def predict(words_possibilities):
+        combinations = list(product(*words_possibilities))
+        combinations = [' '.join(words) for words in combinations]
+
+        return list(filter(lambda comb: comb in Dictionary.dictionary, combinations))
     
     @staticmethod
     def update_db_freq(corpus='tôi là chó một con chó đen thui nhưng có nhiều con chó theo tôi'):
@@ -2845,18 +2863,107 @@ class Dictionary():
     def save_db_json():
         with open('db.json', 'w') as f:
             json.dump(Dictionary.db_freq, f, indent=4)
+            
+    @staticmethod
+    def update_dict():
+        start_time = time.time()
+        # text = utils.getVietnameseTextFrom_vndictyaml()
+        # text = utils.standardize_data(text)
+            
+        # Dictionary.dictionary = set(
+        #     text.splitlines()
+        # )
+        
+        Dictionary.dictionary = set()
+        with open('dictionaries/words.txt', 'r', encoding='utf-8') as file:
+            for i, line in enumerate(file):
+                data = json.loads(line)
+                text_value = data["text"]
+                Dictionary.dictionary.add(text_value.lower())
+                
+                if i % 50000 == 0:
+                    processed_time = time.time() - start_time
+                    print(f'\n\n~~~ {processed_time:.2f}s ~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+                    print(f'Speed: {i/processed_time:.2f} term/s')
+                    print('~~~~~~~~~~~~~~~~~~~~~ saved checkpoint ~~~~~~~~~~~~~~~~~~\n')
+                    Dictionary.save_dict_json()
+            
+        Dictionary.save_dict_json()
+        
+    @staticmethod
+    def save_dict_json():
+        with open('dict.json', 'w') as f:
+            json.dump(list(Dictionary.dictionary), f, indent=4)
 
+class InputMethod():
+    def __init__(self, method="VNI", flexible_tones=False, strict_k=False, null_consonant='hh') -> None:
+        
+        # Telex 
+        # VNI
+        
+        self.null_consonant = null_consonant
+        self.method = method
+        self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
+        self.strict_k = strict_k
+
+    def rawToCVT(self, cvt: str):
+        try:
+            tone = int(cvt[-1])
+            if tone not in Vietnamese.tones:
+                return None
+            #
+            # Add if tone == 6, 7 for flexible-tones
+            #
+        except Exception:
+            return None
+        
+        if cvt[:1] == self.null_consonant or cvt[:2] == self.null_consonant:
+            consonant = '0'
+        else:
+            consonant = cvt[:2]
+            if consonant not in Vietnamese.consonant_families + ['dd']:
+                
+                consonant = cvt[:1]
+                if consonant not in Vietnamese.consonant_families + ['c', 'q']:
+                    return None
+            
+            if consonant in ['c', 'q']:
+                if self.strict_k:
+                    return None
+                consonant = 'k'
+                
+            if consonant in ['dd']:
+                consonant = 'đ'
+            
+        ####### Add recognizer for rhymes
+            
+        return consonant, None, tone
+        
+        
+    def seperate_raws(self, raws: str):
+        pattern = r'[a-zA-Z]+(?:\d|$)'
+        raws = re.findall(pattern, raws)
+        return raws
+        
+    
       
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
+    if len(sys.argv) < 3:
         pass
     else:
-        if sys.argv[1] == 'update_json':
+        if 'update' in sys.argv[1]:
             # Running big corpus to save the word database into a JSON file
-            print('Running on text data...')
-            Dictionary.update_db_freq()
-            print('Done update db.json based on text data...')
-        
+            if 'json' in sys.argv[2]:
+                print('Running on text data to update db.json... Press control-C right now if you want to stop...')
+                time.sleep(10)
+                Dictionary.update_db_freq()
+                print('Done update db.json based on text data...')
+            if 'dict' in sys.argv[2]:
+                print('Running on text data to update dict.json... Press control-C right now if you want to stop...')
+                time.sleep(10)
+                Dictionary.update_dict()
+                print('Done update dict.json based on text data...')
+            
 else: 
     # Read json file for Dictionary.db_freq
     with open('db.json', 'r') as f:
@@ -2865,3 +2972,5 @@ else:
             for rhyme in Dictionary.db_freq[consonant].keys():
                 Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
     
+    with open('dict.json', 'r') as f:
+        Dictionary.dictionary = set(json.load(f))

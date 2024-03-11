@@ -39,3 +39,12 @@ changes:
     research: 'PhoBERT research, frequency analysis'
     change: 'Done frequency records from 100.000.000+ words in corpus-title.txt, stored in db.json, can be access by import vietnamese, can be update by run python vietnamese'
     description: 'not yet implement models'
+  - timestamp: '2024-06-03 10:11 PM'
+    research: ''
+    change: 'Done primitive dictionary from vn.dict.yaml file'
+    description: ''
+  - timestamp: '2024-11-03 9:05 AM'
+    research: ''
+    change: 'Make InputMethod class and an app for typing'
+    description: ''
+

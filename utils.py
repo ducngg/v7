@@ -11,13 +11,16 @@ def separate_words(paragraph):
     return words
 
 def getVietnameseTextFrom_vndictyaml(verbosity=0):
+    '''
+    Returns words seperated by \\n
+    '''
     with open('dictionaries/vn.dict.yaml', 'r') as yaml:
         lines = yaml.readlines()[:]
         
-        lines = [reduce(lambda word1, word2: word1 + ' ' + word2, line.split(' ')[:int((len(line.split(' '))) / 2)], ' ')
+        lines = [reduce(lambda word1, word2: word1 + ' ' + word2, line.split()[:int((len(line.split())) / 2)], ' ')
                 for line in lines]
         
-        text = reduce(lambda line1, line2: line1 + '\n' + line2, lines)
+        text = reduce(lambda line1, line2: line1.strip().lower() + '\n' + line2.strip().lower(), lines)
         
         if verbosity >= 1:
             print(len(text))

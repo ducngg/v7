@@ -1,11 +1,13 @@
 # Vietnamese Typing Optimization Analysis
 
-This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting 'x ch' or 'x0 ch2' should yield 'xin chào' as the predicted output.
+This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting 'x0ch2' should yield 'xin chào' as the predicted output.
 
 ## Current Development Status
-The project is currently in the development phase.
+The `app.py` has been implemented using PyQt5. To test the application, simply run `python app.py`. Make sure to install the required dependencies listed in `requirements.txt` first.
 
-### Usage Example:
+![Demo](assets/demo.gif)
+
+### Analyst Usage Example:
 ```python
 from vietnamese import Vietnamese
 
@@ -74,3 +76,7 @@ Example words for the eighth tone include: nhập, phục, đột, chục, mạc
 [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)
 
 **Date Created:** 10:05 AM, Tue 27 Feb 2024
+
+Data sources:
+- [News Corpus](https://github.com/binhvq/news-corpus)
+- [Vietnamese Dictionary 1](https://github.com/JaplinChen/rime-vietnamese-pinyin)
