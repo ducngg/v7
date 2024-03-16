@@ -16,8 +16,7 @@ corpus = "kiểm soát phối hợp tra cứu trực tiếp trên máy tính đ�
 
 # Analyze each word in the corpus
 for word in corpus.split(' '):
-    # CRT is short for Consonant family, Rhyme family, and Tone
-    print(Vietnamese.CRT(word))
+    print(Vietnamese.analyze(word))
 ```
 
 ### Output:

@@ -47,4 +47,7 @@ changes:
     research: ''
     change: 'Make InputMethod class and an app for typing'
     description: ''
-
+  - timestamp: '2024-16-03 16:12 PM'
+    research: 'will research for faster typing like {mj -> manh / minh, ty -> toi, tai, tui...} and If vowel is not wildcard -> must be exact match: cho1 -> chó/chớ/chố instead of showing chóng/chớm...'
+    change: 'Add rhyme recognizer, fixed a lot of bugs when add this feature. Seperate vietnamese.py to vietnamese.py, dictionary.py, and inputmethod.py'
+    description: 'Remove null consonant `hh`, and method in InputMethod'

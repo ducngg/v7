@@ -1,4 +1,6 @@
-from vietnamese import Vietnamese, Dictionary, InputMethod
+from vietnamese import Vietnamese
+from dictionary import Dictionary
+from inputmethod import InputMethod
 from long_text import *
 import utils
 
@@ -67,14 +69,52 @@ def main3():
             break
         
         try:
-            INPUTS = INPUT.split()
-            INPUTS = [inputAgent.rawToCVT(inp) for inp in INPUTS]
-            words_possibilities = Dictionary.get(INPUTS, max=50)
-            # print(words_possibilities)
-            print(Dictionary.predict(words_possibilities))
+            print(inputAgent.predict(INPUT))
         except Exception:
             pass
     
+def main4():
+    phrases = list(Dictionary.dictionary)
+    original_lens = []
+    v7_lens = []
+    for phrase in phrases[:]:
+        phrase_len = len(phrase)
+        v7_len = 0
+        viet = True
+        
+        words = phrase.split()
+        if len(words) == 1:
+            continue
+        
+        phrase_len += len(words) * 1.2 # average 1.2 more key for each words
+        
+        for word in words:
+            c, v, t = Vietnamese.analyze(word)
+            if v is None:
+                viet = False
+            else:
+                v7_len += len(c) + 1 # one for tone
+                
+        if not viet:
+            continue
+        
+        v7_len += 1 # one for choosing
+        # print(phrase_len, phrase)
+        # print(v7_len)
+        
+        original_lens.append(phrase_len)
+        v7_lens.append(v7_len)
+        
+    # print(original_lens, v7_lens)
+    
+    percents = [(o-v)/o*100 for o, v in zip(original_lens, v7_lens)]
+    import statistics
+    # print(percents)
+    print()
+    print(statistics.mean(percents))
+    print(statistics.stdev(percents))
+        
+            
         
 if __name__ == "__main__":
     main3()
