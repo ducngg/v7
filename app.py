@@ -25,9 +25,11 @@ Special consonants:
 - `z` for `gi`. (z6  → giúp, giết, giáp, ...)
 - `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)
 *Note: 
-1/ Current app shows just first 9 possibilities for easy choose(press a number to choose). Future app will shows the 9 most common combinations.
+1/ Current app shows just first 9 possibilities for easy choose(press a number to choose). 
+Future app will shows the 9 most common combinations.
 2/ Please turn off Unikey or other input methods when using this app to avoid conflicts.
-3/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. (don't type `ng0l2ng0ng4`, instead type something like `nguy0li2ngon0ngu4` for `nguyên lý ngôn ngữ`)
+3/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. 
+(don't type `ng0l2ng0ng4`, instead type something like `nguy0li2ngon0ngu4` for `nguyên lý ngôn ngữ`)
 4/ Press `Enter` to append raw input to the text area below.
 """)
         layout.addWidget(welcome_label)
