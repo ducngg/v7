@@ -48,6 +48,10 @@ class Dictionary():
         Return the word possibilities of each tuple given the list of tuple: `list[tuple[consonant: str, rhyme: str | list[str], tone: str]]`
         
         `rhyme` can be one or a list of rhymes.
+        
+        Params:
+        - `max`: n most frequently words per tuple (default is 25).
+        - `freq_threshold`: just take the words that have frequency higher than or equal this threshold.
         '''
         words_possibilities = []
         for consonant, rhyme, tone in crts:
@@ -64,17 +68,20 @@ class Dictionary():
                     except Exception:
                         pass
                 
-                if not possibilities:
-                    return None
             else:
                 if rhyme not in Vietnamese.rhymes_families:
                     return None
-                possibilities = Dictionary.db_freq[consonant][rhyme][tone]
+                try:
+                    possibilities = Dictionary.db_freq[consonant][rhyme][tone]
+                except Exception:
+                    return None
+                
                 possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
             
             # No possibilities
             if not possibilities:    
                 return None
+            
             # Filter out words that never appeared
             possibilities = list(filter(lambda word_obj: word_obj['freq'] >= freq_threshold, possibilities))
             # Sort by frequency
@@ -85,12 +92,13 @@ class Dictionary():
         
         return words_possibilities
     
-    def predict(words_possibilities: list[list[str]], verbose=False) -> list[str]:
+    def predict(words_possibilities: list[list[str]], verbose=False, any=False) -> list[str]:
         '''
         May not optimized yet.
         Receive a list of word possibilities(`list[list[str]]`) and then make all n-gram combinations with the order of the list.
         
         Then filter out which combinations are in the dictionary.
+        Set `any` to True will skip the filter part.
         '''
         if verbose:
             lens = []
@@ -100,6 +108,8 @@ class Dictionary():
         combinations = list(product(*words_possibilities))
         combinations = [' '.join(words) for words in combinations]
 
+        if any:
+            return combinations
         return list(filter(lambda comb: comb in Dictionary.dictionary, combinations))
     
     @staticmethod
