@@ -1,8 +1,11 @@
-from vietnamese import Vietnamese
+from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
 from inputmethod import InputMethod
 from long_text import *
 import utils
+import time
+import numpy as np
+import statistics
 
 
 def main1():
@@ -55,6 +58,42 @@ def main2():
     print(Dictionary.db['đ']['uôi'][3])
     print(Vietnamese.synthesize('đ', 'uôi', 3))
     print(Vietnamese.analyze('đuổi'))
+
+ 
+def main22():
+    object_size = utils.get_object_size(Dictionary.db)
+    print(f"Size of Dictionary: {object_size/1024/1024:.2f} MB")
+    print(f"len(db)          ~ {len(Dictionary.db)}")
+    print(f"len(db[c])       ~ {len(Dictionary.db['0'])}")
+    print(f"len(db[c][r])    ~ {len(Dictionary.db['0']['an'])}")
+    print(f"len(db[c][r][t]) ~ {len(Dictionary.db['0']['an'][0])}")
+
+    print(Vietnamese.synthesize('k', 'u', 4))
+    print(Vietnamese.synthesize('k', 'uông', 6))
+    print(Vietnamese.synthesize('0', 'iên', 1))
+    print(Vietnamese.synthesize('0', 'i', 1))
+    print(Vietnamese.synthesize('z', 'i', 2))
+    print(Vietnamese.synthesize('ng', 'iêm', 7))
+    print(Vietnamese.synthesize('ng', 'iêm', 5))
+    print(Dictionary.db['z']['iên'][6])
+    print(Dictionary.db['d']['iên'][7])
+    print(Dictionary.db['k']['oeo'][5])
+    print(Dictionary.db['k']['oang'][0])
+    
+    print(Dictionary.db['g']['i'][2])
+    print(Dictionary.db['z']['ăng'][7])
+    print(Dictionary.db['g']['i'][2])
+    print(Dictionary.db['kh']['ung'][3])
+    print(Dictionary.db['ng']['ênh'][2])
+    print(Dictionary.db['h']['oang'][3])
+    print(Dictionary.db['x']['uân'][6])
+    print(Dictionary.db['kh']['uênh'][2])
+    print(Dictionary.db['kh']['uênh'][7])
+    print(Dictionary.db['kh']['uênh'][6])
+    print(Dictionary.db['k']['oai'][1])
+    print(Dictionary.db['k']['ưu'][3])
+    for c in Vietnamese.consonant_families:
+        print(Dictionary.db[c]['i'][0])
         
 
 def main3():
@@ -113,8 +152,57 @@ def main4():
     print()
     print(statistics.mean(percents))
     print(statistics.stdev(percents))
+
+def main5():
+    rand_cons = lambda: np.random.choice(Vietnamese.consonant_families)
+    rand_vowl = lambda: np.random.choice(Alphabet.VOWELS + ['', ''])
+    rand_tone = lambda: str(np.random.choice(Vietnamese.tones))
+    rand_len = lambda: np.random.randint(1,4)
+    
+    inputAgent = InputMethod()
+    RAWS = []
+    RESS = []
+    TIME = []
+    
+    for i in range(1000):
+        raw = ''
+        l = rand_len()
+        for _ in range(l):
+            c = rand_cons()
+            if c == '0':
+                continue
+            if c == 'đ':
+                c = 'dd'
+            raw += c + rand_tone()
         
+        if raw == '':
+            continue
+        
+        start_time = time.time()
+        
+        phrase = inputAgent.predict(raw)[0]
+        TIME.append((l, time.time() - start_time))
+        RAWS.append(raw)
+        RESS.append(phrase)
+        
+        if i % 10000 == 0 and i > 100:
+            TIME1 = [t[1] for t in TIME if t[0] == 1]
+            TIME2 = [t[1] for t in TIME if t[0] == 2]
+            TIME3 = [t[1] for t in TIME if t[0] == 3]
             
+            print(f'Len=1: Mean: {statistics.mean(TIME1):.5f}             Std:{statistics.stdev(TIME1):.5f}    ({len(TIME1)} records) {i}')
+            print(f'Len=2: Mean: {statistics.mean(TIME2):.5f}             Std:{statistics.stdev(TIME2):.5f}    ({len(TIME2)} records)')
+            print(f'Len=3: Mean: {statistics.mean(TIME3):.5f}             Std:{statistics.stdev(TIME3):.5f}    ({len(TIME3)} records)')
         
+def main6():
+    inputAgent = InputMethod()
+    print(inputAgent.predict('xi0chao2mo5ng2'))
+    print(inputAgent.predict('xi0chao2mo')) # Not completed
+    print(inputAgent.predict('ximg0ch2')) # No match (`ximg`)
+    print(inputAgent.predict('xi0')) # Exact match when predict just one word
+    print(inputAgent.predict('b7')) # Wildcard rhyme
+    print(inputAgent.predict('b7t2'))
+    print(inputAgent.predict('ba7ti2'))
+    print(inputAgent.predict('bang7ti2')) # If you want words end with /p/, /t/, /c/, and /ch/; use  /m/, /n/, /ng/, and /nh/ respectively.
 if __name__ == "__main__":
-    main3()
+    main6()

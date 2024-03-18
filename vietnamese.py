@@ -2730,12 +2730,3 @@ class Vietnamese(Alphabet):
         
         # No match with Vietnamese structure
         return original_word, None, None
-    
-    # (Consonant family, Rhyme family, Tone)
-    CRT = analyze
-    
-    # (Âm, Vần, Thanh)
-    AVT = analyze
-
-    # Quốc ngữ -> vvv (consonant_family, rhyme_family, tone)
-    qn2vvv = analyze

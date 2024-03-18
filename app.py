@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLine
 from PyQt5.QtCore import Qt
 
 from inputmethod import InputMethod
-
+from timeout import run_function_with_timeout
 class V7App(QWidget):
     def __init__(self, inputAgent: InputMethod):
         super().__init__()
@@ -20,7 +20,7 @@ class V7App(QWidget):
         layout = QVBoxLayout()
         
         welcome_label = QLabel("""
-Type `x0ch2` and press the number of your desired word in the Predicted box.
+eg. Type `x0ch2` and press the number of your desired word in the Predicted box.
 Special consonants:
 - `z` for `gi`. (z6  → giúp, giết, giáp, ...)
 - `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)
@@ -30,7 +30,7 @@ Future app will shows the 9 most common combinations.
 2/ Please turn off Unikey or other input methods when using this app to avoid conflicts.
 3/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. 
 (don't type `ng0l2ng0ng4`, instead type something like `nguy0li2ngon0ngu4` for `nguyên lý ngôn ngữ`)
-4/ Press `Enter` to append raw input to the text area below.
+4/ Press `Enter` to append raw input to the text area at the bottom.
 """)
         layout.addWidget(welcome_label)
         
@@ -40,7 +40,7 @@ Future app will shows the 9 most common combinations.
         self.input_box.returnPressed.connect(self.addRaw)
         layout.addWidget(self.input_box)
         
-        predicted_label = QLabel("Predictions")
+        predicted_label = QLabel("Predictions (type the corresponding number of your desired word)")
         layout.addWidget(predicted_label)
         
         self.predict_box = QTextEdit()
@@ -117,9 +117,14 @@ Future app will shows the 9 most common combinations.
         Check if the current inpot_box is predictable or not.
         '''
         try:
+            # combination_possibilities = run_function_with_timeout(self.inputAgent.predict, timeout_seconds=3, input_string=input)
             combination_possibilities = self.inputAgent.predict(input)
             if combination_possibilities is None:
                 raise Exception
+            '''# If predicting process is timed out
+            except TimeoutError:
+                print("Function execution exceeded timeout")
+                self.reset_input_box()'''
         # If not predictable
         except:
             self.predict_box.clear()
@@ -152,5 +157,5 @@ Future app will shows the 9 most common combinations.
 if __name__ == '__main__':
     inputAgent = InputMethod()
     app = QApplication(sys.argv)
-    ex = V7App(inputAgent=inputAgent)
+    run_app = V7App(inputAgent=inputAgent)
     sys.exit(app.exec_())

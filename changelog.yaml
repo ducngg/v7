@@ -55,3 +55,12 @@ changes:
     research: 'TODO: will research the optimal param max on Case 4.'
     change: 'Improve rhyme recognizer and InputMethod.predict() by a lot, 4 cases of raw input are handled perfectly! And change a little bit in some Dictionary functions.'
     description: 'Seperate InputMethod.parse() to 2 functions, this will helpful in Case 2 of the InputMethod.predict().'
+  - timestamp: '2024-17-03 18:59 PM'
+    research: '`p4` problem: The only combination that has no words in db(freq=0). -> Solution: Hardcode db.json {`pã`: 10}'
+    change: 'Add a lot more documentations on README.md'
+    description: 'TODO: `quồng` problem havent been solved yet'
+  - timestamp: '2024'
+    research: ''
+    change: ''
+    description: ''
+    
