@@ -78,7 +78,7 @@ Example words for the eighth tone include: nhập, phục, đột, chục, mạc
 
 **Note: This is the reason why the project name is v7: `Việt` with the 8th tone (count from index 0 is 7)**
 
-### Synthesizing (Kết hợp)
+### Synthesizing (Hợp nhất)
 In contrast to analyzing, synthesizing is the process of mapping a tuple of `(consonant_family, rhyme_family, tone)` to a list of words(due to the ***non-injective*** property mentioned above), it's worth noting that in most cases, the resulting list typically contains just one word.
 
 Use `Vietnamese.synthesize(consonant: str, rhyme: str, tone: int)` or you can use `Dictionary.db[consonant][rhyme][tone]` for this process. Both methods yield the same result, but the second method is generally faster as it directly retrieves the keys. 
