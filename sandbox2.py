@@ -65,8 +65,11 @@ def main():
         print(f'TotalW: {total}')
         print(f'Speed: {total/processed_time} word/s')
         
-    
+def main2():
+    for a, b in zip(Vietnamese.rhymes_families, Vietnamese.rhymes_families_with_other_consonants):
+        if a != b:
+            print(a, b)
     
 if __name__ == "__main__":
-    main()
+    main2()
     
