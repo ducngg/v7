@@ -918,6 +918,7 @@ class Vietnamese(Alphabet):
     aa_s = []
     # ... add later if necessary
     
+    @staticmethod    
     def rhyme_with_tones(rhyme_family: str, consonant_family: str) -> list[str]:
         """
         From a `rhyme_family` to a list of toned rhyme of that family.
@@ -1076,6 +1077,7 @@ class Vietnamese(Alphabet):
         else:
             return Vietnamese.i_s[diacritic] + rhyme[1:]
     
+    @staticmethod
     def i2y(rhyme: str):
         """
         Change the initial `i` to `y`, example:

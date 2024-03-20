@@ -8,6 +8,14 @@ The `app.py` has been implemented using PyQt5. To test the application, simply r
 
 ![Demo](assets/demo.gif)
 
+<!-- Configuration:
+```python
+class InputMethod():
+    def __init__(self, strict_k=False, flexible_k=True):
+        self.strict_k = strict_k     # Do not accept `c`, `q`, if you want the words start with them, use `k` instead.
+        self.flexible_k = flexible_k # Only works is strict_k is False: flexible_k helps `q`, `c`, and `k` yields the same predicted words of `k` family.
+``` -->
+
 ## Sandbox Usage Example:
 ### Analyzing (Phân tích)
 In the context of the Vietnamese language, analyzing involves the mapping of a Vietnamese word to a tuple of `(consonant_family, rhyme_family, tone)`. This process is essential for various language processing tasks. It's important to note that the analysis is **non-injective**, meaning that multiple Vietnamese words may map to the same tuple. For instance, both (`cuốc`, `quốc`) or (`mi`, `my`)  can be mapped to the same tuple.
@@ -155,7 +163,7 @@ print(inputAgent.predict('xi0')) # Exact match when predict just one word and th
 print(inputAgent.predict('b7')) # Wildcard rhyme -> All possibilities in descending order of frequency (based on a large corpus)
 print(inputAgent.predict('b7t2'))
 print(inputAgent.predict('ba7ti2'))
-print(inputAgent.predict('bang7ti2')) # If you want words end with /p/, /t/, /c/, and /ch/; use  /m/, /n/, /ng/, and /nh/ respectively.
+print(inputAgent.predict('bac7ti2'))
 ```
 ***Output*** 
 ```
@@ -180,3 +188,8 @@ None
 Data sources:
 - [News Corpus](https://github.com/binhvq/news-corpus)
 - [Vietnamese Dictionary 1](https://github.com/JaplinChen/rime-vietnamese-pinyin)
+<!-- https://github.com/tienhapt/generalcorpus -->
+
+<!-- Reference: -->
+<!-- https://github.com/vncorenlp/VnCoreNLP -->
+<!-- https://nlp.uit.edu.vn/datasets/#h.p_Uj6Wqs5dCpc4 -->

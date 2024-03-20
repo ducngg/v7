@@ -92,6 +92,7 @@ class Dictionary():
         
         return words_possibilities
     
+    @staticmethod
     def predict(words_possibilities: list[list[str]], verbose=False, any=False) -> list[str]:
         '''
         May not optimized yet.

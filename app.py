@@ -29,7 +29,7 @@ Special consonants:
 Future app will shows the 9 most common combinations.
 2/ Please turn off Unikey or other input methods when using this app to avoid conflicts.
 3/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. 
-(don't type `ng0l2ng0ng4`, instead type something like `nguy0li2ngon0ngu4` for `nguyên lý ngôn ngữ`)
+(don't type `ng0l2ng0ng4`, instead type something like `nguy0li1ngon0ngu4` for `nguyên lý ngôn ngữ`)
 4/ Press `Enter` to append raw input to the text area at the bottom.
 """)
         layout.addWidget(welcome_label)
@@ -155,7 +155,12 @@ Future app will shows the 9 most common combinations.
     
 
 if __name__ == '__main__':
-    inputAgent = InputMethod()
+    # Learn more about these configuration in InputMethod
+    inputAgent = InputMethod(
+        flexible_tones=False,
+        strict_k=False,
+        flexible_k=False
+    )
     app = QApplication(sys.argv)
     run_app = V7App(inputAgent=inputAgent)
     sys.exit(app.exec_())

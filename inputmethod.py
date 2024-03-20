@@ -4,10 +4,11 @@ from dictionary import Dictionary
 import re
 
 class InputMethod():
-    def __init__(self, flexible_tones=False, strict_k=False) -> None:
+    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False) -> None:
         
         self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
         self.strict_k = strict_k
+        self.flexible_k = flexible_k # Only works is strict_k is False: flexible_k helps `q`, `c`, and `k` yields the same predicted words. Set to False so when you type `c`, `k`, or `q`, it just predict the words that start with that consonant.
         
     def parse(self, crt: str) -> tuple[str, str, int]:
         '''
@@ -57,11 +58,14 @@ class InputMethod():
         if consonant in ['c', 'q']:
             if self.strict_k:
                 return None
-            else:
-                # User may input qua/que instead of coa/coe -> replace `u` to `o`
-                if consonant in ['q'] and len(rhyme) > 1 and rhyme[0] in ['u'] and rhyme[1] in ['a', 'e']:
-                    rhyme = rhyme.replace('u', 'o', 1)
+            # User may input qua/que instead of coa/coe -> replace `u` to `o`
+            if consonant in ['q'] and len(rhyme) > 1 and rhyme[0] in ['u'] and rhyme[1] in ['a', 'e']:
+                rhyme = rhyme.replace('u', 'o', 1)
+            
+            if self.flexible_k:
                 consonant = 'k'
+            # Else consonant is kept as `c` or `q`
+            
         if consonant in ['dd']:
             consonant = 'đ'
         if consonant in ['']:
@@ -88,6 +92,9 @@ class InputMethod():
         #TODO: Recognizer for faster typing like {mj -> manh / minh, ty -> toi, tai, tui...}
         if raw_rhyme[0] not in Alphabet.VOWELS_Y:
             return []
+        
+        # Entering final consonants to original final consonant
+        raw_rhyme = raw_rhyme.replace('t', 'n').replace('c', 'ng').replace('p', 'm')
         
         for idx, char in enumerate(raw_rhyme):
             possibilities = list(filter(
@@ -125,6 +132,34 @@ class InputMethod():
         raws = re.findall(pattern, raws)
         return raws
         
+    def get(self, crts, max=25, freq_threshold=2):
+        '''
+        Use Dictionary.get() with self configurations. 
+        '''        
+        # If flexible_k then we don't need to care
+        if self.flexible_k:
+            words_possibilities = Dictionary.get(crts, max=max, freq_threshold=freq_threshold)
+            return words_possibilities
+        # If not -> Just take the words that start with original `consonant` in crts
+        else:
+            query_crts = []
+            for c, r, t in crts:
+                if c in ['c', 'q', 'k']:
+                    query_c = 'k'
+                else:
+                    query_c = c
+                query_crts.append((query_c, r, t))
+                
+            words_possibilities = Dictionary.get(query_crts, max=max, freq_threshold=freq_threshold)
+            
+            final_words_possibilities: list[list[str]] = []
+            for word_possibilities, (c, _, _) in zip(words_possibilities, crts):
+                if c in ['c', 'q', 'k']:
+                    word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))
+                final_words_possibilities.append(word_possibilities)
+                
+            return final_words_possibilities
+    
     def predict(self, input_string):
         '''
         Main function of the class, from a raw input string to a prediction list of combinations. Any errors occur or invalid raw string will return None.
@@ -156,30 +191,35 @@ class InputMethod():
                         
             # NOTE: Case 1: Wildcard rhyme
             if raw_r == '':
-                combination_possibilities = Dictionary.get(CRsTs)[0]
+                # Set high max because when filter out `c`, `q`, `k` in non-flexible_k, the list return less than 9 words.
+                combination_possibilities = self.get(CRsTs, max=100)[0]
                 
             # NOTE: Case 2: User may wants to input a word that doesn't exist in the dictionary 0 -> set freq_threshold=0
             else:
-                coequal_rs = list(filter(lambda rhyme: len(rhyme) == len(raw_r), rs))
+                # Must be exact rhyme -> case user input `-c`, the final rhyme is `-ng`
+                coequal_rs = list(filter(lambda rhyme: 
+                    len(rhyme) == len(raw_r) if 'c' not in raw_r else len(rhyme) == len(raw_r) + 1, 
+                    rs
+                ))
 
                 # If user input something like hie2/cu6, there will be no combination_possibilities associated with `coequal_rs``, then just use `rs`.
-                combination_possibilities = Dictionary.get([(c, coequal_rs, t)], freq_threshold=0) # This may return None
+                combination_possibilities = self.get([(c, coequal_rs, t)], freq_threshold=0) # This may return None
                 
                 if not combination_possibilities:
-                    combination_possibilities = Dictionary.get([(c, rs, t)], freq_threshold=0)
+                    combination_possibilities = self.get([(c, rs, t)], freq_threshold=0)
                 
                 combination_possibilities = combination_possibilities[0]
             
         else:
             # NOTE: Case 3:
-            words_possibilities = Dictionary.get(CRsTs, max=50)
+            words_possibilities = self.get(CRsTs, max=50)
             combination_possibilities = Dictionary.predict(words_possibilities)
             
             # NOTE: Case 4:
             # If no combination_possibilities, get 2 most frequent words of each raw string to produce.
             # In this case, user should provide as much information as possible in the raw string to get best result.
             if not combination_possibilities:
-                words_possibilities = Dictionary.get(CRsTs, max=2, freq_threshold=0)
+                words_possibilities = self.get(CRsTs, max=2, freq_threshold=0)
                 combination_possibilities = Dictionary.predict(words_possibilities, any=True)
         
         return combination_possibilities

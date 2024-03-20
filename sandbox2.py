@@ -69,6 +69,9 @@ def main2():
     for a, b in zip(Vietnamese.rhymes_families, Vietnamese.rhymes_families_with_other_consonants):
         if a != b:
             print(a, b)
+
+def main3():
+    ...
     
 if __name__ == "__main__":
     main2()

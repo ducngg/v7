@@ -203,6 +203,6 @@ def main6():
     print(inputAgent.predict('b7')) # Wildcard rhyme
     print(inputAgent.predict('b7t2'))
     print(inputAgent.predict('ba7ti2'))
-    print(inputAgent.predict('bang7ti2')) # If you want words end with /p/, /t/, /c/, and /ch/; use  /m/, /n/, /ng/, and /nh/ respectively.
+    print(inputAgent.predict('bac7ti2'))
 if __name__ == "__main__":
     main6()
