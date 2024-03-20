@@ -94,7 +94,7 @@ class InputMethod():
             return []
         
         # Entering final consonants to original final consonant
-        raw_rhyme = raw_rhyme.replace('t', 'n').replace('c', 'ng').replace('p', 'm')
+        raw_rhyme = raw_rhyme.replace('t', 'n').replace('ch', 'nh').replace('c', 'ng').replace('p', 'm')
         
         for idx, char in enumerate(raw_rhyme):
             possibilities = list(filter(
@@ -198,7 +198,7 @@ class InputMethod():
             else:
                 # Must be exact rhyme -> case user input `-c`, the final rhyme is `-ng`
                 coequal_rs = list(filter(lambda rhyme: 
-                    len(rhyme) == len(raw_r) if 'c' not in raw_r else len(rhyme) == len(raw_r) + 1, 
+                    len(rhyme) == len(raw_r) if raw_r[-1] != 'c' else len(rhyme) == len(raw_r) + 1, 
                     rs
                 ))
 
