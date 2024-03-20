@@ -5,12 +5,17 @@ from PyQt5.QtCore import Qt
 
 from inputmethod import InputMethod
 from timeout import run_function_with_timeout
+
 class V7App(QWidget):
     def __init__(self, inputAgent: InputMethod):
         super().__init__()
         self.inputAgent = inputAgent
         self.ready = False              # If ready, pressing a number will choose the combination number shown
-        self.latestCombs = []
+        self.predictions = {
+            'lst': [],
+            'page': 0,
+            'maxpage': 0
+        }
         self.initUI()
 
     def initUI(self):
@@ -20,33 +25,43 @@ class V7App(QWidget):
         layout = QVBoxLayout()
         
         welcome_label = QLabel("""
-eg. Type `x0ch2` and press the number of your desired word in the Predicted box.
+Welcome to v7!
 Special consonants:
 - `z` for `gi`. (z6  → giúp, giết, giáp, ...)
 - `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)
 *Note: 
-1/ Current app shows just first 9 possibilities for easy choose(press a number to choose). 
-Future app will shows the 9 most common combinations.
-2/ Please turn off Unikey or other input methods when using this app to avoid conflicts.
-3/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. 
+1/ Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.
+2/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. 
 (don't type `ng0l2ng0ng4`, instead type something like `nguy0li1ngon0ngu4` for `nguyên lý ngôn ngữ`)
-4/ Press `Enter` to append raw input to the text area at the bottom.
+3/ Press `Enter` to append raw input to the text area at the bottom.
 """)
         layout.addWidget(welcome_label)
         
         self.input_box = QLineEdit()
         self.input_box.keyPressEvent = self.keyPressEventInputBox
-        self.input_box.textChanged.connect(self.processing)
+        self.input_box.textChanged.connect(self.predict)
         self.input_box.returnPressed.connect(self.addRaw)
         layout.addWidget(self.input_box)
         
-        predicted_label = QLabel("Predictions (type the corresponding number of your desired word)")
-        layout.addWidget(predicted_label)
+        pred_label_layout = QHBoxLayout()
+        
+        pred_label = QLabel("Predictions")
+        pred_label_layout.addWidget(pred_label)
+        pred_help = QLabel("Usage: Press key [①-⑨] / ← → / ⌫ / ⏎ ")
+        pred_label_layout.addWidget(pred_help)
+        layout.addLayout(pred_label_layout)
+        
+        pred_result_layout = QHBoxLayout()
         
         self.predict_box = QTextEdit()
         self.predict_box.setMinimumHeight(155)
         self.predict_box.setReadOnly(True)
-        layout.addWidget(self.predict_box)
+        pred_result_layout.addWidget(self.predict_box)
+        
+        self.predict_info = QLabel("")
+        pred_result_layout.addWidget(self.predict_info)
+        
+        layout.addLayout(pred_result_layout)
         
         self.text = QTextEdit()
         layout.addWidget(self.text)
@@ -71,16 +86,37 @@ Future app will shows the 9 most common combinations.
     
     def keyPressEventInputBox(self, event):
         if event.key() == Qt.Key_Backspace:
-            # 
-            # TODO: May change to just delete the last term using inputAgent.seperate_raws()
-            #
-            self.reset_input_box()
+            input = self.input_box.text()
+            raws = inputAgent.seperate_raws(input)
+            self.input_box.setText("".join(raws[:-1]))
+            self.predict()
+        elif self.ready and event.key() == Qt.Key_Left:
+            if self.predictions['page'] > 1:
+                self.predictions['page'] -= 1
+            self.update_pred_result()
+        elif self.ready and event.key() == Qt.Key_Right:
+            if self.predictions['page'] < self.predictions['maxpage']:
+                self.predictions['page'] += 1
+            self.update_pred_result()
+        elif self.ready and (event.key() >= Qt.Key_1 and event.key() <= Qt.Key_9):
+            number = int(event.text())
+            true_index = number - 1
+            try:                
+                comb = self.predictions['lst'][true_index + 9*(self.predictions['page'] - 1)]
+                self.update_text(comb)
+                self.reset_input_box()            
+            except:
+                pass
         else:
             QLineEdit.keyPressEvent(self.input_box, event)
     
     def reset_input_box(self):
         self.input_box.clear()
-        self.latestCombs = []
+        self.predictions = {
+            'lst': [],
+            'page': 0,
+            'maxpage': 0
+        }
         self.ready = False
         
     def clear_text(self):
@@ -90,29 +126,9 @@ Future app will shows the 9 most common combinations.
         clipboard = QApplication.clipboard()
         clipboard.setText(self.text.toPlainText())
         
-        
-        
-    def processing(self):
+    def predict(self):
         input = self.input_box.text()
         
-        '''
-        See below for self.ready activation and combination showing, this `if` will check if the input is a number.
-        Then choose the combination of the chosen number.
-        '''
-        if self.ready:
-            try:
-                chosen = int(input[-1])
-                assert(chosen != 0)
-                
-                comb = self.latestCombs[chosen - 1]
-                self.update_text(comb)
-
-                self.reset_input_box()
-                return
-            
-            except:
-                pass
-            
         '''
         Check if the current inpot_box is predictable or not.
         '''
@@ -121,34 +137,52 @@ Future app will shows the 9 most common combinations.
             combination_possibilities = self.inputAgent.predict(input)
             if combination_possibilities is None:
                 raise Exception
-            '''# If predicting process is timed out
+            '''
+            # If predicting process is timed out
             except TimeoutError:
                 print("Function execution exceeded timeout")
-                self.reset_input_box()'''
+                self.reset_input_box()
+            '''
+            
         # If not predictable
         except:
             self.predict_box.clear()
+            self.predict_info.setText(f"")
             self.ready = False
         
         # If predictable  
-        else:        
-            self.predict_box.clear()            
-            self.latestCombs = combination_possibilities[:9]
-            
-            for i, comb in enumerate(self.latestCombs, start=1):
-                self.predict_box.append(f"{i}: {comb}")
-                
+        else:
+            self.predictions['lst'] = combination_possibilities
+            self.predictions['page'] = 1
+            self.predictions['maxpage'] = (len(combination_possibilities) - 1) // 9 + 1
+            self.update_pred_result()    
             self.ready = True
-            
+    
     def addRaw(self):
         self.update_text(self.input_box.text(), spaced=False)
         self.reset_input_box()
+    
+    def update_predict_box(self):
+        self.predict_box.clear()            
+        showing = self.predictions['lst'][
+            0 + 9*(self.predictions['page'] - 1):
+            9 + 9*(self.predictions['page'] - 1)
+        ]
+        for i, comb in enumerate(showing, start=1):
+            self.predict_box.append(f"{i}\t {comb}")
+    def update_predict_info(self):
+        self.predict_info.setText(f"Showing\n{self.predictions['page']}/{self.predictions['maxpage']}")
+    def update_pred_result(self):
+        self.update_predict_box()
+        self.update_predict_info()
         
     def update_text(self, new, spaced=True):
-        space = ' ' if spaced else ''
         current_text = self.text.toPlainText()
         if current_text == "":
-            updated = f"{new}"
+            self.text.setPlainText(new)
+            return
+        
+        space = ' ' if spaced else ''
         updated = f"{current_text}{space}{new}"
         self.text.setPlainText(updated)
         

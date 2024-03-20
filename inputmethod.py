@@ -143,19 +143,25 @@ class InputMethod():
         # If not -> Just take the words that start with original `consonant` in crts
         else:
             query_crts = []
-            for c, r, t in crts:
+            for c, rs, t in crts:
                 if c in ['c', 'q', 'k']:
                     query_c = 'k'
                 else:
                     query_c = c
-                query_crts.append((query_c, r, t))
+                query_crts.append((query_c, rs, t))
                 
             words_possibilities = Dictionary.get(query_crts, max=max, freq_threshold=freq_threshold)
-            
+            if words_possibilities is None:
+                return None
+
             final_words_possibilities: list[list[str]] = []
-            for word_possibilities, (c, _, _) in zip(words_possibilities, crts):
+            for word_possibilities, (c, rs, t) in zip(words_possibilities, crts):
                 if c in ['c', 'q', 'k']:
                     word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))
+                    # CASE 4 can make this list empty because `max` is very low -> Query again with high `max`
+                    if not word_possibilities:
+                        word_possibilities = Dictionary.get([('k', rs, t)], max=50, freq_threshold=0)[0]
+                        word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))[:max]
                 final_words_possibilities.append(word_possibilities)
                 
             return final_words_possibilities
@@ -201,10 +207,10 @@ class InputMethod():
                     len(rhyme) == len(raw_r) if raw_r[-1] != 'c' else len(rhyme) == len(raw_r) + 1, 
                     rs
                 ))
-
-                # If user input something like hie2/cu6, there will be no combination_possibilities associated with `coequal_rs``, then just use `rs`.
-                combination_possibilities = self.get([(c, coequal_rs, t)], freq_threshold=0) # This may return None
                 
+                # If user input something like hie2/cu6, there will be no combination_possibilities associated with `coequal_rs``, then just use `rs`.
+                combination_possibilities = self.get([(c, coequal_rs, t)], max=100, freq_threshold=0) # This may return None
+
                 if not combination_possibilities:
                     combination_possibilities = self.get([(c, rs, t)], freq_threshold=0)
                 
@@ -216,10 +222,14 @@ class InputMethod():
             combination_possibilities = Dictionary.predict(words_possibilities)
             
             # NOTE: Case 4:
-            # If no combination_possibilities, get 2 most frequent words of each raw string to produce.
+            # If no combination_possibilities, get `max` most frequent words of each raw string to produce.
             # In this case, user should provide as much information as possible in the raw string to get best result.
             if not combination_possibilities:
-                words_possibilities = self.get(CRsTs, max=2, freq_threshold=0)
+                n_terms = len(CRsTs)
+                if n_terms == 2: max = 5
+                elif n_terms == 3: max = 3
+                else: max = 2
+                words_possibilities = self.get(CRsTs, max=max, freq_threshold=0)
                 combination_possibilities = Dictionary.predict(words_possibilities, any=True)
         
         return combination_possibilities
