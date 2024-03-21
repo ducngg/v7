@@ -1,7 +1,6 @@
 from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
 from inputmethod import InputMethod
-from long_text import *
 import utils
 import time
 import numpy as np

@@ -1,10 +1,9 @@
 import sys
-from functools import reduce
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem
 from PyQt5.QtCore import Qt
 
 from inputmethod import InputMethod
-from timeout import run_function_with_timeout
+# from timeout import run_function_with_timeout
 
 class V7App(QWidget):
     def __init__(self, inputAgent: InputMethod):
@@ -86,6 +85,7 @@ Special consonants:
     
     def keyPressEventInputBox(self, event):
         if event.key() == Qt.Key_Backspace:
+            # Remove the last term
             input = self.input_box.text()
             raws = inputAgent.seperate_raws(input)
             self.input_box.setText("".join(raws[:-1]))
