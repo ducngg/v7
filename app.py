@@ -89,7 +89,6 @@ Special consonants:
             input = self.input_box.text()
             raws = inputAgent.seperate_raws(input)
             self.input_box.setText("".join(raws[:-1]))
-            self.predict()
         elif self.ready and event.key() == Qt.Key_Left:
             if self.predictions['page'] > 1:
                 self.predictions['page'] -= 1

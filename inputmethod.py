@@ -173,12 +173,16 @@ class InputMethod():
         There are 4 case of inputs that result in different predictions.
         - Case 1: Just one raw, wildcard rhyme: Predict all rhymes with descending frequency.
             - eg. `th3` -> [`thủ`, `thể`, `thủy`, ...]
+                - Complexity = max=100 ~ O(1)
         - Case 2: Just one raw, provided rhyme: Result will be the exact word with provided (c,v,t). (Don't need to be in the dictionary)
             - eg. `co1` -> [`có`, `cố`, `cớ`] (instead of showing others like `cốm`, `cống`, ...)
-        - Case 3: Multiple raws, have the phrases with that pattern in the dictionary: Result will be those phrases.
-            - eg. `t3q6` -> [`tổng kết`, `tổng quát`, `tổ quốc`, `tẩm quất`]
-        - Case 4: Multiple raws, no phrases with that pattern in the dictionary: Result will be the most frequent words of each raw combined.
+                - Complexity = max=100 (+ max=default)? ~ O(1)
+        - Case 3: Multiple raws (<=3), have the phrases with that pattern in the dictionary: Result will be those phrases. If no phrases with that pattern in the dictionary, switch to Case 4.
+            - eg. `t3q6` -> [`tổng kết`, `tổng quát`, `tổ quốc`, `tẩm quất`] (flexible_k=True)
+                - Complexity = (max=50)**n (+ (max=5|3|2)**n)? ~ O(50^n): n<=3
+        - Case 4: Multiple raws (>3) or unrecognized Case 3: Result will be the most frequent words of each raw combined.
             - eg. `thu6dde0` -> [`thức đêm`, `thức đen`, `thuốc đêm`, `thuốc đen`] (Note that all of the words are most frequent used words)
+                - Complexity = (max=2)**n ~ O(2^n)
         '''
         raws = self.seperate_raws(input_string)
         raws_parts = [self.parse(raw) for raw in raws]
@@ -217,14 +221,17 @@ class InputMethod():
                 combination_possibilities = combination_possibilities[0]
             
         else:
-            # NOTE: Case 3:
-            words_possibilities = self.get(CRsTs, max=50)
-            combination_possibilities = Dictionary.predict(words_possibilities)
+            combination_possibilities = None
             
+            if len(CRsTs) <= 3:
+                # NOTE: Case 3:
+                words_possibilities = self.get(CRsTs, max=50)
+                combination_possibilities = Dictionary.predict(words_possibilities)
+                                
+            if not combination_possibilities:
             # NOTE: Case 4:
             # If no combination_possibilities, get `max` most frequent words of each raw string to produce.
             # In this case, user should provide as much information as possible in the raw string to get best result.
-            if not combination_possibilities:
                 n_terms = len(CRsTs)
                 if n_terms == 2: max = 5
                 elif n_terms == 3: max = 3
