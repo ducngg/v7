@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QMessageBox
 from PyQt5.QtCore import Qt
 
 from inputmethod import InputMethod
@@ -19,24 +19,24 @@ class V7App(QWidget):
 
     def initUI(self):
         self.setWindowTitle('v7 Typing Method')
-        self.setGeometry(100, 100, 400, 400)
-
+        self.setGeometry(100, 100, 600, 500)
+        self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #0b2d1c); color: #FFF;};")
+        
         layout = QVBoxLayout()
         
-        welcome_label = QLabel("""
-Welcome to v7!
-Special consonants:
-- `z` for `gi`. (z6  → giúp, giết, giáp, ...)
-- `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)
-*Note: 
-1/ Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.
-2/ Not optimized yet, if you want to use more than 3 terms, please provide rhymes for less computing. 
-(don't type `ng0l2ng0ng4`, instead type something like `nguy0li1ngon0ngu4` for `nguyên lý ngôn ngữ`)
-3/ Press `Enter` to append raw input to the text area at the bottom.
-""")
-        layout.addWidget(welcome_label)
+        welcome_layout = QHBoxLayout()
+        
+        welcome_label = QLabel("Welcome to v7!")
+        welcome_layout.addWidget(welcome_label)
+        
+        help_button = QPushButton("Help")
+        help_button.setFixedWidth(50)
+        help_button.clicked.connect(self.show_help)
+        welcome_layout.addWidget(help_button)
+        layout.addLayout(welcome_layout)
         
         self.input_box = QLineEdit()
+        self.input_box.setStyleSheet("background-color: #FFF; color: #224938; border: 1px solid #6D8C68; border-radius: 1px; font-size: 20px; font-weight: bold;")
         self.input_box.keyPressEvent = self.keyPressEventInputBox
         self.input_box.textChanged.connect(self.predict)
         self.input_box.returnPressed.connect(self.addRaw)
@@ -46,14 +46,15 @@ Special consonants:
         
         pred_label = QLabel("Predictions")
         pred_label_layout.addWidget(pred_label)
-        pred_help = QLabel("Usage: Press key [①-⑨] / ← → / ⌫ / ⏎ ")
+        pred_help = QLabel("Usage: Press key [①-⑨] ← → ⌫ ⏎ ")
         pred_label_layout.addWidget(pred_help)
         layout.addLayout(pred_label_layout)
         
         pred_result_layout = QHBoxLayout()
         
         self.predict_box = QTextEdit()
-        self.predict_box.setMinimumHeight(155)
+        self.predict_box.setMinimumHeight(230)
+        self.predict_box.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.predict_box.setReadOnly(True)
         pred_result_layout.addWidget(self.predict_box)
         
@@ -62,8 +63,9 @@ Special consonants:
         
         layout.addLayout(pred_result_layout)
         
-        self.text = QTextEdit()
-        layout.addWidget(self.text)
+        self.result_box = QTextEdit()
+        self.result_box.setStyleSheet("font-size: 20px; font-weight: bold;")
+        layout.addWidget(self.result_box)
         
         button_layout = QHBoxLayout()
         
@@ -83,12 +85,43 @@ Special consonants:
 
         self.show()
     
+    def show_help(self):
+        help_text = """
+- Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.
+- Please provide rhymes for better prediction on uncommon words. 
+(don't type `ng0l2ng0ng4`, instead type something like `nguy0li1ngon0ngu4` for `nguyên lý ngôn ngữ`)
+- Press `Enter` to append raw input to the text area at the bottom.
+
+Special consonants:
+- `g` for both `g` and `gh`.
+- `ng` for both `ng` and `ngh`.
+- `z` for `gi`. (z6  → giúp, giết, giáp, ...)
+- `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)
+Tones:
+- 0 for no tones
+- [1-5] for tones from 1 to 5 (VNI style)
+- 6 for `entering` accute: xuất, cấp, tất, chiếc, thích, mút... 
+- 7 for `entering` underdot: nhập, phục, đột, chục, mạch, kịp...
+        """
+        help_box = QMessageBox(parent=self)
+        help_box.setText(help_text)
+        help_box.setWindowTitle("Help")
+        help_box.setFixedWidth(800) 
+        help_box.exec_()
+    
     def keyPressEventInputBox(self, event):
         if event.key() == Qt.Key_Backspace:
             # Remove the last term
             input = self.input_box.text()
-            raws = inputAgent.seperate_raws(input)
-            self.input_box.setText("".join(raws[:-1]))
+            if input != "":
+                raws = inputAgent.seperate_raws(input)
+                self.input_box.setText("".join(raws[:-1]))
+            
+            # Remove the last word from result_box
+            else:
+                current_result_box = self.result_box.toPlainText()
+                self.result_box.setPlainText(" ".join(current_result_box.split()[:-1]))
+                
         elif self.ready and event.key() == Qt.Key_Left:
             if self.predictions['page'] > 1:
                 self.predictions['page'] -= 1
@@ -102,7 +135,7 @@ Special consonants:
             true_index = number - 1
             try:                
                 comb = self.predictions['lst'][true_index + 9*(self.predictions['page'] - 1)]
-                self.update_text(comb)
+                self.update_result_box(comb)
                 self.reset_input_box()            
             except:
                 pass
@@ -119,11 +152,11 @@ Special consonants:
         self.ready = False
         
     def clear_text(self):
-        self.text.clear()
+        self.result_box.clear()
         
     def copy_text(self):
         clipboard = QApplication.clipboard()
-        clipboard.setText(self.text.toPlainText())
+        clipboard.setText(self.result_box.toPlainText())
         
     def predict(self):
         input = self.input_box.text()
@@ -158,7 +191,7 @@ Special consonants:
             self.ready = True
     
     def addRaw(self):
-        self.update_text(self.input_box.text(), spaced=False)
+        self.update_result_box(self.input_box.text(), spaced=False)
         self.reset_input_box()
     
     def update_predict_box(self):
@@ -175,15 +208,15 @@ Special consonants:
         self.update_predict_box()
         self.update_predict_info()
         
-    def update_text(self, new, spaced=True):
-        current_text = self.text.toPlainText()
-        if current_text == "":
-            self.text.setPlainText(new)
+    def update_result_box(self, new, spaced=True):
+        current_result_box = self.result_box.toPlainText()
+        if current_result_box == "":
+            self.result_box.setPlainText(new)
             return
         
         space = ' ' if spaced else ''
-        updated = f"{current_text}{space}{new}"
-        self.text.setPlainText(updated)
+        updated = f"{current_result_box}{space}{new}"
+        self.result_box.setPlainText(updated)
         
     
 

@@ -39,8 +39,7 @@ class Dictionary():
             for tone in db_freq[consonant][rhyme].keys():
                 db_freq[consonant][rhyme][tone] = list(map(lambda word: {'value': word, 'freq': 0}, db[consonant][rhyme][tone]))
         
-    dictionary = 0
-    
+    dictionary = set()
 
     @staticmethod
     def get(crts: list[tuple[str, str|list[str], int]], max=25, freq_threshold=2) -> list[list[str]]:
