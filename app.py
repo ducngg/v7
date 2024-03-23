@@ -20,13 +20,13 @@ class V7App(QWidget):
     def initUI(self):
         self.setWindowTitle('v7 Typing Method')
         self.setGeometry(100, 100, 600, 500)
-        self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #0b2d1c); color: #FFF;};")
+        self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #123d2c); color: #FFF;};")
         
         layout = QVBoxLayout()
         
         welcome_layout = QHBoxLayout()
         
-        welcome_label = QLabel("Welcome to v7!")
+        welcome_label = QLabel("Welcome to v7 - an innovative input method for typing Vietnamese!")
         welcome_layout.addWidget(welcome_label)
         
         help_button = QPushButton("Help")

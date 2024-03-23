@@ -14,16 +14,15 @@ Phrases are categorized based on the number of words inside.
 
 *Note: The statistics provided are derived under optimal conditions, assuming the user inputs only consonants and tones, and the target phrase is both in the dictionary and appear in the most 9 accurate predictions.*
 
-| Phrase length | Keystrokes reduced<br>(± 1 std) | Speed improvement<br>(± 1 std)|
-|---------------|-----------|-----------------|
-| 1             | <span style="color:red">0.42 ± 1.12</span>     | <span style="color:red">3.1% ± 28.5%</span>           |
-| 2             | <span style="color:green">3.74 ± 1.64</span>     | <span style="color:green">37.9% ± 12.5%</span>           |
-| 3             | <span style="color:green">5.93 ± 2.09</span>     | <span style="color:green">41.3% ± 9.8%</span>           |
-| 4+ <br>(not in dictionary)           | <span style="color:green">3.05 ± 1.47</span>     | <span style="color:green">15.1% ± 6.7%</span>    
+| Phrase length | Number of phrases | Keystrokes reduced<br>(± 1 std) | Speed improvement<br>(± 1 std)|
+|-|-|-|-|
+| 1 | 6170 | 0.42 ± 1.12 | 3.1% ± 28.5%*  |
+| 2 | 51614 | 4.74 ± 1.64 | 44.3% ± 9.9% |
+| 3 | 6236 | 7.93 ± 2.09 | 49.0% ± 7.4% |
+| 4+ <br>(not in dictionary) | 9589 | 8.79 ± 2.42 | 37.5% ± 5.1% |
 
-The statistics show that typing <span style="color:red">single words</span> in the `v7` method, which requires users to input the entire rhyme and tone, may lead to a slight increase in keystrokes compared to traditional methods(this is the only main drawback to traditional method since if user wants to type `anh` in v7, they must type `anh0` anh type one more number to choose from the prediction list). 
-However, v7 demonstrates significant improvements in performance when typing <span style="color:green">phrases with multiple words</span> from the dictionary, greatly reducing keystrokes and boosting typing speed. This makes it effective since in Vietnamese communication phrases are often used rather than isolated words.
-
+The statistics show that v7 demonstrates significant improvements in performance when typing phrases with multiple words from the dictionary, greatly reducing keystrokes and boosting typing speed. This makes it effective since in Vietnamese communication phrases are often used rather than isolated words.
+*\*: When typing single words, users are required to input the entire rhyme and tone, sometimes lead to a slight increase in keystrokes compared to traditional methods(this is the only main drawback to traditional method since if user wants to type `anh` in v7, they must type `anh0` anh type one more number to choose from the prediction list).*
 <!-- Configuration:
 ```python
 class InputMethod():
