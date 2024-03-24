@@ -117,6 +117,9 @@ class Dictionary():
     
     @staticmethod
     def update_db_freq(corpus='tôi là chó một con chó đen thui nhưng có nhiều con chó theo tôi'):
+        '''
+        Please ignore this
+        '''
         start_time = time.time()
         with open("data/corpus-title.txt", 'r') as file:
             # Iterate over each line in the file
@@ -157,11 +160,17 @@ class Dictionary():
                     
     @staticmethod
     def save_db_json():
+        '''
+        Please ignore this
+        '''
         with open('db.json', 'w') as f:
             json.dump(Dictionary.db_freq, f, indent=4)
             
     @staticmethod
     def update_dict():
+        '''
+        Please ignore this
+        '''
         start_time = time.time()
         # text = utils.getVietnameseTextFrom_vndictyaml()
         # text = utils.standardize_data(text)
@@ -188,10 +197,16 @@ class Dictionary():
         
     @staticmethod
     def save_dict_json():
+        '''
+        Please ignore this
+        '''
         with open('dict.json', 'w') as f:
             json.dump(list(Dictionary.dictionary), f, indent=4)
         
 if __name__ == "__main__":
+    '''
+    Please ignore this, this is for updating db.json and dict.json from my private data folder.
+    '''
     if len(sys.argv) < 3:
         pass
     else:

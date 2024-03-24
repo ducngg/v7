@@ -4,13 +4,13 @@ from dictionary import Dictionary
 import re
 
 class InputMethod():
-    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='h') -> None:
+    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
         
         self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
         self.strict_k = strict_k
         self.flexible_k = flexible_k # Only works is strict_k is False: flexible_k helps `q`, `c`, and `k` yields the same predicted words. Set to False so when you type `c`, `k`, or `q`, it just predict the words that start with that consonant.
-        self.null_consonant = null_consonant
-        self.end_of_rhyme = end_of_rhyme # `co5ve4tr0` cannot yields `cọ vẽ tranh`, and it`s impossible to type `cọ vẽ tranh` using CASE 4 typing because `cọ` is not frequently used. `end_of_rhyme` is created to fix this: `co{EOR}5ve4tr0`'
+        self.null_consonant = null_consonant # Currently support 1 or 2 character only.
+        self.end_of_rhyme = end_of_rhyme # `co5ve4tr0` cannot yields `cọ vẽ tranh`, and it`s impossible to type `cọ vẽ tranh` using CASE 4 typing because `cọ` is not frequently used. `end_of_rhyme` is created to fix this: `co{EOR}5ve4tr0`'. Currently support 1 character only.
         
     def parse(self, crt: str) -> tuple[str, str, int]:
         '''
@@ -108,6 +108,7 @@ class InputMethod():
                     lambda rhyme: len(rhyme) == idx,
                     possibilities
                 ))
+                break
             else:
                 possibilities = list(filter(
                     lambda rhyme: len(rhyme) > idx and self.match(rhyme[idx], char),
@@ -140,7 +141,7 @@ class InputMethod():
         Seperate raw string of many input string to blocks. The tone number will be the seperator, and belong to the prior term.
         eg. x0chao2m5ngu -> ['x0', 'chao2', 'm5', 'ngu']
         '''
-        pattern = r'[a-zA-Z]+(?:\d|$)'
+        pattern = r'[a-zA-Z{}]+(?:\d|$)'.format(re.escape(self.end_of_rhyme))
         raws = re.findall(pattern, raws)
         return raws
         
