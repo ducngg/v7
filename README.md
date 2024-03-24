@@ -22,6 +22,7 @@ Phrases are categorized based on the number of words inside.
 | 4+ <br>(not in dictionary) | 9589 | 8.79 ± 2.42 | 37.5% ± 5.1% |
 
 The statistics show that v7 demonstrates significant improvements in performance when typing phrases with multiple words from the dictionary, greatly reducing keystrokes and boosting typing speed. This makes it effective since in Vietnamese communication phrases are often used rather than isolated words.
+
 *\*: When typing single words, users are required to input the entire rhyme and tone, sometimes lead to a slight increase in keystrokes compared to traditional methods(this is the only main drawback to traditional method since if user wants to type `anh` in v7, they must type `anh0` anh type one more number to choose from the prediction list).*
 <!-- Configuration:
 ```python

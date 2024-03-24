@@ -249,7 +249,25 @@ def main1():
     # Analyze each word in the corpus
     for word in corpus.split(' '):
         print(word, TelexOrVNI.get_keys_needed_from_word(word), V7.get_keys_needed_from_word(word))
-        
+
+def main2():
+    samples = list(Dictionary.dictionary)[:]
+    len_samples = len(samples)
+    keys = []
+    lens = []
+    for idx, phrase in enumerate(samples, 1):
+        words = phrase.split()
+        for word in words:
+            total_other_input_method = TelexOrVNI.get_keys_needed_from_word(word)
+            if total_other_input_method is None:
+                continue
+            keys.append(total_other_input_method)
+            lens.append(len(word))
+        print(f'\r{idx}/{len_samples}', end='')
+    
+    print(f'KEYS mean: {statistics.mean(keys):.4f}' f'std:  {statistics.stdev(keys):.4f}')
+    print(f'LENS mean: {statistics.mean(lens):.4f}' f'std:  {statistics.stdev(lens):.4f}')
+    
 def compare():
     samples = list(Dictionary.dictionary)[:]
     len_samples = len(samples)
@@ -313,5 +331,5 @@ def compare():
     
     
 if __name__ == '__main__':
-    compare()
+    main2()
     

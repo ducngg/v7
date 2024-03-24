@@ -44,9 +44,9 @@ class Dictionary():
     @staticmethod
     def get(crts: list[tuple[str, str|list[str], int]], max=25, freq_threshold=2) -> list[list[str]]:
         '''
-        Return the word possibilities of each tuple given the list of tuple: `list[tuple[consonant: str, rhyme: str | list[str], tone: str]]`
+        Return the word possibilities of each tuple given the list of tuple: `list[tuple[consonant: str, rhyme: str | list[str] | 'any', tone: str]]`
         
-        `rhyme` can be one or a list of rhymes.
+        `rhyme` can be one rhyme, or a list of rhymes, or `any` for all possible rhymes.
         
         Params:
         - `max`: n most frequently words per tuple (default is 25).
@@ -58,8 +58,11 @@ class Dictionary():
             if consonant not in Vietnamese.consonant_families and tone not in Vietnamese.tones:
                 return None
             
-            if isinstance(rhyme, list):
-                rhymes = rhyme
+            if isinstance(rhyme, list) or rhyme == 'any':
+                if rhyme == 'any':
+                    rhymes = Vietnamese.rhymes_families
+                else:
+                    rhymes = rhyme
                 possibilities = []
                 for rh in rhymes:
                     try:

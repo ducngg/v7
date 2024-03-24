@@ -70,8 +70,9 @@ def main2():
             print(a, b)
 
 def main3():
-    ...
+    print(time.time())
+    print(str(time.time()))
     
 if __name__ == "__main__":
-    main2()
+    main3()
     

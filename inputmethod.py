@@ -4,11 +4,13 @@ from dictionary import Dictionary
 import re
 
 class InputMethod():
-    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False) -> None:
+    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='h') -> None:
         
         self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
         self.strict_k = strict_k
         self.flexible_k = flexible_k # Only works is strict_k is False: flexible_k helps `q`, `c`, and `k` yields the same predicted words. Set to False so when you type `c`, `k`, or `q`, it just predict the words that start with that consonant.
+        self.null_consonant = null_consonant
+        self.end_of_rhyme = end_of_rhyme # `co5ve4tr0` cannot yields `cọ vẽ tranh`, and it`s impossible to type `cọ vẽ tranh` using CASE 4 typing because `cọ` is not frequently used. `end_of_rhyme` is created to fix this: `co{EOR}5ve4tr0`'
         
     def parse(self, crt: str) -> tuple[str, str, int]:
         '''
@@ -27,18 +29,22 @@ class InputMethod():
         except Exception:
             return None
         
-        # CHECK CONSONANT        
-        # Check if consonant is double consonant
-        consonant = crt[:2]
-        rhyme_pos = 2
-        if consonant not in Vietnamese.consonant_families + ['dd']:
-            # Check if consonant is single consonant
-            consonant = crt[:1]
-            rhyme_pos = 1
-            if consonant not in Vietnamese.consonant_families + ['c', 'q']:
-                consonant = ''
-                rhyme_pos = 0
-            
+        # CHECK CONSONANT   
+        # Check if null consonant is used
+        if crt[:2] == self.null_consonant: consonant, rhyme_pos = self.null_consonant, 2
+        elif crt[:1] == self.null_consonant: consonant, rhyme_pos = self.null_consonant, 1
+        else:   
+            # Check if consonant is double consonant
+            consonant = crt[:2]
+            rhyme_pos = 2
+            if consonant not in Vietnamese.consonant_families + ['dd']:
+                # Check if consonant is single consonant
+                consonant = crt[:1]
+                rhyme_pos = 1
+                if consonant not in Vietnamese.consonant_families + ['c', 'q']:
+                    consonant = ''
+                    rhyme_pos = 0
+                
         # CHECK RHYME
         rhymes = crt[rhyme_pos:-1]
         
@@ -68,7 +74,7 @@ class InputMethod():
             
         if consonant in ['dd']:
             consonant = 'đ'
-        if consonant in ['']:
+        if consonant in ['', self.null_consonant]:
             consonant = '0'
             
         # CHECK RHYME
@@ -97,10 +103,16 @@ class InputMethod():
         raw_rhyme = raw_rhyme.replace('t', 'n').replace('ch', 'nh').replace('c', 'ng').replace('p', 'm')
         
         for idx, char in enumerate(raw_rhyme):
-            possibilities = list(filter(
-                lambda rhyme: len(rhyme) > idx and self.match(rhyme[idx], char),
-                possibilities
-            ))
+            if char == self.end_of_rhyme:
+                possibilities = list(filter(
+                    lambda rhyme: len(rhyme) == idx,
+                    possibilities
+                ))
+            else:
+                possibilities = list(filter(
+                    lambda rhyme: len(rhyme) > idx and self.match(rhyme[idx], char),
+                    possibilities
+                ))
             
         return possibilities
     

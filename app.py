@@ -1,13 +1,17 @@
-import sys
+import sys, time, os
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QMessageBox
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
 from inputmethod import InputMethod
 # from timeout import run_function_with_timeout
+        
+HISTORY_PATH = os.path.join('history')
 
 class V7App(QWidget):
-    def __init__(self, inputAgent: InputMethod):
+    def __init__(self, inputAgent: InputMethod, session: str = None):
         super().__init__()
+        self.session = session
         self.inputAgent = inputAgent
         self.ready = False              # If ready, pressing a number will choose the combination number shown
         self.predictions = {
@@ -21,7 +25,7 @@ class V7App(QWidget):
         self.setWindowTitle('v7 Typing Method')
         self.setGeometry(100, 100, 600, 500)
         self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #123d2c); color: #FFF;};")
-        
+        # TODO: Add logo
         layout = QVBoxLayout()
         
         welcome_layout = QHBoxLayout()
@@ -136,6 +140,11 @@ Tones:
             try:                
                 comb = self.predictions['lst'][true_index + 9*(self.predictions['page'] - 1)]
                 self.update_result_box(comb)
+                
+                if self.session:
+                    with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a') as history:
+                        history.write(f"{self.input_box.text()} {comb}\n")
+                
                 self.reset_input_box()            
             except:
                 pass
@@ -201,7 +210,9 @@ Tones:
             9 + 9*(self.predictions['page'] - 1)
         ]
         for i, comb in enumerate(showing, start=1):
-            self.predict_box.append(f"{i}\t {comb}")
+            self.predict_box.append(f"{i}\t{comb}")
+            # self.predict_box.append(f"{i} ⎯⎯⎯ {comb}")
+            # self.predict_box.append(f"{i}{' '*(3+(i-1)//3*2)}{comb}")
     def update_predict_info(self):
         self.predict_info.setText(f"Showing\n{self.predictions['page']}/{self.predictions['maxpage']}")
     def update_pred_result(self):
@@ -222,11 +233,12 @@ Tones:
 
 if __name__ == '__main__':
     # Learn more about these configuration in InputMethod
+    session = str(time.time())
     inputAgent = InputMethod(
         flexible_tones=False,
         strict_k=False,
         flexible_k=False
     )
     app = QApplication(sys.argv)
-    run_app = V7App(inputAgent=inputAgent)
+    run_app = V7App(inputAgent=inputAgent, session=session)
     sys.exit(app.exec_())

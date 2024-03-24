@@ -203,5 +203,8 @@ def main6():
     print(inputAgent.predict('b7t2'))
     print(inputAgent.predict('ba7ti2'))
     print(inputAgent.predict('bac7ti2'))
+    
+def main7():
+    print(Dictionary.get([('0', 'any', 0)], max=50))
 if __name__ == "__main__":
-    main6()
+    main7()
