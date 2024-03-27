@@ -116,54 +116,92 @@ class Dictionary():
         return list(filter(lambda comb: comb in Dictionary.dictionary, combinations))
     
     @staticmethod
-    def update_db_freq(corpus='tôi là chó một con chó đen thui nhưng có nhiều con chó theo tôi'):
+    def update_db_freq(path):
         '''
         Please ignore this
         '''
+        SAVE_PATH = os.path.join('checkpoints', 'db.json')
+        LOG_PATH = os.path.join('checkpoints', 'db_update_log.txt')
+        
+        if os.path.isdir(path):
+            file_paths = os.listdir(path)
+        else:
+            file_paths = [path]
+            
+        all_l = []
+        all_total = []
+        all_processed = []
+            
         start_time = time.time()
-        with open("data/corpus-title.txt", 'r') as file:
-            # Iterate over each line in the file
-            max_line = 10000000
-            l = 0
-            total = 0
-            processed = 0
+        for file_path in file_paths:
+            if not file_path.endswith(".txt"):
+                continue
             
-            for line in file:
-                # Process each line here
-                l += 1
-                if l > max_line:
-                    break
-                
-                line = utils.standardize_data(line)
-                
-                for word in line.split():
-                    cf, rf, t = Vietnamese.analyze(word)
-                    total += 1
-                    if cf and not rf:
-                        continue
+            file_path = os.path.join(path, file_path)
+            total_lines = utils.count_lines(file_path)
             
-                    else:
-                        for word_obj in Dictionary.db_freq[cf][rf][t]:
-                            if word_obj['value'] == word:
-                                word_obj['freq'] += 1
-                        processed += 1
-                        # print('.', end='')
+            print(f'Processing on {file_path}...')
+            with open(LOG_PATH, 'a') as f:
+                f.write(f'Processing on {file_path}...')
+            
+            with open(file_path, 'r') as file:
+                # Iterate over each line in the file
+                l = 0
+                total = 0
+                processed = 0
                 
-                if l % 50000 == 0:
-                    processed_time = time.time() - start_time
-                    print(f'\n\n~~~ {processed_time:.2f}s ~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-                    print(f'Total     : {total}')
-                    print(f'Processed : {processed}')
-                    print(f'Speed: {total/processed_time:.2f} word/s')
-                    print('~~~~~~~~~~~~~~~~~~~~~ saved checkpoint ~~~~~~~~~~~~~~~~~~\n')
-                    Dictionary.save_db_json()
+                internal_start_time = time.time()
+                
+                for line in file:
+                    # Process each line here
+                    l += 1
+                    line = utils.standardize_data(line)
+                    
+                    for word in line.split():
+                        cf, rf, t = Vietnamese.analyze(word)
+                        total += 1
+                        if cf and not rf:
+                            continue
+                
+                        else:
+                            for word_obj in Dictionary.db_freq[cf][rf][t]:
+                                if word_obj['value'] == word:
+                                    word_obj['freq'] += 1
+                            processed += 1
+                    
+                    if l % 50000 == 0:
+                        processed_time = time.time() - start_time
+                        internal_processed_time = time.time() - internal_start_time
+                        with open(LOG_PATH, 'a') as f:
+                            f.write(f'\n~~~~~~~~~~~~ {internal_processed_time:.2f}s :: {processed_time}s ~~~~~~~~~~~~~~~~~~~~\n')
+                            f.write(f'Total     : {total}\n')
+                            f.write(f'Processed : {processed}\n')
+                            f.write(f'Speed: {total/internal_processed_time:.2f} word/s\n')
+                            f.write(f'About: {100*l/total_lines:.2f} %\n')
+                            f.write('~~~~~~~~~~~~~~~~~~~~~ saved checkpoint ~~~~~~~~~~~~~~~~~~\n')
+                        print(f"est: {(total_lines-l)/(l/internal_processed_time)}s")
+                        Dictionary.save_db_json(SAVE_PATH)
+                
+                all_l.append(l)
+                all_total.append(total)
+                all_processed.append(processed)
+            
+            print(f'DONE processing on {file_path}({time.time() - internal_start_time:.2f}s :: {time.time() - start_time:.2f}s )...')
+        
+        print(f"DONE ALL")
+        print(f'Total lines: {sum(all_l)}')
+        print(f'Total words: {sum(all_total)}')
+        print(f'Total processed words: {sum(all_processed)}')
+        print(f'Total time: {time.time() - start_time}s')
+        
+
                     
     @staticmethod
-    def save_db_json():
+    def save_db_json(path):
         '''
         Please ignore this
         '''
-        with open('db.json', 'w') as f:
+        with open(path, 'w') as f:
             json.dump(Dictionary.db_freq, f, indent=4)
             
     @staticmethod
@@ -171,6 +209,9 @@ class Dictionary():
         '''
         Please ignore this
         '''
+        SAVE_PATH = os.path.join('checkpoints', 'dict.json')
+        LOG_PATH = os.path.join('checkpoints', 'dict_update_log.txt')
+        
         start_time = time.time()
         # text = utils.getVietnameseTextFrom_vndictyaml()
         # text = utils.standardize_data(text)
@@ -193,14 +234,14 @@ class Dictionary():
                     print('~~~~~~~~~~~~~~~~~~~~~ saved checkpoint ~~~~~~~~~~~~~~~~~~\n')
                     Dictionary.save_dict_json()
             
-        Dictionary.save_dict_json()
+        Dictionary.save_dict_json(SAVE_PATH)
         
     @staticmethod
-    def save_dict_json():
+    def save_dict_json(path):
         '''
         Please ignore this
         '''
-        with open('dict.json', 'w') as f:
+        with open(path, 'w') as f:
             json.dump(list(Dictionary.dictionary), f, indent=4)
         
 if __name__ == "__main__":
@@ -212,10 +253,10 @@ if __name__ == "__main__":
     else:
         if 'update' in sys.argv[1]:
             # Running big corpus to save the word database into a JSON file
-            if 'json' in sys.argv[2]:
+            if 'freq' in sys.argv[2]:
                 print('Running on text data to update db.json... Press control-C right now if you want to stop...')
                 time.sleep(10)
-                Dictionary.update_db_freq()
+                Dictionary.update_db_freq(os.path.join('data', 'news'))
                 print('Done update db.json based on text data...')
             if 'dict' in sys.argv[2]:
                 print('Running on text data to update dict.json... Press control-C right now if you want to stop...')
@@ -225,11 +266,11 @@ if __name__ == "__main__":
             
 else: 
     # Read json file for Dictionary.db_freq
-    with open('db.json', 'r') as f:
+    with open('checkpoints/db.json', 'r') as f:
         Dictionary.db_freq = json.load(f)
         for consonant in Dictionary.db_freq.keys():
             for rhyme in Dictionary.db_freq[consonant].keys():
                 Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
     
-    with open('dict.json', 'r') as f:
+    with open('checkpoints/dict.json', 'r') as f:
         Dictionary.dictionary = set(json.load(f))

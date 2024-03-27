@@ -61,3 +61,28 @@ def standardize_data(row):
         
     row = row.strip().lower()
     return row
+
+def count_lines(file_path):
+    print(f'Reading {file_path}...')
+    with open(file_path, 'r') as file:
+        line_count = sum(1 for line in file)
+    return line_count
+
+def get_words_line_by_line(path):
+    from vietnamese import Vietnamese
+    with open(path, 'r') as file:
+        for line in file:
+            line = standardize_data(line)
+            words = []
+            for word in line.split():
+                cf, rf, t = Vietnamese.analyze(word)
+                if rf is None:
+                    continue
+                else:
+                    words.append(word)
+            yield words
+
+def get_line_by_line(path):
+    with open(path, 'r') as file:
+        for line in file:
+            yield line
