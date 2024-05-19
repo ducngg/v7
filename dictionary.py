@@ -236,6 +236,22 @@ class Dictionary():
             
         Dictionary.save_dict_json(SAVE_PATH)
         
+    def reload():
+        with open('checkpoints/db.json', 'r') as f:
+            Dictionary.db_freq = json.load(f)
+            for consonant in Dictionary.db_freq.keys():
+                for rhyme in Dictionary.db_freq[consonant].keys():
+                    Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
+        
+        dictionary = []
+        with open('checkpoints/dict.json', 'r') as f:
+            dictionary = dictionary + json.load(f)
+        with open('checkpoints/common.json', 'r') as f:
+            dictionary = dictionary + json.load(f)
+            
+        Dictionary.dictionary = set(dictionary)
+            
+        
     @staticmethod
     def save_dict_json(path):
         '''
@@ -265,12 +281,4 @@ if __name__ == "__main__":
                 print('Done update dict.json based on text data...')
             
 else: 
-    # Read json file for Dictionary.db_freq
-    with open('checkpoints/db.json', 'r') as f:
-        Dictionary.db_freq = json.load(f)
-        for consonant in Dictionary.db_freq.keys():
-            for rhyme in Dictionary.db_freq[consonant].keys():
-                Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
-    
-    with open('checkpoints/dict.json', 'r') as f:
-        Dictionary.dictionary = set(json.load(f))
+    Dictionary.reload()

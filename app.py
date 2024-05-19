@@ -1,12 +1,96 @@
 import sys, time, os
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QMessageBox
+import json
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QMessageBox, QDialog
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
+from dictionary import Dictionary
 from inputmethod import InputMethod
 # from timeout import run_function_with_timeout
         
 HISTORY_PATH = os.path.join('history')
+
+class DictUpdateWindow(QDialog):
+    def __init__(self, parent = None, session: str = None):
+        super().__init__(parent)
+        self.session = session
+        self.RELOAD = True
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('Update dictionary')
+        self.setGeometry(200, 200, 400, 300)
+        
+        layout = QVBoxLayout()
+        
+        self.input_box = QLineEdit()
+        self.input_box.setStyleSheet("background-color: #FFF; color: #224938; border: 1px solid #6D8C68; border-radius: 1px; font-size: 20px; font-weight: bold;")
+        self.input_box.keyPressEvent = self.keyPressEventInputBox
+        self.input_box.returnPressed.connect(self.update_dict)
+        layout.addWidget(self.input_box)
+        
+        pred_label_layout = QHBoxLayout()
+        
+        pred_label = QLabel("Change log")
+        pred_label_layout.addWidget(pred_label)
+        # pred_help = QLabel("Usage: Press key [①-⑨] ← → ⌫ ⏎ ")
+        # pred_label_layout.addWidget(pred_help)
+        layout.addLayout(pred_label_layout)
+        
+        pred_result_layout = QHBoxLayout()
+        
+        self.predict_box = QTextEdit()
+        self.predict_box.setMinimumHeight(230)
+        self.predict_box.setStyleSheet("font-size: 20px; font-weight: bold;")
+        self.predict_box.setReadOnly(True)
+        pred_result_layout.addWidget(self.predict_box)
+        
+        self.predict_info = QLabel("")
+        pred_result_layout.addWidget(self.predict_info)
+        
+        layout.addLayout(pred_result_layout)
+        
+        self.setLayout(layout)
+        
+    def keyPressEventInputBox(self, event):
+        if event.key() == Qt.Key_Backspace:
+            current_input_box = self.input_box.text()
+            after_backspaced = " ".join(current_input_box.split()[:-1])
+            if after_backspaced != "":
+                after_backspaced += " "
+            self.input_box.setText(after_backspaced)
+        else:
+            QLineEdit.keyPressEvent(self.input_box, event)
+        
+    def update_dict(self):
+        input = self.input_box.text()
+        self.input_box.clear()
+        status = ""
+        
+        with open(os.path.join('checkpoints', 'common.json'), mode='r') as common_dict_file:
+            common_dict: list = json.load(common_dict_file)
+        
+        if input not in common_dict:
+            common_dict.append(input)
+            status = 'Added'
+            status_code = 'A'
+        else:
+            common_dict.remove(input)
+            status = 'Removed'
+            status_code = 'R'
+        
+        with open(os.path.join('checkpoints', 'common.json'), mode='w') as common_dict_file:
+            json.dump(common_dict, common_dict_file, indent=4)
+            
+        if self.session:
+            with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a') as history:
+                history.write(f"{status_code}: {input}\n")
+                
+        if self.RELOAD:
+            Dictionary.reload()
+                        
+        self.predict_box.append(f"{status}: {input}")
+        
 
 class V7App(QWidget):
     def __init__(self, inputAgent: InputMethod, session: str = None):
@@ -85,6 +169,10 @@ class V7App(QWidget):
 
         layout.addLayout(button_layout)
         
+        common_dict_window_button = QPushButton("Add your own common phrase")
+        common_dict_window_button.clicked.connect(self.open_update_common_dict_window)
+        layout.addWidget(common_dict_window_button)
+        
         self.setLayout(layout)
 
         self.show()
@@ -112,6 +200,10 @@ Tones:
         help_box.setWindowTitle("Help")
         help_box.setFixedWidth(800) 
         help_box.exec_()
+        
+    def open_update_common_dict_window(self):
+        self.common_dict_window = DictUpdateWindow(parent=self, session=session)
+        self.common_dict_window.show()
     
     def keyPressEventInputBox(self, event):
         if event.key() == Qt.Key_Backspace:

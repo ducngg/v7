@@ -236,8 +236,12 @@ class InputMethod():
         else:
             combination_possibilities = None
             
-            if len(CRsTs) <= 3:
-                # NOTE: Case 3:
+            if len(CRsTs) == 2:
+                # NOTE: Case 3.1:
+                words_possibilities = self.get(CRsTs, max=100)
+                combination_possibilities = Dictionary.predict(words_possibilities)
+            elif len(CRsTs) == 3:
+                # NOTE: Case 3.2:
                 words_possibilities = self.get(CRsTs, max=50)
                 combination_possibilities = Dictionary.predict(words_possibilities)
                                 
