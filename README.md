@@ -1,4 +1,6 @@
-# Vietnamese Typing Optimization Analysis
+[**English**](README.md) | [**Tiếng Việt**](README_VI.md)
+
+# v7 - A Vietnamese Typing Optimization Analysis
 
 This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting 'x0ch2' should yield 'xin chào' as the predicted output.
 
@@ -12,7 +14,7 @@ The `app.py` has been implemented using PyQt5. To test the application, simply r
 
 Phrases are categorized based on the number of words inside. 
 
-*Note: The statistics provided are derived under optimal conditions, assuming the user inputs only consonants and tones, and the target phrase is both in the dictionary and appear in the most 9 accurate predictions.*
+*Note: The statistics provided are derived under optimal conditions, assuming the user inputs only consonants and tones, and the target phrase is both in the dictionary and appear in the top 9 predictions.*
 
 | Phrase length | Number of phrases | Keystrokes reduced<br>(± 1 std) | Speed improvement<br>(± 1 std)|
 |-|-|-|-|
@@ -23,7 +25,7 @@ Phrases are categorized based on the number of words inside.
 
 The statistics show that v7 demonstrates significant improvements in performance when typing phrases with multiple words from the dictionary, greatly reducing keystrokes and boosting typing speed. This makes it effective since in Vietnamese communication phrases are often used rather than isolated words.
 
-*\*: When typing single words, users are required to input the entire rhyme and tone, sometimes lead to a slight increase in keystrokes compared to traditional methods(this is the only main drawback to traditional method since if user wants to type `anh` in v7, they must type `anh0` anh type one more number to choose from the prediction list).*
+*\*: When typing single words, users are required to input the entire word and tone, sometimes lead to a slight increase in keystrokes compared to traditional methods(this is the only main drawback to traditional method since if user wants to type `anh` in v7, they must type `anh0` anh type one more number to choose from the prediction list).*
 <!-- Configuration:
 ```python
 class InputMethod():
@@ -33,7 +35,7 @@ class InputMethod():
 ``` -->
 
 ## Sandbox Usage Example:
-### Analyzing (Phân tích)
+### Analyzing
 In the context of the Vietnamese language, analyzing involves the mapping of a Vietnamese word to a tuple of `(consonant_family, rhyme_family, tone)`. This process is essential for various language processing tasks. It's important to note that the analysis is **non-injective**, meaning that multiple Vietnamese words may map to the same tuple. For instance, both (`cuốc`, `quốc`) or (`mi`, `my`)  can be mapped to the same tuple.
 
 For further details on consonant families, rhyme families, and tones, refer to the `vietnamese.py` file.
@@ -51,7 +53,7 @@ for word in corpus.split(' '):
     print(Vietnamese.analyze(word))
 ```
 
-***Output*** **(consonant family: âm, rhyme family: vần, tone: thanh)**
+***Output*** **(consonant family, rhyme family, tone)**
 
 ```
 ('k', 'iêm', 3)
@@ -96,13 +98,13 @@ for word in corpus.split(' '):
 ***Explanation***
 The Vietnamese language actually encompasses **8 tones**, contrary to the commonly known 6 tones. The number 6 refers to the number of diacritics used (which include none (`a`), acute (`á`), grave (`à`), hook (`ả`), tilde (`ã`), underdot (`ạ`)). Additionally, there are two extra tones in Vietnamese for syllables ending in /p/, /t/, /c/, and /ch/.
 
-Example words for the seventh tone include: xuất, cấp, tất, chiếc, thích, mút... (with rhyme families being uân, âm, ân, iêng, inh, un respectively)
+Example words for the seventh tone include: xuất, cấp, tất, chiếc, thích, mút... (with rhyme families being uân, âm, ân, iêng, inh, un respectively).
 
-Example words for the eighth tone include: nhập, phục, đột, chục, mạch, kịp... (with rhyme families being âm, ung, ôn, ung, anh, im respectively)
+Example words for the eighth tone include: nhập, phục, đột, chục, mạch, kịp... (with rhyme families being âm, ung, ôn, ung, anh, im respectively).
 
-**Note: This is the reason why the project name is v7: `Việt` with the 8th tone (count from index 0 is 7)**
+**Note: This is the reason why the project name is v7: `Việt` with the 8th tone (count from index 0 is 7).**
 
-### Synthesizing (Hợp nhất)
+### Synthesizing
 In contrast to analyzing, synthesizing is the process of mapping a tuple of `(consonant_family, rhyme_family, tone)` to a list of words(due to the ***non-injective*** property mentioned above), it's worth noting that in most cases, the resulting list typically contains just one word.
 
 Use `Vietnamese.synthesize(consonant: str, rhyme: str, tone: int)` or you can use `Dictionary.db[consonant][rhyme][tone]` for this process. Both methods yield the same result, but the second method is generally faster as it directly retrieves the keys. 
@@ -164,7 +166,7 @@ print(Dictionary.db['k']['ưu'][3])
 ['cửu']
 ```
 
-### Raw input string to Vietnamese - v7 rule (Nhập)
+### Raw input string to Vietnamese - v7 rule
 
 This is the process showcased in the demo GIF above. If you prefer testing via a Python script, you can use the following code.
 
@@ -193,7 +195,7 @@ None
 ['bạc tình']
 ```
 
-### ...and many more in `sandbox.py`.
+### ...and many more in [`sandbox.py`](sandbox.py).
 
 ## Further Reading:
 [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)

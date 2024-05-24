@@ -10,34 +10,36 @@ from itertools import product
 
 class Dictionary():
     db = {} # database
-    db = {consonant: {} for consonant in Vietnamese.consonant_families}
-    for consonant in db.keys():
-        if consonant == 'z':
-            real_rhymes = Vietnamese.rhymes_families_with_gi.copy()
-            real_rhymes[real_rhymes.index('')] = 'i'
-            real_rhymes[real_rhymes.index('êng')] = 'iêng'
-            real_rhymes[real_rhymes.index('ên')] = 'iên'
-            real_rhymes[real_rhymes.index('n')] = 'in'
-            db[consonant] = {rhyme: [] for rhyme in real_rhymes}
-        else:
-            db[consonant] = {rhyme: [] for rhyme in Vietnamese.rhymes_families}
-    for consonant in db.keys():
-        for rhyme in db[consonant].keys():
-            _01234567_01234567 = Vietnamese.word_with_tones(consonant, rhyme)
-            n_tones = len(_01234567_01234567[0])
-            tone_obj = {}
-            for t in range(n_tones):
-                tt = []
-                for _01234567 in _01234567_01234567:
-                    tt.append(_01234567[t])
-                tone_obj[t] = tt
-            db[consonant][rhyme] = tone_obj
+    
+    # # Old script, works poorer than Dictionary.reload()
+    # db = {consonant: {} for consonant in Vietnamese.consonant_families}
+    # for consonant in db.keys():
+    #     if consonant == 'z':
+    #         real_rhymes = Vietnamese.rhymes_families_with_gi.copy()
+    #         real_rhymes[real_rhymes.index('')] = 'i'
+    #         real_rhymes[real_rhymes.index('êng')] = 'iêng'
+    #         real_rhymes[real_rhymes.index('ên')] = 'iên'
+    #         real_rhymes[real_rhymes.index('n')] = 'in'
+    #         db[consonant] = {rhyme: [] for rhyme in real_rhymes}
+    #     else:
+    #         db[consonant] = {rhyme: [] for rhyme in Vietnamese.rhymes_families}
+    # for consonant in db.keys():
+    #     for rhyme in db[consonant].keys():
+    #         _01234567_01234567 = Vietnamese.word_with_tones(consonant, rhyme)
+    #         n_tones = len(_01234567_01234567[0])
+    #         tone_obj = {}
+    #         for t in range(n_tones):
+    #             tt = []
+    #             for _01234567 in _01234567_01234567:
+    #                 tt.append(_01234567[t])
+    #             tone_obj[t] = tt
+    #         db[consonant][rhyme] = tone_obj
         
     db_freq = copy.deepcopy(db)
-    for consonant in db_freq.keys():
-        for rhyme in db_freq[consonant].keys():
-            for tone in db_freq[consonant][rhyme].keys():
-                db_freq[consonant][rhyme][tone] = list(map(lambda word: {'value': word, 'freq': 0}, db[consonant][rhyme][tone]))
+    # for consonant in db_freq.keys():
+    #     for rhyme in db_freq[consonant].keys():
+    #         for tone in db_freq[consonant][rhyme].keys():
+    #             db_freq[consonant][rhyme][tone] = list(map(lambda word: {'value': word, 'freq': 0}, db[consonant][rhyme][tone]))
         
     dictionary = set()
 
@@ -236,12 +238,17 @@ class Dictionary():
             
         Dictionary.save_dict_json(SAVE_PATH)
         
-    def reload():
+    def reload(verbose=0):
+        word_count = 0
         with open('checkpoints/db.json', 'r') as f:
             Dictionary.db_freq = json.load(f)
             for consonant in Dictionary.db_freq.keys():
                 for rhyme in Dictionary.db_freq[consonant].keys():
                     Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
+                    word_count += len(Dictionary.db_freq[consonant][rhyme])
+                    
+        if verbose:
+            print(f"Loaded: {word_count} words")
         
         dictionary = []
         with open('checkpoints/dict.json', 'r') as f:
@@ -250,6 +257,8 @@ class Dictionary():
             dictionary = dictionary + json.load(f)
             
         Dictionary.dictionary = set(dictionary)
+        if verbose:
+            print(f"Loaded: {len(Dictionary.dictionary)} phrases")
             
         
     @staticmethod
@@ -281,4 +290,5 @@ if __name__ == "__main__":
                 print('Done update dict.json based on text data...')
             
 else: 
-    Dictionary.reload()
+    Dictionary.reload(verbose=1)
+    

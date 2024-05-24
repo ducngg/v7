@@ -96,6 +96,6 @@ changes:
     change: ''
     description: ''
   - timestamp: '2024-19-05 8:12 AM'
-    research: ''
+    research: 'TODO: Each time user choose a combination, the app will notify how much faster compared with traditional method.'
     change: 'refactor code in dictionary.py, tiny change in inputmethod.py'
     description: 'app.py: develop a feature that let user add their own phrases'
