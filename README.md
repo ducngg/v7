@@ -96,6 +96,7 @@ for word in corpus.split(' '):
 ```
 
 ***Explanation***
+
 The Vietnamese language actually encompasses **8 tones**, contrary to the commonly known 6 tones. The number 6 refers to the number of diacritics used (which include none (`a`), acute (`á`), grave (`à`), hook (`ả`), tilde (`ã`), underdot (`ạ`)). Additionally, there are two extra tones in Vietnamese for syllables ending in /p/, /t/, /c/, and /ch/.
 
 Example words for the seventh tone include: xuất, cấp, tất, chiếc, thích, mút... (with rhyme families being uân, âm, ân, iêng, inh, un respectively).
@@ -140,6 +141,7 @@ print(Dictionary.db['k']['ưu'][3])
 #     print(Dictionary.db[c]['i'][0])
 ```
 (Uncomment the last 2 lines to see the differences between different `consonants` go with `i`)
+
 ***Output*** 
 ```['cũ']
 ['cuốc', 'quốc']

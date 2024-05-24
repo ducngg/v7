@@ -97,6 +97,7 @@ for word in corpus.split(' '):
 ```
 
 ***Giải thích***
+
 Tiếng Việt trên thực tế có **8 thanh điệu**, không phải 6 thanh điệu như nhiều người thường nghĩ. 6 ở đây thật ra là số lượng `dấu` (ngang/không dấu (`a`), sắc (`á`), huyền (`à`), hỏi (`ả`), ngã (`ã`), nặng (`ạ`)). Với những từ kết thúc bằng /p/, /t/, /c/, and /ch/, ta có thêm 2 `thanh` nữa!
 
 Những từ với `thanh 7`: xuất, cấp, tất, chiếc, thích, mút... (họ vần theo thứ tự là: uân, âm, ân, iêng, inh, un).
@@ -141,6 +142,7 @@ print(Dictionary.db['k']['ưu'][3])
 #     print(Dictionary.db[c]['i'][0])
 ```
 (Bỏ comment 2 dòng cuối để xem cách các `họ_âm` khác nhau ghép với `họ_vần` **`'i'`**)
+
 ***Kết quả*** 
 ```['cũ']
 ['cuốc', 'quốc']
