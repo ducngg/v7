@@ -136,7 +136,7 @@ class InputMethod():
         
         return target == char
         
-    def seperate_raws(self, raws: str):
+    def seperate_raws(self, raws: str) -> list[str]:
         '''
         Seperate raw string of many input string to blocks. The tone number will be the seperator, and belong to the prior term.
         eg. x0chao2m5ngu -> ['x0', 'chao2', 'm5', 'ngu']
@@ -144,6 +144,10 @@ class InputMethod():
         pattern = r'[a-zA-Z{}]+(?:\d|$)'.format(re.escape(self.end_of_rhyme))
         raws = re.findall(pattern, raws)
         return raws
+    
+    def apply_capitalization(self, words: str, cap_pos: list[bool]) -> str:
+        words = words.split()
+        return ' '.join([word.capitalize() if cap else word for word, cap in zip(words, cap_pos)])
         
     def get(self, crts, max=25, freq_threshold=2):
         '''
@@ -198,9 +202,11 @@ class InputMethod():
                 - Complexity = (max=2)**n ~ O(2^n)
         '''
         raws = self.seperate_raws(input_string)
-        raws_parts = [self.parse(raw) for raw in raws]
-        CRsTs = [self.find(raw_parts) for raw_parts in raws_parts]
+        cap_pos = [raw[0].isupper() for raw in raws]
         
+        raws_parts = [self.parse(raw.lower()) for raw in raws]
+        CRsTs = [self.find(raw_parts) for raw_parts in raws_parts]
+                
         # Return None if any is None (failed to find consonant/rhymes/tone)
         if any(list(map(lambda x: not x, CRsTs))):
             return None
@@ -256,4 +262,7 @@ class InputMethod():
                 words_possibilities = self.get(CRsTs, max=max, freq_threshold=0)
                 combination_possibilities = Dictionary.predict(words_possibilities, any=True)
         
-        return combination_possibilities
+        if not any(cap_pos):
+            return combination_possibilities
+        else:
+            return [self.apply_capitalization(combination, cap_pos) for combination in combination_possibilities]

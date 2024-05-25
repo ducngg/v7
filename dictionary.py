@@ -12,30 +12,31 @@ class Dictionary():
     db = {} # database
     
     # # Old script, works poorer than Dictionary.reload()
-    # db = {consonant: {} for consonant in Vietnamese.consonant_families}
-    # for consonant in db.keys():
-    #     if consonant == 'z':
-    #         real_rhymes = Vietnamese.rhymes_families_with_gi.copy()
-    #         real_rhymes[real_rhymes.index('')] = 'i'
-    #         real_rhymes[real_rhymes.index('êng')] = 'iêng'
-    #         real_rhymes[real_rhymes.index('ên')] = 'iên'
-    #         real_rhymes[real_rhymes.index('n')] = 'in'
-    #         db[consonant] = {rhyme: [] for rhyme in real_rhymes}
-    #     else:
-    #         db[consonant] = {rhyme: [] for rhyme in Vietnamese.rhymes_families}
-    # for consonant in db.keys():
-    #     for rhyme in db[consonant].keys():
-    #         _01234567_01234567 = Vietnamese.word_with_tones(consonant, rhyme)
-    #         n_tones = len(_01234567_01234567[0])
-    #         tone_obj = {}
-    #         for t in range(n_tones):
-    #             tt = []
-    #             for _01234567 in _01234567_01234567:
-    #                 tt.append(_01234567[t])
-    #             tone_obj[t] = tt
-    #         db[consonant][rhyme] = tone_obj
-        
-    db_freq = copy.deepcopy(db)
+    db = {consonant: {} for consonant in Vietnamese.consonant_families}
+    for consonant in db.keys():
+        if consonant == 'z':
+            real_rhymes = Vietnamese.rhymes_families_with_gi.copy()
+            real_rhymes[real_rhymes.index('')] = 'i'
+            real_rhymes[real_rhymes.index('êng')] = 'iêng'
+            real_rhymes[real_rhymes.index('ên')] = 'iên'
+            real_rhymes[real_rhymes.index('n')] = 'in'
+            db[consonant] = {rhyme: [] for rhyme in real_rhymes}
+        else:
+            db[consonant] = {rhyme: [] for rhyme in Vietnamese.rhymes_families}
+    for consonant in db.keys():
+        for rhyme in db[consonant].keys():
+            _01234567_01234567 = Vietnamese.word_with_tones(consonant, rhyme)
+            n_tones = len(_01234567_01234567[0])
+            tone_obj = {}
+            for t in range(n_tones):
+                tt = []
+                for _01234567 in _01234567_01234567:
+                    tt.append(_01234567[t])
+                tone_obj[t] = tt
+            db[consonant][rhyme] = tone_obj
+    
+    db_freq = {}
+    # db_freq = copy.deepcopy(db)
     # for consonant in db_freq.keys():
     #     for rhyme in db_freq[consonant].keys():
     #         for tone in db_freq[consonant][rhyme].keys():
