@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLine
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
+from vietnamese import Vietnamese
 from dictionary import Dictionary
 from inputmethod import InputMethod
 # from timeout import run_function_with_timeout
@@ -70,6 +71,10 @@ class DictUpdateWindow(QDialog):
         with open(os.path.join('checkpoints', 'common.json'), mode='r') as common_dict_file:
             common_dict: list = json.load(common_dict_file)
         
+        if not Vietnamese.areVietnamese(input.split()):
+            self.predict_box.append(f"Invalid: {input}")
+            return
+            
         if input not in common_dict:
             common_dict.append(input)
             status = 'Added'

@@ -99,3 +99,8 @@ changes:
     research: 'TODO: Each time user choose a combination, the app will notify how much faster compared with traditional method.'
     change: 'refactor code in dictionary.py, tiny change in inputmethod.py'
     description: 'app.py: develop a feature that let user add their own phrases'
+  - timestamp: '2024-30-05 1:08 PM'
+    research: 'FIX: disallow combination between `z` and `ên`'
+    change: 'app.py: now user just can add phrase if it is Vietnamese'
+    description: 'use overview.py to see total distinct words/sounds in Vietnamese'
+  

@@ -723,6 +723,7 @@ class Vietnamese(Alphabet):
     
     # All consonants in Vietnamese writing
     consonants = [
+        '',
         'b', 
         'c', 'ch', 
         'd', 'đ', 
@@ -894,6 +895,9 @@ class Vietnamese(Alphabet):
     diacritic_4_chars = ['ã', 'ẵ', 'ẫ', 'ẽ', 'ễ', 'ĩ', 'õ', 'ỗ', 'ỡ', 'ũ', 'ữ', 'ỹ']
     diacritic_5_chars = ['ạ', 'ặ', 'ậ', 'ẹ', 'ệ', 'ị', 'ọ', 'ộ', 'ợ', 'ụ', 'ự', 'ỵ']
     
+    i_s = ['i', 'í', 'ì', 'ỉ', 'ĩ', 'ị']
+    y_s = ['y', 'ý', 'ỳ', 'ỷ', 'ỹ', 'ỵ']
+    
     @staticmethod
     def chars_with_diacritic(char: str) -> list[str]:
         '''
@@ -910,15 +914,8 @@ class Vietnamese(Alphabet):
             Vietnamese.diacritic_4_chars[char_index],
             Vietnamese.diacritic_5_chars[char_index],
         ]
-        
-    i_s = ['i', 'í', 'ì', 'ỉ', 'ĩ', 'ị']
-    y_s = ['y', 'ý', 'ỳ', 'ỷ', 'ỹ', 'ỵ']
-    a_s = []
-    aw_s = []
-    aa_s = []
-    # ... add later if necessary
     
-    @staticmethod    
+    @staticmethod
     def rhyme_with_tones(rhyme_family: str, consonant_family: str) -> list[str]:
         """
         From a `rhyme_family` to a list of toned rhyme of that family.
@@ -994,6 +991,8 @@ class Vietnamese(Alphabet):
         if consonant_family in ['0']:
             final_consonant = ''
         elif consonant_family in ['z']:
+            if rhyme_family in ['ên']:
+                return None
             if rhyme_family in ['i', 'in', 'iên', 'iêng']:
                 final_consonant = 'g'
             else:
@@ -1124,7 +1123,7 @@ class Vietnamese(Alphabet):
         current_diacritic = 0
         idx_in_word = 0
         char_idx = 0
-        occurences = 0
+        occurences = 0 # number of diacritics
         for idx, char in enumerate(word):
             if occurences > 1:
                 # Not a Vietnamese word
@@ -1246,3 +1245,11 @@ class Vietnamese(Alphabet):
         
         # No match with Vietnamese structure
         return original_word, None, None
+    
+    def isVietnamese(word: str) -> bool:
+        return Vietnamese.analyze(word)[1] is not None
+    
+    @staticmethod
+    def areVietnamese(words: list[str]) -> bool:
+        return all(Vietnamese.isVietnamese(word) for word in words)
+        
