@@ -102,5 +102,5 @@ changes:
   - timestamp: '2024-30-05 1:08 PM'
     research: 'FIX: disallow combination between `z` and `ên`'
     change: 'app.py: now user just can add phrase if it is Vietnamese'
-    description: 'use overview.py to see total distinct words/sounds in Vietnamese'
+    description: 'use overview.py to see total distinct words/sounds in Vietnamese' 
   
