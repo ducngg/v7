@@ -7,7 +7,8 @@ from PyQt5.QtCore import Qt
 from vietnamese import Vietnamese
 from dictionary import Dictionary
 from inputmethod import InputMethod
-# from timeout import run_function_with_timeout
+
+from compare import TelexOrVNI
         
 HISTORY_PATH = os.path.join('history')
 
@@ -34,17 +35,15 @@ class DictUpdateWindow(QDialog):
         
         pred_label = QLabel("Change log")
         pred_label_layout.addWidget(pred_label)
-        # pred_help = QLabel("Usage: Press key [①-⑨] ← → ⌫ ⏎ ")
-        # pred_label_layout.addWidget(pred_help)
         layout.addLayout(pred_label_layout)
         
         pred_result_layout = QHBoxLayout()
         
-        self.predict_box = QTextEdit()
-        self.predict_box.setMinimumHeight(230)
-        self.predict_box.setStyleSheet("font-size: 20px; font-weight: bold;")
-        self.predict_box.setReadOnly(True)
-        pred_result_layout.addWidget(self.predict_box)
+        self.change_log = QTextEdit()
+        self.change_log.setMinimumHeight(230)
+        self.change_log.setStyleSheet("font-size: 20px; font-weight: bold;")
+        self.change_log.setReadOnly(True)
+        pred_result_layout.addWidget(self.change_log)
         
         self.predict_info = QLabel("")
         pred_result_layout.addWidget(self.predict_info)
@@ -72,7 +71,7 @@ class DictUpdateWindow(QDialog):
             common_dict: list = json.load(common_dict_file)
         
         if not Vietnamese.areVietnamese(input.split()):
-            self.predict_box.append(f"Invalid: {input}")
+            self.change_log.append(f"Invalid: {input}")
             return
             
         if input not in common_dict:
@@ -94,7 +93,7 @@ class DictUpdateWindow(QDialog):
         if self.RELOAD:
             Dictionary.reload()
                         
-        self.predict_box.append(f"{status}: {input}")
+        self.change_log.append(f"{status}: {input}")
         
 
 class V7App(QWidget):
@@ -159,6 +158,10 @@ class V7App(QWidget):
         self.result_box = QTextEdit()
         self.result_box.setStyleSheet("font-size: 20px; font-weight: bold;")
         layout.addWidget(self.result_box)
+        
+        self.improvement_log = QLabel(" ")
+        self.improvement_log.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.improvement_log)
         
         button_layout = QHBoxLayout()
         
@@ -234,16 +237,18 @@ Tones:
         elif self.ready and (event.key() >= Qt.Key_1 and event.key() <= Qt.Key_9):
             number = int(event.text())
             true_index = number - 1
-            try:                
+            try:
                 comb = self.predictions['lst'][true_index + 9*(self.predictions['page'] - 1)]
                 self.update_result_box(comb)
+                self.update_improvement_log(comb)
                 
                 if self.session:
                     with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a') as history:
                         history.write(f"{self.input_box.text()} {comb}\n")
                 
                 self.reset_input_box()            
-            except:
+            except Exception as e:
+                print(e)
                 pass
         else:
             QLineEdit.keyPressEvent(self.input_box, event)
@@ -310,6 +315,7 @@ Tones:
             self.predict_box.append(f"{i}\t{comb}")
             # self.predict_box.append(f"{i} ⎯⎯⎯ {comb}")
             # self.predict_box.append(f"{i}{' '*(3+(i-1)//3*2)}{comb}")
+            
     def update_predict_info(self):
         self.predict_info.setText(f"Showing\n{self.predictions['page']}/{self.predictions['maxpage']}")
     def update_pred_result(self):
@@ -326,6 +332,20 @@ Tones:
         updated = f"{current_result_box}{space}{new}"
         self.result_box.setPlainText(updated)
         
+    def update_improvement_log(self, phrase: str):
+        phrase = phrase.split()
+        v7_keys = len(self.input_box.text()) + 1 # Plus choosing key
+        original_keys = sum([TelexOrVNI.get_keys_needed_from_word(word) for word in phrase]) + (len(phrase) - 1) # Plus spacing
+        improvements = 100 * (original_keys - v7_keys) / original_keys
+        if improvements < 0:
+            color = "red"
+        elif improvements > 0:
+            color = "#00FF00"
+        else:
+            color = "yellow"
+
+        self.improvement_log.setText(f"%Keys reduced: {improvements:.2f}%")
+        self.improvement_log.setStyleSheet(f"color: {color};")
     
 
 if __name__ == '__main__':

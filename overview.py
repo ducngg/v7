@@ -1,6 +1,5 @@
 from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
-from inputmethod import InputMethod
 import utils
 import time
 import numpy as np
@@ -16,8 +15,8 @@ def main():
     ERs = len(list(filter(lambda rhyme: rhyme[-1] in ['n', 'g', 'm', 'h'], Vietnamese.rhymes_families)))
     nERs = Rs - ERs
     print()
-    print(f"Cs:    {Cs}")
-    print(f"Rs:    {Rs}")
+    print(f"Cs:    {Cs} (consonant families)")
+    print(f"Rs:    {Rs} (rhyme families)")
     print(f"ERs:   {ERs} (enterable rhymes)")
     print(f"nERs:  {nERs} (non-enterable rhymes)")
     print()
@@ -47,7 +46,7 @@ def main():
     # total_words is sure distict
 
     print()
-    print(f"Total distict words: {len(total_words)}")
+    print(f"Total distict words:  {len(total_words)}")
     print(f"Total distict sounds: {len(total_words) - replicate_sounds}") # equal to Cs*ERs*8 + Cs*nERs*6 - none_sounds
                  
 if __name__ == "__main__":

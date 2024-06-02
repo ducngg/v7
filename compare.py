@@ -149,11 +149,11 @@ class TelexOrVNI():
     def get_keys_needed_from_word(word: str):
         word = word.lower()
         return TelexOrVNI.get_keys_needed_from_crt(Vietnamese.analyze(word))
-        cf, rf, t = Vietnamese.analyze(word)
+
     @staticmethod
     def get_keys_needed_from_crt(crt: str):
         cf, rf, t = crt
-        if not rf:
+        if None in crt:
             return None
         
         total_keys = 0
@@ -174,6 +174,7 @@ class TelexOrVNI():
             total_keys += 1
         
         return total_keys + TelexOrVNI.keys_needed_consonant_families[cf] + TelexOrVNI.keys_needed_rhyme_family[rf]
+    
 class V7():
     '''
     For comparison, not for use!
@@ -182,13 +183,15 @@ class V7():
     @staticmethod
     def get_full_from_crt(crt):
         cf, rf, t = crt
-        if not rf:
+        if None in crt:
             return None
         
         total_keys = 0
+        # null consonant
         if cf == '0':
             total_keys -= 1
             
+        # dd
         if cf == 'đ':
             total_keys += 1
             
@@ -196,7 +199,7 @@ class V7():
         if rf.endswith('ng') and t in [6, 7]:
             total_keys -= 1 
             
-        return total_keys + len(cf) + len(rf) + 1
+        return total_keys + len(cf) + len(rf) + 1 # additional key for choosing from the prediction list
     
     @staticmethod
     def get_least_from_words(words: list[str]):
@@ -214,7 +217,7 @@ class V7():
                 relative_raw = relative_raw.replace('đ', 'dd')
                 
                 '''
-                # Pass it in inputAgent: To see if it's in the first page?
+                # TODO: Pass it in inputAgent: To see if it's in the first page?
                 res = V7.inputAgent.predict(relative_raw)
                 relative_raw
                 '''
@@ -225,23 +228,21 @@ class V7():
             total = 0
             for crt in crts:
                 total += V7.get_full_from_crt(crt)
-            return total - len(words) - 1 # Arbitrary number
+            return total - (len(words) + 1) # Arbitrary number (= len(Ws) + 1)
         
         return len(relative_raw)
-        
         
     @staticmethod
     def get_keys_needed_from_word(word: str):
         word = word.lower()
         return V7.get_keys_needed_from_crt(Vietnamese.analyze(word))
-        cf, rf, t = Vietnamese.analyze(word)
+
     @staticmethod
-    def get_keys_needed_from_crt(crt: str):
-        cf, rf, t = crt
-        if not rf:
+    def get_keys_needed_from_crt(crt: tuple[str, str, str]):
+        if None in crt:
             return None
         
-        return V7.get_full_from_crt((cf, rf, t))
+        return V7.get_full_from_crt(crt)
 
 def main1():
     corpus = "kiểm soát phối hợp tra cứu trực tiếp trên máy tính để phát hiện phương tiện vi phạm qua hình ảnh mà đã có thông báo chưa đến nộp phạt thì tổ tra cứu sẽ thông báo"

@@ -7,7 +7,7 @@ class Alphabet():
 
 class Vietnamese(Alphabet):
     """
-    Controversial very rare words like `Đắk Lắk, Kạn, Kon, ...`
+    Controversial very rare words like `Đắk Lắk, Kạn, Kon, ... is not included in Vietnamese`
     """
     tones = [0, 1, 2, 3, 4, 5, 6, 7]
     
@@ -1247,7 +1247,7 @@ class Vietnamese(Alphabet):
         return original_word, None, None
     
     def isVietnamese(word: str) -> bool:
-        return Vietnamese.analyze(word)[1] is not None
+        return None not in Vietnamese.analyze(word)
     
     @staticmethod
     def areVietnamese(words: list[str]) -> bool:
