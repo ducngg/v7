@@ -4,6 +4,7 @@ from dictionary import Dictionary
 import re
 
 class InputMethod():
+    location = "<inputmethod.InputMethod>"
     def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
         
         self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
@@ -149,14 +150,14 @@ class InputMethod():
         words = words.split()
         return ' '.join([word.capitalize() if cap else word for word, cap in zip(words, cap_pos)])
         
-    def get(self, crts, max=25, freq_threshold=2):
+    def get(self, crts, max=25, freq_threshold=2) -> list[list[dict]]:
         '''
         Use Dictionary.get() with self configurations. 
         '''        
         # If flexible_k then we don't need to care
         if self.flexible_k:
-            words_possibilities = Dictionary.get(crts, max=max, freq_threshold=freq_threshold)
-            return words_possibilities
+            word_objects_possibilities = Dictionary.get(crts, max=max, freq_threshold=freq_threshold)
+            return word_objects_possibilities
         # If not -> Just take the words that start with original `consonant` in crts
         else:
             query_crts = []
@@ -167,21 +168,21 @@ class InputMethod():
                     query_c = c
                 query_crts.append((query_c, rs, t))
                 
-            words_possibilities = Dictionary.get(query_crts, max=max, freq_threshold=freq_threshold)
-            if words_possibilities is None:
+            word_objects_possibilities = Dictionary.get(query_crts, max=max, freq_threshold=freq_threshold)
+            if word_objects_possibilities is None:
                 return None
 
-            final_words_possibilities: list[list[str]] = []
-            for word_possibilities, (c, rs, t) in zip(words_possibilities, crts):
+            final_word_objects_possibilities: list[list[dict]] = []
+            for word_object_possibilities, (c, rs, t) in zip(word_objects_possibilities, crts):
                 if c in ['c', 'q', 'k']:
-                    word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))
+                    word_object_possibilities: list[str] = list(filter(lambda word_object: word_object['value'][0] == c, word_object_possibilities))
                     # CASE 4 can make this list empty because `max` is very low -> Query again with high `max`
-                    if not word_possibilities:
-                        word_possibilities = Dictionary.get([('k', rs, t)], max=50, freq_threshold=0)[0]
-                        word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))[:max]
-                final_words_possibilities.append(word_possibilities)
+                    if not word_object_possibilities:
+                        word_object_possibilities = Dictionary.get([('k', rs, t)], max=50, freq_threshold=0)[0]
+                        word_object_possibilities: list[dict] = list(filter(lambda word_object: word_object['value'][0] == c, word_object_possibilities))[:max]
+                final_word_objects_possibilities.append(word_object_possibilities)
                 
-            return final_words_possibilities
+            return final_word_objects_possibilities
     
     def predict(self, input_string):
         '''
@@ -238,6 +239,8 @@ class InputMethod():
                     combination_possibilities = self.get([(c, rs, t)], freq_threshold=0)
                 
                 combination_possibilities = combination_possibilities[0]
+            
+            combination_possibilities = [word_obj['value'] for word_obj in combination_possibilities]
             
         else:
             combination_possibilities = None

@@ -9,6 +9,7 @@ from functools import reduce
 from itertools import product
 
 class Dictionary():
+    location = "<dictionary.Dictionary>"
     db = {} # database
     
     db = {consonant: {} for consonant in Vietnamese.consonant_families}
@@ -44,17 +45,17 @@ class Dictionary():
     dictionary = set()
 
     @staticmethod
-    def get(crts: list[tuple[str, str|list[str], int]], max=25, freq_threshold=2) -> list[list[str]]:
+    def get(crts: list[tuple[str, str|list[str], int]], max=25, freq_threshold=2) -> list[list[dict]]:
         '''
         Return the word possibilities of each tuple given the list of tuple: `list[tuple[consonant: str, rhyme: str | list[str] | 'any', tone: str]]`
-        
+        TODO: fix docs
         `rhyme` can be one rhyme, or a list of rhymes, or `any` for all possible rhymes.
         
         Params:
         - `max`: n most frequently words per tuple (default is 25).
         - `freq_threshold`: just take the words that have frequency higher than or equal this threshold.
         '''
-        words_possibilities = []
+        word_objects_possibilities = []
         for consonant, rhyme, tone in crts:
                     
             if consonant not in Vietnamese.consonant_families and tone not in Vietnamese.tones:
@@ -90,29 +91,37 @@ class Dictionary():
             possibilities = list(filter(lambda word_obj: word_obj['freq'] >= freq_threshold, possibilities))
             # Sort by frequency
             possibilities = sorted(possibilities, key=lambda word_obj: word_obj['freq'], reverse=True)
+                            
+            possibilities = possibilities[:max]
                 
-            word_possibilities = [word_obj['value'] for word_obj in possibilities[:max]]
-            words_possibilities.append(word_possibilities)
+            word_objects_possibilities.append(possibilities)
         
-        return words_possibilities
+        return word_objects_possibilities
     
     @staticmethod
-    def predict(words_possibilities: list[list[str]], verbose=False, any=False) -> list[str]:
+    def predict(word_objects_possibilities: list[list[dict]], verbose=False, any=False) -> list[str]:
         '''
-        May not optimized yet.
-        Receive a list of word possibilities(`list[list[str]]`) and then make all n-gram combinations with the order of the list.
+        TODO: May not optimized yet.
+        Receive a list of word objects possibilities(`list[list[dict]]`) where and then make all n-length combinations. (dict: {"value": str, "freq": int})
         
         Then filter out which combinations are in the dictionary.
         Set `any` to True will skip the filter part.
         '''
         if verbose:
             lens = []
-            for word_possibilities in words_possibilities:
+            for word_possibilities in word_objects_possibilities:
                 lens.append(str(len(word_possibilities)))
             print('*'.join(lens))
-        combinations = list(product(*words_possibilities))
-        combinations = [' '.join(words) for words in combinations]
-
+        
+        combinations = []
+        for word_objects in product(*word_objects_possibilities):
+            phrase = ' '.join(word_object['value'] for word_object in word_objects)
+            phrase_score = sum(word_object['freq'] for word_object in word_objects)
+            combinations.append({"value": phrase, "freq": phrase_score})
+            
+        combinations = sorted(combinations, key=lambda phrase_obj: phrase_obj['freq'], reverse=True)
+        combinations = [phrase_obj['value'] for phrase_obj in combinations]
+        
         if any:
             return combinations
         return list(filter(lambda comb: comb in Dictionary.dictionary, combinations))
@@ -248,7 +257,7 @@ class Dictionary():
                     word_count += len(Dictionary.db_freq[consonant][rhyme])
                     
         if verbose:
-            print(f"<dictionary.Dictionary> Loaded: {word_count} words")
+            print(f"{Dictionary.location} Loaded: {word_count} words")
         
         dictionary = []
         with open('checkpoints/dict.json', 'r') as f:
@@ -258,7 +267,7 @@ class Dictionary():
             
         Dictionary.dictionary = set(dictionary)
         if verbose:
-            print(f"<dictionary.Dictionary> Loaded: {len(Dictionary.dictionary)} phrases")
+            print(f"{Dictionary.location} Loaded: {len(Dictionary.dictionary)} phrases")
             
         
     @staticmethod

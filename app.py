@@ -163,23 +163,30 @@ class V7App(QWidget):
         self.improvement_log.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.improvement_log)
         
-        button_layout = QHBoxLayout()
+        button_layout = QVBoxLayout()
+        button_row_layout_1 = QHBoxLayout()
         
         copy_button = QPushButton("Copy")
         copy_button.clicked.connect(self.copy_text)
-        button_layout.addWidget(copy_button)
+        button_row_layout_1.addWidget(copy_button)
 
-        button_layout.addSpacerItem(QSpacerItem(20, 20))
+        button_row_layout_1.addSpacerItem(QSpacerItem(10, 10))
 
         clear_button = QPushButton("Clear")
         clear_button.clicked.connect(self.clear_text)
-        button_layout.addWidget(clear_button)
+        button_row_layout_1.addWidget(clear_button)
 
-        layout.addLayout(button_layout)
+        button_layout.addLayout(button_row_layout_1)
+        
+        button_row_layout_2 = QHBoxLayout()
         
         common_dict_window_button = QPushButton("Add your own common phrase")
         common_dict_window_button.clicked.connect(self.open_update_common_dict_window)
-        layout.addWidget(common_dict_window_button)
+        button_row_layout_2.addWidget(common_dict_window_button)
+        
+        button_layout.addLayout(button_row_layout_2)
+        
+        layout.addLayout(button_layout)
         
         self.setLayout(layout)
 
@@ -247,8 +254,7 @@ Tones:
                         history.write(f"{self.input_box.text()} {comb}\n")
                 
                 self.reset_input_box()            
-            except Exception as e:
-                print(e)
+            except:
                 pass
         else:
             QLineEdit.keyPressEvent(self.input_box, event)
@@ -346,7 +352,6 @@ Tones:
 
         self.improvement_log.setText(f"%Keys reduced: {improvements:.2f}%")
         self.improvement_log.setStyleSheet(f"color: {color};")
-    
 
 if __name__ == '__main__':
     # Learn more about these configuration in InputMethod

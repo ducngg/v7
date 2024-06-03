@@ -9,6 +9,7 @@ class Vietnamese(Alphabet):
     """
     Controversial very rare words like `Đắk Lắk, Kạn, Kon, ... is not included in Vietnamese`
     """
+    location = "<vietnamese.Vietnamese>"
     tones = [0, 1, 2, 3, 4, 5, 6, 7]
     
     # Treat `i` and `y` the same so there will be no `y`; treat `p`, `t`, `c`, `ch`  and  `m`, `n`, `ng`, `nh` the same
