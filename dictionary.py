@@ -9,6 +9,7 @@ from functools import reduce
 from itertools import product
 
 class Dictionary():
+    location = "<dictionary.Dictionary>"
     db = {} # database
     
     db = {consonant: {} for consonant in Vietnamese.consonant_families}
@@ -248,7 +249,7 @@ class Dictionary():
                     word_count += len(Dictionary.db_freq[consonant][rhyme])
                     
         if verbose:
-            print(f"<dictionary.Dictionary> Loaded: {word_count} words")
+            print(f"{Dictionary.location} Loaded: {word_count} words")
         
         dictionary = []
         with open('checkpoints/dict.json', 'r') as f:
@@ -258,7 +259,7 @@ class Dictionary():
             
         Dictionary.dictionary = set(dictionary)
         if verbose:
-            print(f"<dictionary.Dictionary> Loaded: {len(Dictionary.dictionary)} phrases")
+            print(f"{Dictionary.location} Loaded: {len(Dictionary.dictionary)} phrases")
             
         
     @staticmethod

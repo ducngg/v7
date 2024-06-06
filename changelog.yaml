@@ -107,3 +107,7 @@ changes:
     research: ''
     change: ''
     description: 'Show %key reduced each time user choose a combination' 
+  - timestamp: '2024-06-06 5:27 PM'
+    research: ''
+    change: ''
+    description: 'fix design on app, add Vietnamese option to app' 

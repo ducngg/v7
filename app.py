@@ -1,4 +1,5 @@
 import sys, time, os
+import argparse
 import json
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QMessageBox, QDialog
 from PyQt5.QtGui import QPixmap
@@ -7,20 +8,22 @@ from PyQt5.QtCore import Qt
 from vietnamese import Vietnamese
 from dictionary import Dictionary
 from inputmethod import InputMethod
+from assets.properties import Assets
 
 from compare import TelexOrVNI
         
 HISTORY_PATH = os.path.join('history')
 
 class DictUpdateWindow(QDialog):
-    def __init__(self, parent = None, session: str = None):
+    def __init__(self, parent = None, assets: Assets = None, session: str = None):
         super().__init__(parent)
+        self.assets = assets
         self.session = session
         self.RELOAD = True
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('Update dictionary')
+        self.setWindowTitle(self.assets.update_dictionary_title)
         self.setGeometry(200, 200, 400, 300)
         
         layout = QVBoxLayout()
@@ -31,24 +34,21 @@ class DictUpdateWindow(QDialog):
         self.input_box.returnPressed.connect(self.update_dict)
         layout.addWidget(self.input_box)
         
-        pred_label_layout = QHBoxLayout()
+        change_log_label_layout = QHBoxLayout()
         
-        pred_label = QLabel("Change log")
-        pred_label_layout.addWidget(pred_label)
-        layout.addLayout(pred_label_layout)
+        change_log_label = QLabel(self.assets.change_log)
+        change_log_label_layout.addWidget(change_log_label)
+        layout.addLayout(change_log_label_layout)
         
-        pred_result_layout = QHBoxLayout()
+        change_log_layout = QHBoxLayout()
         
         self.change_log = QTextEdit()
         self.change_log.setMinimumHeight(230)
         self.change_log.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.change_log.setReadOnly(True)
-        pred_result_layout.addWidget(self.change_log)
+        change_log_layout.addWidget(self.change_log)
         
-        self.predict_info = QLabel("")
-        pred_result_layout.addWidget(self.predict_info)
-        
-        layout.addLayout(pred_result_layout)
+        layout.addLayout(change_log_layout)
         
         self.setLayout(layout)
         
@@ -71,16 +71,16 @@ class DictUpdateWindow(QDialog):
             common_dict: list = json.load(common_dict_file)
         
         if not Vietnamese.areVietnamese(input.split()):
-            self.change_log.append(f"Invalid: {input}")
+            self.change_log.append(f"{self.assets.invalid}: {input}")
             return
             
         if input not in common_dict:
             common_dict.append(input)
-            status = 'Added'
+            status = self.assets.added
             status_code = 'A'
         else:
             common_dict.remove(input)
-            status = 'Removed'
+            status = self.assets.removed
             status_code = 'R'
         
         with open(os.path.join('checkpoints', 'common.json'), mode='w') as common_dict_file:
@@ -94,11 +94,11 @@ class DictUpdateWindow(QDialog):
             Dictionary.reload()
                         
         self.change_log.append(f"{status}: {input}")
-        
 
 class V7App(QWidget):
-    def __init__(self, inputAgent: InputMethod, session: str = None):
+    def __init__(self, lang, inputAgent: InputMethod, session: str = None):
         super().__init__()
+        self.assets = Assets(lang)
         self.session = session
         self.inputAgent = inputAgent
         self.ready = False              # If ready, pressing a number will choose the combination number shown
@@ -110,7 +110,7 @@ class V7App(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('v7 Typing Method')
+        self.setWindowTitle(self.assets.title)
         self.setGeometry(100, 100, 600, 500)
         self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #123d2c); color: #FFF;};")
         # TODO: Add logo
@@ -118,10 +118,10 @@ class V7App(QWidget):
         
         welcome_layout = QHBoxLayout()
         
-        welcome_label = QLabel("Welcome to v7 - an innovative input method for typing Vietnamese!")
+        welcome_label = QLabel(self.assets.welcome)
         welcome_layout.addWidget(welcome_label)
         
-        help_button = QPushButton("Help")
+        help_button = QPushButton(self.assets.help)
         help_button.setFixedWidth(50)
         help_button.clicked.connect(self.show_help)
         welcome_layout.addWidget(help_button)
@@ -136,9 +136,9 @@ class V7App(QWidget):
         
         pred_label_layout = QHBoxLayout()
         
-        pred_label = QLabel("Predictions")
+        pred_label = QLabel(self.assets.pred_label)
         pred_label_layout.addWidget(pred_label)
-        pred_help = QLabel("Usage: Press key [①-⑨] ← → ⌫ ⏎ ")
+        pred_help = QLabel(self.assets.usage)
         pred_label_layout.addWidget(pred_help)
         layout.addLayout(pred_label_layout)
         
@@ -163,54 +163,50 @@ class V7App(QWidget):
         self.improvement_log.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.improvement_log)
         
-        button_layout = QHBoxLayout()
-        
-        copy_button = QPushButton("Copy")
+        button_layout = QVBoxLayout()
+        button_row_layout_1 = QHBoxLayout()
+
+        copy_button = QPushButton(self.assets.copy)
         copy_button.clicked.connect(self.copy_text)
-        button_layout.addWidget(copy_button)
+        button_row_layout_1.addWidget(copy_button)
 
-        button_layout.addSpacerItem(QSpacerItem(20, 20))
+        button_row_layout_1.addSpacerItem(QSpacerItem(10, 10))
 
-        clear_button = QPushButton("Clear")
+        clear_button = QPushButton(self.assets.clear)
         clear_button.clicked.connect(self.clear_text)
-        button_layout.addWidget(clear_button)
+        button_row_layout_1.addWidget(clear_button)
+
+        button_layout.addLayout(button_row_layout_1)
+
+        button_row_layout_2 = QHBoxLayout()
+        
+        common_dict_window_button = QPushButton(self.assets.add_phrase_button)
+        common_dict_window_button.clicked.connect(self.open_update_common_dict_window)
+        
+        button_row_layout_2.addWidget(common_dict_window_button)
+
+        button_layout.addLayout(button_row_layout_2)
 
         layout.addLayout(button_layout)
-        
-        common_dict_window_button = QPushButton("Add your own common phrase")
-        common_dict_window_button.clicked.connect(self.open_update_common_dict_window)
-        layout.addWidget(common_dict_window_button)
         
         self.setLayout(layout)
 
         self.show()
     
     def show_help(self):
-        help_text = """
-- Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.
-- Please provide rhymes for better prediction on uncommon words. 
-(don't type `ng0l2ng0ng4`, instead type something like `nguy0li1ngon0ngu4` for `nguyên lý ngôn ngữ`)
-- Press `Enter` to append raw input to the text area at the bottom.
-
-Special consonants:
-- `g` for both `g` and `gh`.
-- `ng` for both `ng` and `ngh`.
-- `z` for `gi`. (z6  → giúp, giết, giáp, ...)
-- `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)
-Tones:
-- 0 for no tones
-- [1-5] for tones from 1 to 5 (VNI style)
-- 6 for `entering` accute: xuất, cấp, tất, chiếc, thích, mút... 
-- 7 for `entering` underdot: nhập, phục, đột, chục, mạch, kịp...
-        """
+        help_text = self.assets.instruction
         help_box = QMessageBox(parent=self)
         help_box.setText(help_text)
-        help_box.setWindowTitle("Help")
+        help_box.setWindowTitle(self.assets.help)
         help_box.setFixedWidth(800) 
         help_box.exec_()
         
     def open_update_common_dict_window(self):
-        self.common_dict_window = DictUpdateWindow(parent=self, session=session)
+        self.common_dict_window = DictUpdateWindow(
+            parent=self, 
+            assets=self.assets,
+            session=session
+        )
         self.common_dict_window.show()
     
     def keyPressEventInputBox(self, event):
@@ -247,8 +243,7 @@ Tones:
                         history.write(f"{self.input_box.text()} {comb}\n")
                 
                 self.reset_input_box()            
-            except Exception as e:
-                print(e)
+            except:
                 pass
         else:
             QLineEdit.keyPressEvent(self.input_box, event)
@@ -317,7 +312,7 @@ Tones:
             # self.predict_box.append(f"{i}{' '*(3+(i-1)//3*2)}{comb}")
             
     def update_predict_info(self):
-        self.predict_info.setText(f"Showing\n{self.predictions['page']}/{self.predictions['maxpage']}")
+        self.predict_info.setText(f"{self.assets.page}\n{self.predictions['page']}/{self.predictions['maxpage']}")
     def update_pred_result(self):
         self.update_predict_box()
         self.update_predict_info()
@@ -344,12 +339,21 @@ Tones:
         else:
             color = "yellow"
 
-        self.improvement_log.setText(f"%Keys reduced: {improvements:.2f}%")
+        self.improvement_log.setText(f"{self.assets.percent_keys}: {improvements:.2f}%")
         self.improvement_log.setStyleSheet(f"color: {color};")
-    
 
 if __name__ == '__main__':
     # Learn more about these configuration in InputMethod
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("-l", "--lang", type=str,
+        choices=["en", "vi"],
+        default="en",
+        help="Specify the language."
+    )
+    args = parser.parse_args()
+        
     session = str(time.time())
     inputAgent = InputMethod(
         flexible_tones=False,
@@ -357,5 +361,9 @@ if __name__ == '__main__':
         flexible_k=False
     )
     app = QApplication(sys.argv)
-    run_app = V7App(inputAgent=inputAgent, session=session)
+    run_app = V7App(
+        lang=args.lang,
+        inputAgent=inputAgent, 
+        session=session
+    )
     sys.exit(app.exec_())

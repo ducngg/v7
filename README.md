@@ -5,7 +5,7 @@
 This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting 'x0ch2' should yield 'xin chào' as the predicted output.
 
 ## Current Development Status
-The `app.py` has been implemented using PyQt5. To test the application, simply run `python app.py`. Make sure to install the required dependencies listed in `requirements.txt` first.
+The `app.py` has been implemented using PyQt5. To test the application, simply run `python app.py --lang en`. Make sure to install the required dependencies listed in `requirements.txt` first.
 🤝 **This application will be the place for you to try out v7 method!**
 
 ![Demo](assets/demo.gif)

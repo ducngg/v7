@@ -5,7 +5,7 @@
 Dự án này phân tích tiếng Việt để phát triển một phương pháp gõ nhanh hơn bằng cách dự đoán từ dựa trên một phần từ muốn nhập. Ví dụ, chỉ cần nhập 'x0ch2' sẽ có thể dự đoán ra 'xin chào'.
 
 ## Cập nhật hiện tại
-Chạy `pip install requirements.txt`, sau đó chạy `python app.py` để trải nghiệm (nên tắt VNI / Telex trước khi nhập).
+Chạy `pip install requirements.txt`, sau đó chạy `python app.py --lang vi` để trải nghiệm (nên tắt VNI / Telex trước khi nhập).
 🤝 **Hiện tại v7 chỉ có thể hoạt động thông qua app trên!**
 
 ![Demo](assets/demo.gif)
