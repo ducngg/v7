@@ -1,3 +1,5 @@
+from typing import Literal
+
 class Assets:
     _title = {
         'en': "v7 Typing Method",
@@ -96,7 +98,7 @@ Thanh điệu:
         'vi': "Xóa"
     }
     
-    def __init__(self, lang):
+    def __init__(self, lang: Literal['en', 'vi']):
         self.lang = lang
             
     @property

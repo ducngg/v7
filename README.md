@@ -41,6 +41,7 @@ In the context of the Vietnamese language, analyzing involves the mapping of a V
 For further details on consonant families, rhyme families, and tones, refer to the `vietnamese.py` file.
 
 Use `Vietnamese.analyze(word: str)` for this process.
+**This function is a great tool for detecting if a word is Vietnamese or not!**
 
 ```python
 from vietnamese import Vietnamese

@@ -20,106 +20,106 @@ class Vietnamese(Alphabet):
         'anh',
         'ang',
         'am',
-        'ăn',
+        'ăn', # auth Vietnamese
         'ăng',
-        'ăm',
+        'ăm', #
         'ân',
-        'âng',
+        'âng', #
         'âm',
-        'e',
-        'en',
-        'eng',
-        'em',
+        'e', #
+        'en', #
+        'eng', #
+        'em', #
         'ê',
-        'ên',
+        'ên', #
         'ênh',
-        'êm',
+        'êm', #
         'i',
         'in',
         'inh',
-        'im',
-        'o',
-        'on',
+        'im', #
+        'o', #
+        'on', #
         'ong',
-        'om',
+        'om', #
         'ô',
         'ôn',
         'ông',
-        'ôm',
+        'ôm', #
         'ơ',
-        'ơn',
-        'ơm',
+        'ơn', #
+        'ơm', #
         'u',
-        'un',
+        'un', #
         'ung',
-        'um',
+        'um', #
         'ư',
-        'ưn',
-        'ưng',
-        'ưm',
+        'ưn', #
+        'ưng', #
+        'ưm', #
         'ai',
-        'ay',
+        'ay', #
         'ây',
-        'oi',
+        'oi', #
         'ôi',
         'ơi',
-        'ui',
-        'ưi',
-        'oa',
+        'ui', #
+        'ưi', #
+        'oa', 
         'oan',
         'oanh',
         'oang',
-        'oam',
-        'oăn',
+        'oam', #
+        'oăn', #
         'oăng',
-        'oăm',
+        'oăm', #
         'uân',
-        'uâng',
-        'oe',
-        'oen',
+        'uâng', #
+        'oe', #
+        'oen', #
         'uê',
-        'uên',
-        'uênh', #
+        'uên', #
+        'uênh',
         'uy',
-        'uyn',
+        'uyn', #
         'uynh',
-        'uym',
-        'ua',
-        'uôn',
+        'uym', #
+        'ua', #
+        'uôn', #
         'uông',
-        'uôm',
-        'uơ',
-        'uơn',
-        'ia',
+        'uôm', #
+        'uơ', #
+        'uơn', #
+        'ia', #
         'iên',
-        'iêng',
+        'iêng', #
         'iêm',
-        'ưa',
-        'ươn',
+        'ưa', #
+        'ươn', #
         'ương',
-        'ươm',
+        'ươm', #
         'ao',
-        'au',
+        'au', #
         'âu',
-        'eo',
-        'êu',
-        'iu',
+        'eo', #
+        'êu', #
+        'iu', #
         'ưu',
         'iêu',
-        'ươu',
+        'ươu', #
         'oai',
-        'oay',
-        'uây',
-        'uôi',
-        'uơi',
-        'ươi',
-        'uya',
+        'oay', #
+        'uây', #
+        'uôi', #
+        'uơi', #
+        'ươi', #
+        'uya', #
         'uyên',
-        'oao',
-        'oau',
-        'oeo',
-        'uyu',
-        'oong',
+        'oao', #
+        'oau', #
+        'oeo', #
+        'uyu', #
+        'oong', #
     ]
     # Rhymes like `iên` and `iêu` will be `yên` and `yêu`
     rhymes_families_isolated = [
@@ -998,6 +998,8 @@ class Vietnamese(Alphabet):
             if rhyme_family in ['i', 'in', 'iên', 'iêng']:
                 final_consonant = 'g'
             else:
+                if rhyme_family not in Vietnamese.rhymes_families_with_gi:
+                    return None
                 final_consonant = 'gi'
         elif consonant_family in ['g', 'ng']:
             if rhyme_family in Vietnamese.rhymes_families_with_ngh_gh:
@@ -1164,6 +1166,7 @@ class Vietnamese(Alphabet):
     @staticmethod
     def analyze(word: str) -> tuple[str, str, int] | tuple[str, None, None]:
         """
+        Please use lower-case word.
         Return the consonant family, rhyme family, and tone of the word. If the word is not recognized as a Vietnamese word, return `(word, None, None)` instead.
         - Consonant families: ∈`Vietnamese.consonant_families` 
             - `q`, `c`, `k` -> `k`

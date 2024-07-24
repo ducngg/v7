@@ -42,6 +42,7 @@ Phân tách một từ tiếng Việt là quá trình chuyển 1 từ thành m�
 **: Chi tiết hơn về `họ_âm` (tượng trưng cho những phụ âm đầu giống nhau); `họ_vần` (tượng trưng cho những vần giống nhau); `thanh` có thể được tìm thấy trong file `vietnamese.py`.
 
 Sử dụng `Vietnamese.analyze(word: str)` cho quá trình này.
+**Hàm này có thể được dùng để kiểm tra xem một từ có phải thuộc tiếng Việt hay không!**
 
 ```python
 from vietnamese import Vietnamese

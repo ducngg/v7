@@ -68,8 +68,33 @@ def main2():
     for a, b in zip(Vietnamese.rhymes_families, Vietnamese.rhymes_families_with_other_consonants):
         if a != b:
             print(a, b)
-
+            
 def main3():
+    with open("data/corpus-title.txt", 'r') as file:
+        # Iterate over each line in the file
+        max_lines = 50000
+        words = []
+        i = 0
+        for line in file:
+            words.extend(utils.separate_words(line.strip().lower()))
+            i += 1
+            if i >= max_lines:
+                break
+        
+        print(len(words))
+        ns = [1, 10, 100, 1000, 10000, 100000, 100000, 100000, 100000, 100000]
+        for n in ns:
+            n_words = words[:n]
+            
+            start_time = time.time()
+            crts = [Vietnamese.analyze(word) for word in n_words]
+            total_time = time.time() - start_time
+            
+            print(f"{n:<10} -> Speed: {n/total_time/1000:.2f} ops/ms")
+        
+                
+
+def main4():
     print(time.time())
     print(str(time.time()))
     
