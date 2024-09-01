@@ -54,7 +54,7 @@ To run the app in Dictionary Mode, follow these steps:
     ```
 2. Start the application:
     ```bash
-    python app.py --lang en --ai false
+    python main.py --lang en --ai false
     ```
 
 #### Using AI Mode
@@ -70,7 +70,7 @@ To run the app in AI Mode, follow these steps:
     ```
 3. Start the application:
     ```bash
-    python app.py --lang en --ai true
+    python main.py --lang en --ai true
     ```
 
 <!-- ## Details -->

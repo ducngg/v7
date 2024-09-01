@@ -52,7 +52,7 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
     ```
 2. Khởi động ứng dụng:
     ```bash
-    python app.py --lang vi --ai false
+    python main.py --lang vi --ai false
     ```
 
 #### Sử Dụng Chế Độ AI
@@ -67,7 +67,7 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
     ```
 3. Khởi động ứng dụng:
     ```bash
-    python app.py --lang vi --ai true
+    python main.py --lang vi --ai true
     ```
 
 <!-- ## Details -->
