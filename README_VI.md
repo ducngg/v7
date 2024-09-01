@@ -8,13 +8,37 @@ Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để m
 
 ![Demo](assets/v7ai.gif)
 
-## Động lực
-- Tiếng Việt là ngôn ngữ có nhiều dấu và thanh điệu, để nhập các dấu đó tốn nhiều thời gian.
+## Động Lực Phát Triển
+- Tiếng Việt là ngôn ngữ có nhiều dấu và thanh điệu, để nhập tất cả các dấu rất tốn thời gian.
 - `v7` là giải pháp để đơn giản hóa việc nhập bằng cách chỉ sử dụng phụ âm đầu và thanh điệu để dự đoán từ muốn nhập. Ví dụ: Để có chữ `tưởng tượng` cần phải nhập `tuong73 tuong75` (`VNI`) hoặc `tuongwr tuongwj` (`Telex`), nhưng với `v7` ta chỉ cần `t3t5`!
 - Nhưng tất nhiên, ta nhận ra vấn đề là `tiểu tiện` cũng thỏa `t3t5`, với `3` là dấu `hỏi` và `5` là dấu nặng `nặng`.
 - Dự án này phân tích và giải quyết các vấn đề của ý tưởng trên, để phát triển thành công `v7`, một bộ gõ tối ưu trải nghiệm khi nhập.
   
 ## Tổng Quan
+
+### Cách Nhập
+
+`v7` lấy cảm hứng từ cả VNI và Telex!
+
+- **Phụ âm đặc biệt**:
+  - `g` cho cả `g` và `gh`.
+  - `ng` cho cả `ng` và `ngh`.
+  - `z` cho `gi`. (`z6` → `giúp`, `giết`, `giáp`, ...)
+  - `dd` cho `đ`. (`dd4` → `đã`, `đãi`, `đỗ`, ...) (`giống Telex`)
+
+- **Thanh điệu** (`giống VNI`):
+  - `0` cho không dấu (thanh ["phù bình"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `tuân`, `câm`, `tân`...
+  - `1` cho dấu sắc (thanh ["phù khứ"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `cấm`, `tiếng`, `tấn`, `thính`... (xem thanh `6` để thấy sự khác biệt)
+  - `2` cho dấu huyền (thanh ["trầm bình"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `tuần`, `cầm`, `tần`...
+  - `3` cho dấu hỏi (thanh ["phù thượng"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `tẩn`, `cẩm`, `hỉ`...
+  - `4` cho dấu ngã (thanh ["trầm thượng"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `mãi`, `rã`, `phũ`...
+  - `5` cho dấu nặng (thanh ["trầm khứ"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `nhậm`, `phụng`, `độn`, `mạnh`... (xem thanh `7` để thấy sự khác biệt)
+  - `6` cho thanh ["phù nhập"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis): `cấp`, `tiếc`, `tất`, `thích`... (các từ có dấu sắc và kết thúc bằng `p`, `c`, `t`, `ch` sẽ là thanh `6`)
+  - `7` cho thanh ["trầm nhập"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis): `nhập`, `phục`, `đột`, `mạch`... (các từ có dấu nặng và kết thúc bằng `p`, `c`, `t`, `ch` sẽ là thanh `7`)
+
+Thanh điệu được mở rộng so với 6 dấu của VNI. Xem [Hệ 8 thanh điệu trong tiếng Việt](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis) để hiểu rõ hơn về 8 thanh điệu.
+
+### Các Chế Độ
 
 `v7` dự đoán các từ/cụm từ mà người dùng muốn gõ bằng cách kiểm tra và xếp hạng các từ/cụm từ có thể có. Nó hoạt động ở hai chế độ:
 
@@ -29,7 +53,7 @@ Trong chế độ này, `v7` tìm kiếm các cụm từ phù hợp trong từ �
 ![Demo](assets/v7dict.gif)
 
 #### Chế Độ AI
-`v7ai` là một mô hình tựa GPT với bộ tokenizer của riêng `v7`, được huấn luyện trên kho ngữ liệu tiếng Việt, dựa trên [nanoGPT](https://github.com/karpathy/build-nanogpt) của Andrej Karpathy.
+Chế độ này sử dụng `v7gpt` - một mô hình tựa GPT với bộ tokenizer của riêng `v7`, được huấn luyện trên kho ngữ liệu tiếng Việt, dựa trên [nanoGPT](https://github.com/karpathy/build-nanogpt) của Andrej Karpathy.
 
 - **Ưu Điểm**:
   - Hoạt động tốt trong mọi ngữ cảnh.
@@ -72,7 +96,7 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
 
 <!-- ## Details -->
 
-# Phân tích sự tối ưu của `v7`
+# Xem Thêm: Phân tích sự tối ưu của `v7`
 
 **Bảng so sánh số lượng phím cần bấm để nhập một từ, cụm từ cho `Telex`/`VNI` và `v7`.**
 
@@ -163,7 +187,7 @@ for word in corpus.split(' '):
 
 ***Giải thích***
 
-Tiếng Việt trên thực tế có **8 thanh điệu**, không phải 6 thanh điệu như nhiều người thường nghĩ. 6 ở đây thật ra là số lượng `dấu` (ngang/không dấu (`a`), sắc (`á`), huyền (`à`), hỏi (`ả`), ngã (`ã`), nặng (`ạ`)). Với những từ kết thúc bằng /p/, /t/, /c/, and /ch/, ta có thêm 2 `thanh` nữa!
+Tiếng Việt trên thực tế có **8 thanh điệu** [Hệ 8 thanh điệu trong tiếng Việt](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis), không phải 6 thanh điệu như nhiều người thường nghĩ. 6 ở đây thật ra là số lượng `dấu` (ngang/không dấu (`a`), sắc (`á`), huyền (`à`), hỏi (`ả`), ngã (`ã`), nặng (`ạ`)). Với những từ kết thúc bằng /p/, /t/, /c/, and /ch/, ta có thêm 2 `thanh` nữa!
 
 Những từ với `thanh 7`: xuất, cấp, tất, chiếc, thích, mút... (họ vần theo thứ tự là: uân, âm, ân, iêng, inh, un).
 
@@ -263,7 +287,7 @@ None
 ['bạc tình']
 ```
 
-### ...có thể tìm hiểu nhiều cách sử dụng hơn tại [`sandbox.py`](sandbox.py).
+### ...có thể tìm hiểu nhiều cách sử dụng hơn tại [`sandbox`](sandbox).
 
 ## Tham khảo:
 [Hệ 8 thanh điệu trong tiếng Việt](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)

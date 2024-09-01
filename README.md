@@ -17,6 +17,30 @@ Currently, you can use the below script to open an app to try `v7` method, futur
 
 ## Overview
 
+### Input Style
+
+`v7` inherits both from former VNI and Telex.
+
+- **Special consonants**:
+  - `g` for both `g` and `gh`.
+  - `ng` for both `ng` and `ngh`.
+  - `z` for `gi`. (`z6` → `giúp`, `giết`, `giáp`, ...)
+  - `dd` for `đ`. (`dd4` → `đã`, `đãi`, `đỗ`, ...) (`Telex style`)
+
+- **Tones** (`VNI style`):
+  - `0` for no tones: `tuân`, `câm`, `tân`...
+  - `1` for normal acute: `cấm`, `tiếng`, `tấn`, `thính`... (compare with `6` to see the differences)
+  - `2` for grave: `tuần`, `cầm`, `tần`...
+  - `3` for hook: `tẩn`, `cẩm`, `hỉ`...
+  - `4` for tilde: `mãi`, `rã`, `phũ`...
+  - `5` for normal underdot: `nhậm`, `phụng`, `độn`, `mạnh`... (compare with `7` to see the differences)
+  - `6` for `entering` acute: `cấp`, `tiếc`, `tất`, `thích`... (everything with acute and ends with `p`, `t`, `c`, `ch` must be tone `6`)
+  - `7` for `entering` underdot: `nhập`, `phục`, `đột`, `mạch`... (everything with underdot and ends with `p`, `t`, `c`, `ch` must be tone `7`)
+
+This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis).
+
+### Modes
+
 `v7` predicts the words/phrases users want to type by checking and ranking possible words/phrases. It operates in two modes:
 
 #### Dictionary Mode
@@ -30,7 +54,7 @@ In this mode, `v7` searches for matching phrases in the dictionary and ranks the
 ![Demo](assets/v7dict.gif)
 
 #### AI Mode
-`v7ai` is a GPT-like model with a custom tokenizer only for `v7`, trained on a Vietnamese corpus, based on Andrej Karpathy's [nanoGPT](https://github.com/karpathy/build-nanogpt).
+This mode utilize `v7gpt`: a GPT-like model with a custom tokenizer only for `v7`, trained on a Vietnamese corpus, based on Andrej Karpathy's [nanoGPT](https://github.com/karpathy/build-nanogpt).
 
 - **Advantages**:
   - Works in any circumstances.
@@ -43,7 +67,7 @@ Future plans include combining both modes to create the most robust Vietnamese i
 
 ## Run the App
 
-This project uses Python 3.12.
+This project uses Python 3.12. 
 
 #### Using Dictionary Mode
 To run the app in Dictionary Mode, follow these steps:
@@ -76,7 +100,7 @@ To run the app in AI Mode, follow these steps:
 <!-- ## Details -->
 
 
-# Optimization Analysis
+# Further Reading: Optimization Analysis
 
 **Comparison of Keystrokes Required for Vietnamese Phrase Input: Traditional Methods(`Telex` or `VNI`) vs. `v7` Method.**
 
@@ -166,7 +190,7 @@ for word in corpus.split(' '):
 
 ***Explanation***
 
-The Vietnamese language actually encompasses **8 tones**, contrary to the commonly known 6 tones. The number 6 refers to the number of diacritics used (which include none (`a`), acute (`á`), grave (`à`), hook (`ả`), tilde (`ã`), underdot (`ạ`)). Additionally, there are two extra tones in Vietnamese for syllables ending in /p/, /t/, /c/, and /ch/.
+The Vietnamese language actually encompasses **8 tones** [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis), contrary to the commonly known 6 tones. The number 6 refers to the number of diacritics used (which include none (`a`), acute (`á`), grave (`à`), hook (`ả`), tilde (`ã`), underdot (`ạ`)). Additionally, there are two extra tones in Vietnamese for syllables ending in /p/, /t/, /c/, and /ch/.
 
 Example words for the seventh tone include: xuất, cấp, tất, chiếc, thích, mút... (with rhyme families being uân, âm, ân, iêng, inh, un respectively).
 
@@ -266,9 +290,9 @@ None
 ['bạc tình']
 ```
 
-### ...and many more in [`sandbox.py`](sandbox.py).
+### ...and many more in [`sandbox`](sandbox).
 
-## Further Reading:
+## References:
 [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)
 
 
