@@ -1,6 +1,6 @@
 from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
-from inputmethod import InputMethod
+from imethod.v7 import InputMethod
 import utils
 import time
 import numpy as np

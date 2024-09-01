@@ -1,4 +1,4 @@
-from inputmethod import InputMethod
+from imethod.v7 import InputMethod
 from vietnamese import Vietnamese
 from dictionary import Dictionary
 

@@ -1,14 +1,82 @@
 [**English**](README.md) | [**Tiếng Việt**](README_VI.md)
 
-# v7 - A Vietnamese Typing Optimization Analysis
+# `v7` Input Method
 
-This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting 'x0ch2' should yield 'xin chào' as the predicted output.
+This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting only `x0ch2` should yield `xin chào` as the predicted output.
 
-## Current Development Status
-The `app.py` has been implemented using PyQt5. To test the application, simply run `python app.py --lang en`. Make sure to install the required dependencies listed in `requirements.txt` first.
-🤝 **This application will be the place for you to try out v7 method!**
+Currently, you can use the below script to open an app to try `v7` method, future plans will integrate with the keyboard so that you don't have to open the app to use `v7` method anymore.
 
-![Demo](assets/demo.gif)
+![Demo](assets/v7ai.gif)
+
+## Motivation
+
+- The Vietnamese language consists of many diacritics, making typing in Vietnamese time-consuming due to the need for these diacritical marks.
+- `v7` aims to simplify Vietnamese typing by using only the initial consonant and tone to predict the intended words. For example, instead of typing `tưởng tượng` as `tuong73 tuong75` (`VNI`) or `tuongwr tuongwj` (`Telex`), you can type `t3t5` with `v7`!
+- Naturally, this reduction in key usage leads to some information loss. For instance, the input `t3t5` could also correspond to `tiểu tiện`, as `3` represents the hook tone `hỏi` and `5` represents the underdot tone `nặng`.
+- This project analyzes and addresses these problems to ultimately introduce `v7`, enhancing the Vietnamese typing experience.
+
+## Overview
+
+`v7` predicts the words/phrases users want to type by checking and ranking possible words/phrases. It operates in two modes:
+
+#### Dictionary Mode
+In this mode, `v7` searches for matching phrases in the dictionary and ranks them based on trained usage frequency.
+
+- **Limitations**:
+  - Can only detect phrases present in the dictionary (although users can add more phrases to the dictionary).
+  - No understanding of the context.
+  - Effective for predicting single words or one phrase in the dictionary at a time.
+
+![Demo](assets/v7dict.gif)
+
+#### AI Mode
+`v7ai` is a GPT-like model with a custom tokenizer only for `v7`, trained on a Vietnamese corpus, based on Andrej Karpathy's [nanoGPT](https://github.com/karpathy/build-nanogpt).
+
+- **Advantages**:
+  - Works in any circumstances.
+  - Understands the context in which the user is writing to predict the most suitable next word.
+  - Can effectively predict entire sentences at a time.
+
+Future plans include combining both modes to create the most robust Vietnamese input method.
+
+![Demo](assets/v7ai.gif)
+
+## Run the App
+
+This project uses Python 3.12.
+
+#### Using Dictionary Mode
+To run the app in Dictionary Mode, follow these steps:
+
+1. Install the required packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2. Start the application:
+    ```bash
+    python app.py --lang en --ai false
+    ```
+
+#### Using AI Mode
+To run the app in AI Mode, follow these steps:
+
+1. Install the required packages for AI Mode (Torch is required):
+    ```bash
+    pip install -r requirements_ai.txt
+    ```
+2. Download the pretrained model checkpoint:
+    ```bash
+    gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt.pth
+    ```
+3. Start the application:
+    ```bash
+    python app.py --lang en --ai true
+    ```
+
+<!-- ## Details -->
+
+
+# Optimization Analysis
 
 **Comparison of Keystrokes Required for Vietnamese Phrase Input: Traditional Methods(`Telex` or `VNI`) vs. `v7` Method.**
 
@@ -207,10 +275,17 @@ None
 **Date Created:** 10:05 AM, Tue 27 Feb 2024
 
 Data sources:
-- [News Corpus](https://github.com/binhvq/news-corpus)
-- [Vietnamese Dictionary 1](https://github.com/JaplinChen/rime-vietnamese-pinyin)
+- Dictionary and Frequency
+  - [News Corpus](https://github.com/binhvq/news-corpus)
+  - [Vietnamese Dictionary 1](https://github.com/JaplinChen/rime-vietnamese-pinyin)
+- Training v7gpt:
+  - [Vietnamese-alpaca-gpt4-gg-translated](https://huggingface.co/datasets/5CD-AI/Vietnamese-alpaca-gpt4-gg-translated)
 <!-- https://github.com/tienhapt/generalcorpus -->
 
 <!-- Reference: -->
 <!-- https://github.com/vncorenlp/VnCoreNLP -->
 <!-- https://nlp.uit.edu.vn/datasets/#h.p_Uj6Wqs5dCpc4 -->
+<!-- https://machinelearningmastery.com/training-the-transformer-model/ -->
+
+<!-- https://www.veed.io/convert/mp4-to-gif -->
+<!-- 24 FPS -->

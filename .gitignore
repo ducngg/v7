@@ -5,3 +5,4 @@ testlog.txt
 assets/record
 profile*
 history/*
+.env

@@ -1,7 +1,7 @@
 from ast import mod
 from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
-from inputmethod import InputMethod
+from imethod.v7 import InputMethod
 from model import MarkovModel
 import utils
 import time

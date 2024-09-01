@@ -1,14 +1,78 @@
 [**English**](README.md) | [**Tiếng Việt**](README_VI.md)
 
-# Bộ gõ Tiếng Việt tối ưu v7
+# Bộ gõ Tiếng Việt `v7`
 
-Dự án này phân tích tiếng Việt để phát triển một phương pháp gõ nhanh hơn bằng cách dự đoán từ dựa trên một phần từ muốn nhập. Ví dụ, chỉ cần nhập 'x0ch2' sẽ có thể dự đoán ra 'xin chào'.
+Dự án này phân tích tiếng Việt để phát triển một phương pháp gõ nhanh hơn bằng cách dự đoán từ dựa trên một phần từ muốn nhập. Ví dụ, chỉ cần nhập `x0ch2` sẽ có thể dự đoán ra `xin chào`.
 
-## Cập nhật hiện tại
-Chạy `pip install requirements.txt`, sau đó chạy `python app.py --lang vi` để trải nghiệm (nên tắt VNI / Telex trước khi nhập).
-🤝 **Hiện tại v7 chỉ có thể hoạt động thông qua app trên!**
+Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để mở ứng dụng để sử dụng `v7`, trong tương lai sẽ tích hợp trực tiếp lên bàn phím để có thể sử dụng trực tiếp không cần qua app.
 
-![Demo](assets/demo.gif)
+![Demo](assets/v7ai.gif)
+
+## Động lực
+- Tiếng Việt là ngôn ngữ có nhiều dấu và thanh điệu, để nhập các dấu đó tốn nhiều thời gian.
+- `v7` là giải pháp để đơn giản hóa việc nhập bằng cách chỉ sử dụng phụ âm đầu và thanh điệu để dự đoán từ muốn nhập. Ví dụ: Để có chữ `tưởng tượng` cần phải nhập `tuong73 tuong75` (`VNI`) hoặc `tuongwr tuongwj` (`Telex`), nhưng với `v7` ta chỉ cần `t3t5`!
+- Nhưng tất nhiên, ta nhận ra vấn đề là `tiểu tiện` cũng thỏa `t3t5`, với `3` là dấu `hỏi` và `5` là dấu nặng `nặng`.
+- Dự án này phân tích và giải quyết các vấn đề của ý tưởng trên, để phát triển thành công `v7`, một bộ gõ tối ưu trải nghiệm khi nhập.
+  
+## Tổng Quan
+
+`v7` dự đoán các từ/cụm từ mà người dùng muốn gõ bằng cách kiểm tra và xếp hạng các từ/cụm từ có thể có. Nó hoạt động ở hai chế độ:
+
+#### Chế Độ Từ Điển
+Trong chế độ này, `v7` tìm kiếm các cụm từ phù hợp trong từ điển và xếp hạng chúng dựa trên tần suất sử dụng đã được huấn luyện.
+
+- **Hạn Chế**:
+  - Chỉ có thể phát hiện các cụm từ có trong từ điển (người dùng có thể thêm nhiều cụm từ hơn vào từ điển).
+  - Không có khả năng hiểu ngữ cảnh.
+  - Chỉ hiệu quả trong việc dự đoán các từ đơn hoặc một cụm từ có trong từ điển.
+
+![Demo](assets/v7dict.gif)
+
+#### Chế Độ AI
+`v7ai` là một mô hình tựa GPT với bộ tokenizer của riêng `v7`, được huấn luyện trên kho ngữ liệu tiếng Việt, dựa trên [nanoGPT](https://github.com/karpathy/build-nanogpt) của Andrej Karpathy.
+
+- **Ưu Điểm**:
+  - Hoạt động tốt trong mọi ngữ cảnh.
+  - Hiểu ngữ cảnh mà người dùng đang viết để dự đoán từ tiếp theo phù hợp nhất.
+  - Có thể dự đoán hiệu quả toàn bộ câu.
+
+Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương pháp nhập tiếng Việt ưu việt nhất.
+
+![Demo](assets/v7ai.gif)
+
+## Sử dụng
+
+`v7` chạy trên Python 3.12.
+
+#### Sử Dụng Chế Độ Từ Điển
+
+1. Cài đặt các thư viện cần thiết:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2. Khởi động ứng dụng:
+    ```bash
+    python app.py --lang vi --ai false
+    ```
+
+#### Sử Dụng Chế Độ AI
+
+1. Cài đặt các thư viện cần thiết cho chế độ AI (yêu cầu Torch):
+    ```bash
+    pip install -r requirements_ai.txt
+    ```
+2. Tải về mô hình đã được huấn luyện:
+    ```bash
+    gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt.pth
+    ```
+3. Khởi động ứng dụng:
+    ```bash
+    python app.py --lang vi --ai true
+    ```
+
+<!-- ## Details -->
+
+# Phân tích sự tối ưu của `v7`
 
 **Bảng so sánh số lượng phím cần bấm để nhập một từ, cụm từ cho `Telex`/`VNI` và `v7`.**
 
@@ -208,8 +272,11 @@ None
 **Ngày tạo:** 10:05 Sáng, Thứ 3, 27 tháng 2 năm 2024
 
 Nguồn dữ liệu:
-- [Tập dữ liệu báo chí](https://github.com/binhvq/news-corpus)
-- [Từ điển tiếng Việt 1](https://github.com/JaplinChen/rime-vietnamese-pinyin)
+- Từ điển và tần số suất hiện chữ:
+  - [Tập dữ liệu báo chí](https://github.com/binhvq/news-corpus)
+  - [Từ điển tiếng Việt 1](https://github.com/JaplinChen/rime-vietnamese-pinyin)
+- Huấn luyện mô hình v7gpt:
+  - [Vietnamese-alpaca-gpt4-gg-translated](https://huggingface.co/datasets/5CD-AI/Vietnamese-alpaca-gpt4-gg-translated)
 <!-- https://github.com/tienhapt/generalcorpus -->
 
 <!-- Reference: -->
