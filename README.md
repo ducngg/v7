@@ -39,6 +39,8 @@ Currently, you can use the below script to open an app to try `v7` method, futur
 
 This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis).
 
+**Note:** *If you don't familiar with 8-tone system, you can still config to use traditional VNI 6-tone. But using 8-tone system is recommended for much much better AI result!*
+
 ### Modes
 
 `v7` predicts the words/phrases users want to type by checking and ranking possible words/phrases. It operates in two modes:
@@ -79,6 +81,7 @@ To run the app in Dictionary Mode, follow these steps:
 2. Start the application:
     ```bash
     python main.py --lang en --ai false
+    # VNI 6-tone is not yet supported for Dictionary mode
     ```
 
 #### Using AI Mode
@@ -94,7 +97,8 @@ To run the app in AI Mode, follow these steps:
     ```
 3. Start the application:
     ```bash
-    python main.py --lang en --ai true
+    python main.py --lang en --ai true --flexibletones false 
+    # use [--flexibletones true] if you want VNI 6-tone
     ```
 
 <!-- ## Details -->
@@ -311,5 +315,6 @@ Data sources:
 <!-- https://nlp.uit.edu.vn/datasets/#h.p_Uj6Wqs5dCpc4 -->
 <!-- https://machinelearningmastery.com/training-the-transformer-model/ -->
 
+<!-- https://online-video-cutter.com/change-video-speed -->
 <!-- https://www.veed.io/convert/mp4-to-gif -->
 <!-- 24 FPS -->

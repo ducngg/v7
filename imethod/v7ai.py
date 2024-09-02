@@ -14,8 +14,18 @@ class AIInputMethod(InputMethod):
         if consonant == 'k' and consonant_rule in ['c', 'q']:
             # TODO: we don't have the information of raw crt here so cannot filter c q k
             consonant_rule = 'k' # Code got here means that have used self.find() -> Have checked strict k
-            
-        if (tone != tone_rule) or (consonant != consonant_rule) or (rhyme not in rhymes_rule):
+        
+        if self.flexible_tones:
+            # Still accept tone=6 or tone=7 although tone_rule is 1 or 5
+            if tone == 6 and tone_rule == 1:
+                tone = 1
+            if tone == 7 and tone_rule == 5:
+                tone = 5            
+
+        if (tone != tone_rule):
+            return False
+        
+        if (consonant != consonant_rule) or (rhyme not in rhymes_rule):
             return False
         return True
         

@@ -23,6 +23,10 @@ if __name__ == '__main__':
         default=True,
         help="Use AI (True or False)"
     )
+    parser.add_argument("-t", "--flexibletones", type=str_to_bool,
+        default=False,
+        help="Use flexible tones (True or False)"
+    )
     
     args: Args = parser.parse_args()
         
@@ -30,14 +34,14 @@ if __name__ == '__main__':
     if args.ai:
         from imethod.v7ai import AIInputMethod
         inputAgent = AIInputMethod(
-            flexible_tones=False,
+            flexible_tones=args.flexibletones,
             strict_k=False,
             flexible_k=False
         )
     else:
         from imethod.v7 import InputMethod
         inputAgent = InputMethod(
-            flexible_tones=False,
+            flexible_tones=args.flexibletones,
             strict_k=False,
             flexible_k=False
         )

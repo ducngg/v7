@@ -38,6 +38,8 @@ Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để m
 
 Thanh điệu được mở rộng so với 6 dấu của VNI. Xem [Hệ 8 thanh điệu trong tiếng Việt](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis) để hiểu rõ hơn về 8 thanh điệu.
 
+**Lưu ý:** *Nếu không quen với hệ 8 thanh điệu, ta hoàn toàn có thể chọn dùng 6 dấu như VNI thông thường. Nhưng sử dụng hệ 8 thanh điệu sẽ có kết quả dự đoán tốt hơn rất nhiều!*
+
 ### Các Chế Độ
 
 `v7` dự đoán các từ/cụm từ mà người dùng muốn gõ bằng cách kiểm tra và xếp hạng các từ/cụm từ có thể có. Nó hoạt động ở hai chế độ:
@@ -77,6 +79,7 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
 2. Khởi động ứng dụng:
     ```bash
     python main.py --lang vi --ai false
+    # hiện tại chưa hỗ trợ hệ 6 dấu VNI thông thường cho chế độ này
     ```
 
 #### Sử Dụng Chế Độ AI
@@ -91,7 +94,8 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
     ```
 3. Khởi động ứng dụng:
     ```bash
-    python main.py --lang vi --ai true
+    python main.py --lang vi --ai true --flexibletones false 
+    # hãy chọn [--flexibletones true] nếu muốn dùng hệ 6 dấu của VNI
     ```
 
 <!-- ## Details -->
