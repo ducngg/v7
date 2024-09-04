@@ -67,12 +67,15 @@ class DictUpdateWindow(QDialog):
             QLineEdit.keyPressEvent(self.input_box, event)
         
     def update_dict(self):
-        input = self.input_box.text()
+        input = self.input_box.text().lower()
         self.input_box.clear()
         status = ""
         
-        with open(os.path.join('checkpoints', 'common.json'), mode='r') as common_dict_file:
-            common_dict: list = json.load(common_dict_file)
+        if os.path.exists(os.path.join('checkpoints', 'common.json')):
+            with open(os.path.join('checkpoints', 'common.json'), mode='r') as common_dict_file:
+                common_dict: list = json.load(common_dict_file)
+        else:
+            common_dict = [] 
         
         if not Vietnamese.areVietnamese(input.split()):
             self.change_log.append(f"{self.assets.invalid}: {input}")

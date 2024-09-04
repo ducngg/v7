@@ -139,3 +139,8 @@ changes:
     research: 'TODO: when input a long sentence, may predict the first 1 or 2 most confidence next words first. TODO: make cache for AI'
     change: 'Make AIInputMethod, HUGE Refactor codebase. TODO: use pydantic models'
     description: 'Create smaller subfolders'
+  - timestamp: '2024-02-09 2:04 PM'
+    research: ''
+    change: 'Update docs for public to socal media, support VNI 6 tones system for AI mode'
+    description: 'Happy Vietnam Independence day!'
+  

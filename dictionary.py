@@ -254,8 +254,10 @@ class Dictionary():
         dictionary = []
         with open('checkpoints/dict.json', 'r') as f:
             dictionary = dictionary + json.load(f)
-        with open('checkpoints/common.json', 'r') as f:
-            dictionary = dictionary + json.load(f)
+            
+        if os.path.exists('checkpoints/common.json'):
+            with open('checkpoints/common.json', 'r') as f:
+                dictionary = dictionary + json.load(f)
             
         Dictionary.dictionary = set(dictionary)
         if verbose:
