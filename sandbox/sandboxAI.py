@@ -1,5 +1,6 @@
-import json
-import time
+import sys, os, time, json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from ai import tokenizer, get_model, generate, next
 from utils import exec
 
@@ -20,7 +21,7 @@ def main2():
     model = exec('Load model', get_model)
     
     sentence = 'mai tao đi'
-    output_list = exec('Generate next words', generate, seq=sentence, model=model, n=30)
+    output_list = exec('Generate next words', generate, seq=sentence, model=model, n=300)
    
     print(f"Input: {sentence}")
     print(f"Next words: {' '.join(output_list)}")   

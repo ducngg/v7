@@ -1,3 +1,6 @@
+import sys, os, time, json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
 from imethod.v7 import InputMethod

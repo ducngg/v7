@@ -1,6 +1,9 @@
 '''
 This sandbox is for testing the functionality, don't need to care
 '''
+import sys, os, time, json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from vietnamese import Vietnamese
 import utils
 import time
