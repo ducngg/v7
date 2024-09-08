@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication
 from app.app import V7App
 from app.utils import str_to_bool
 
-from custom_models import Args
+from models import Args
 
 if __name__ == '__main__':
     # Learn more about these configuration in InputMethod

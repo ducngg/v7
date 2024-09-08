@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 from compare import TelexOrVNI
         
 HISTORY_PATH = os.path.join('history')
+if not os.path.exists(HISTORY_PATH):
+    os.makedirs(HISTORY_PATH)
 
 class DictUpdateWindow(QDialog):
     def __init__(self, parent = None, assets: Assets = None, session: str = None):

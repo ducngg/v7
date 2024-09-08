@@ -8,6 +8,9 @@ import utils
 from functools import reduce
 from itertools import product
 
+from typing import List, Tuple, Union, Optional, Dict
+from models import ConsonantFamily, RhymeFamily, Tone, Triplet, MatchingTriplet, Word, Phrase, WordFreq
+
 class Dictionary():
     location = "<dictionary.Dictionary>"
     db = {} # database
@@ -35,7 +38,8 @@ class Dictionary():
                 tone_obj[t] = tt
             db[consonant][rhyme] = tone_obj
     
-    db_freq = {}
+    db_freq: Dict[str, Dict[str, Dict[int, List[WordFreq]]]] = {}
+    # # Init
     # db_freq = copy.deepcopy(db)
     # for consonant in db_freq.keys():
     #     for rhyme in db_freq[consonant].keys():
@@ -45,7 +49,7 @@ class Dictionary():
     dictionary = set()
 
     @staticmethod
-    def get(crts: list[tuple[str, str|list[str], int]], max=25, freq_threshold=2) -> list[list[str]]:
+    def get(triplets: List[Union[Triplet, MatchingTriplet]], max=25, freq_threshold=2) -> Optional[List[List[Word]]]:
         '''
         Return the word possibilities of each tuple given the list of tuple: `list[tuple[consonant: str, rhyme: str | list[str] | 'any', tone: str]]`
         
@@ -55,9 +59,11 @@ class Dictionary():
         - `max`: n most frequently words per tuple (default is 25).
         - `freq_threshold`: just take the words that have frequency higher than or equal this threshold.
         '''
-        words_possibilities = []
-        for consonant, rhyme, tone in crts:
-                    
+        words_possibilities: List[List[Word]] = []
+        
+        for triplet in triplets:
+            consonant, rhyme, tone = triplet.unpack()
+            
             if consonant not in Vietnamese.consonant_families and tone not in Vietnamese.tones:
                 return None
             
@@ -66,7 +72,8 @@ class Dictionary():
                     rhymes = Vietnamese.rhymes_families
                 else:
                     rhymes = rhyme
-                possibilities = []
+                    
+                possibilities: List[WordFreq] = []
                 for rh in rhymes:
                     try:
                         possibilities += Dictionary.db_freq[consonant][rh][tone]
@@ -98,10 +105,10 @@ class Dictionary():
         return words_possibilities
     
     @staticmethod
-    def predict(words_possibilities: list[list[str]], verbose=False, any=False) -> list[str]:
+    def predict(words_possibilities: List[List[Word]], verbose=False, any=False) -> List[Phrase]:
         '''
         May not optimized yet.
-        Receive a list of word possibilities(`list[list[str]]`) and then make all n-gram combinations with the order of the list.
+        Receive a list of word possibilities(`List[List[Word]]`) and then make all n-gram combinations with the order of the list.
         
         Then filter out which combinations are in the dictionary.
         Set `any` to True will skip the filter part.
@@ -112,7 +119,7 @@ class Dictionary():
                 lens.append(str(len(word_possibilities)))
             print('*'.join(lens))
         combinations = list(product(*words_possibilities))
-        combinations = [' '.join(words) for words in combinations]
+        combinations: List[Phrase] = [' '.join(words) for words in combinations]
 
         if any:
             return combinations
@@ -245,7 +252,9 @@ class Dictionary():
             Dictionary.db_freq = json.load(f)
             for consonant in Dictionary.db_freq.keys():
                 for rhyme in Dictionary.db_freq[consonant].keys():
-                    Dictionary.db_freq[consonant][rhyme] = {int(k): v for k, v in Dictionary.db_freq[consonant][rhyme].items()}
+                    Dictionary.db_freq[consonant][rhyme] = {
+                        int(tone): list_word_freq for tone, list_word_freq in Dictionary.db_freq[consonant][rhyme].items()
+                    }
                     word_count += len(Dictionary.db_freq[consonant][rhyme])
                     
         if verbose:

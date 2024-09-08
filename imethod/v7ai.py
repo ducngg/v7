@@ -1,6 +1,9 @@
 from .v7 import InputMethod
 from ai import get_model, next, tokenizer
 
+from typing import List
+from models import Raw, Triplet, MatchingTriplet, Word, Phrase
+
 class AIInputMethod(InputMethod):
     def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
         super().__init__(flexible_tones, strict_k, flexible_k, null_consonant, end_of_rhyme)
@@ -8,9 +11,9 @@ class AIInputMethod(InputMethod):
         self.SOS = "tôi" # start of string
         self.model = get_model()
     
-    def accept(self, crt, crst):
-        consonant, rhyme, tone = crt
-        consonant_rule, rhymes_rule, tone_rule = crst
+    def accept(self, crt: Triplet, crst: MatchingTriplet):
+        consonant, rhyme, tone = crt.unpack()
+        consonant_rule, rhymes_rule, tone_rule = crst.unpack()
         if consonant == 'k' and consonant_rule in ['c', 'q']:
             # TODO: we don't have the information of raw crt here so cannot filter c q k
             consonant_rule = 'k' # Code got here means that have used self.find() -> Have checked strict k
@@ -82,15 +85,15 @@ class AIInputMethod(InputMethod):
                                                     
         return results
     
-    def top_1_predict(self, input_string, CRsTs, context: str):  
+    def top_1_predict(self, input_string, CRsTs: List[MatchingTriplet], context: str):  
         
         current_result = []
         for CRsT in CRsTs[:-1]:
             prediction = next(self.model, [context])[0]
             prediction.remove(0)
             
-            for crt, word in zip(tokenizer.analyze(prediction), tokenizer.detokenize(prediction)):
-                if self.accept(crt, CRsT):
+            for triplet, word in zip(tokenizer.triplets(prediction), tokenizer.detokenize(prediction)):
+                if self.accept(triplet, CRsT):
                     context += ' ' + word
                     current_result.append(word)
                     break
@@ -99,11 +102,11 @@ class AIInputMethod(InputMethod):
         prediction.remove(0)
             
         LIMIT = 36
-        results = []
-        for crt, word in zip(tokenizer.analyze(prediction), tokenizer.detokenize(prediction)):
+        results: List[Phrase] = []
+        for triplet, word in zip(tokenizer.triplets(prediction), tokenizer.detokenize(prediction)):
             if len(results) >= LIMIT:
                 break
-            if self.accept(crt, CRsTs[-1]):
+            if self.accept(triplet, CRsTs[-1]):
                 results.append(' '.join(current_result + [word]))
                                                     
         return results

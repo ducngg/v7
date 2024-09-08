@@ -2,6 +2,8 @@ from vietnamese import Vietnamese, Alphabet
 from dictionary import Dictionary
 
 import re
+from typing import List, Optional
+from models import RhymeFamily, RawTriplet, Raw, MatchingTriplet, Word, Phrase
 
 class InputMethod():
     location = "<inputmethod.InputMethod>"
@@ -13,7 +15,7 @@ class InputMethod():
         self.null_consonant = null_consonant # Currently support 1 or 2 character only.
         self.end_of_rhyme = end_of_rhyme # `co5ve4tr0` cannot yields `cọ vẽ tranh`, and it`s impossible to type `cọ vẽ tranh` using CASE 4 typing because `cọ` is not frequently used. `end_of_rhyme` is created to fix this: `co{EOR}5ve4tr0`'. Currently support 1 character only.
         
-    def parse(self, crt: str) -> tuple[str, str, int]:
+    def parse(self, crt: Raw) -> RawTriplet:
         '''
         A recognizer for input string(cvt). Recognizes 3 parts in the string: consonant, rhyme, and tone. 
         Return a tuple of `(consonant_part, rhyme_part, tone_part)`.
@@ -47,20 +49,20 @@ class InputMethod():
                     rhyme_pos = 0
                 
         # CHECK RHYME
-        rhymes = crt[rhyme_pos:-1]
+        rhyme = crt[rhyme_pos:-1]
         
-        return consonant, rhymes, tone
+        return RawTriplet(consonant=consonant, rhyme=rhyme, tone=tone)
 
-    def find(self, crt: tuple[str, str, int]) -> tuple[str, list[str], int]:
+    def find(self, raw_triplet: RawTriplet) -> MatchingTriplet:
         '''
         Receive 3 parts of the raw: consonant, rhyme, and tone. Rhyme part can be empty, in this case rhymes will be all the rhymes in Vietnamese.rhyme_families (wildcard).
         
-        Return a tuple of `(consonant, [rhymes], tone)` that matches with the dictionary.
+        Return a `MatchingTriplet`.
         '''
-        if not crt:
+        if not raw_triplet:
             return None
         
-        consonant, rhyme, tone = crt
+        consonant, rhyme, tone = raw_triplet.unpack()
         
         if consonant in ['c', 'q']:
             if self.strict_k:
@@ -83,11 +85,10 @@ class InputMethod():
         
         if not rhymes:
             return None
-            
-        return consonant, rhymes, tone
-
+        
+        return MatchingTriplet(consonant=consonant, rhyme=rhymes, tone=tone)
     
-    def rhymeRecognizer(self, raw_rhyme: str) -> list[str]:
+    def rhymeRecognizer(self, raw_rhyme: str) -> List[RhymeFamily]:
         '''
         Return the rhymes that match the rhyme part(rh).
         '''
@@ -96,7 +97,7 @@ class InputMethod():
         if not raw_rhyme:
             return possibilities
         
-        #TODO: Recognizer for faster typing like {mj -> manh / minh, ty -> toi, tai, tui...}
+        # TODO: Recognizer for faster typing like {mj -> manh / minh, ty -> toi, tai, tui...}
         if raw_rhyme[0] not in Alphabet.VOWELS_Y:
             return []
         
@@ -118,7 +119,7 @@ class InputMethod():
             
         return possibilities
     
-    def match(self, target, char):
+    def match(self, target: str, char: str):
         if char == 'a':
             return True if target in ['a', 'ă', 'â'] else False
         if char == 'e':
@@ -137,7 +138,7 @@ class InputMethod():
         
         return target == char
         
-    def seperate_raws(self, raws: str) -> list[str]:
+    def seperate_raws(self, raws: str) -> List[Raw]:
         '''
         Seperate raw string of many input string to blocks. The tone number will be the seperator, and belong to the prior term.
         eg. x0chao2m5ngu -> ['x0', 'chao2', 'm5', 'ngu']
@@ -146,45 +147,47 @@ class InputMethod():
         raws = re.findall(pattern, raws)
         return raws
     
-    def apply_capitalization(self, words: str, cap_pos: list[bool]) -> str:
+    def apply_capitalization(self, words: Phrase, cap_pos: List[bool]) -> Phrase:
         words = words.split()
         return ' '.join([word.capitalize() if cap else word for word, cap in zip(words, cap_pos)])
         
-    def get(self, crts, max=25, freq_threshold=2):
+    def get(self, triplets: List[MatchingTriplet], max=25, freq_threshold=2):
         '''
         Use Dictionary.get() with self configurations. 
         '''        
         # If flexible_k then we don't need to care
         if self.flexible_k:
-            words_possibilities = Dictionary.get(crts, max=max, freq_threshold=freq_threshold)
+            words_possibilities = Dictionary.get(triplets, max=max, freq_threshold=freq_threshold)
             return words_possibilities
         # If not -> Just take the words that start with original `consonant` in crts
         else:
-            query_crts = []
-            for c, rs, t in crts:
+            query_triplets: List[MatchingTriplet] = []
+            for triple in triplets:
+                c, rs, t = triple.unpack()
                 if c in ['c', 'q', 'k']:
                     query_c = 'k'
                 else:
                     query_c = c
-                query_crts.append((query_c, rs, t))
+                query_triplets.append(MatchingTriplet(consonant=query_c, rhyme=rs, tone=t))
                 
-            words_possibilities = Dictionary.get(query_crts, max=max, freq_threshold=freq_threshold)
+            words_possibilities = Dictionary.get(query_triplets, max=max, freq_threshold=freq_threshold)
             if words_possibilities is None:
                 return None
 
-            final_words_possibilities: list[list[str]] = []
-            for word_possibilities, (c, rs, t) in zip(words_possibilities, crts):
+            final_words_possibilities: List[List[Word]] = []
+            for word_possibilities, triplet in zip(words_possibilities, triplets):
+                c, rs, t = triplet.unpack()
                 if c in ['c', 'q', 'k']:
-                    word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))
+                    word_possibilities = list(filter(lambda word: word[0] == c, word_possibilities))
                     # CASE 4 can make this list empty because `max` is very low -> Query again with high `max`
                     if not word_possibilities:
                         word_possibilities = Dictionary.get([('k', rs, t)], max=50, freq_threshold=0)[0]
-                        word_possibilities: list[str] = list(filter(lambda word: word[0] == c, word_possibilities))[:max]
+                        word_possibilities = list(filter(lambda word: word[0] == c, word_possibilities))[:max]
                 final_words_possibilities.append(word_possibilities)
                 
             return final_words_possibilities
     
-    def predict(self, input_string, **kwargs):
+    def predict(self, input_string: str, **kwargs) -> List[Phrase]:
         '''
         Main function of the class, from a raw input string to a prediction list of combinations. Any errors occur or invalid raw string will return None.
         
@@ -216,8 +219,8 @@ class InputMethod():
             return None
         
         elif len(CRsTs) == 1:
-            raw_c, raw_r, _ = raws_parts[0]
-            c, rs, t = CRsTs[0]
+            raw_c, raw_r, _ = raws_parts[0].unpack()
+            c, rs, t = CRsTs[0].unpack()
                         
             # NOTE: Case 1: Wildcard rhyme
             if raw_r == '':
