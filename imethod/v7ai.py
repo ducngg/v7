@@ -5,11 +5,15 @@ from typing import List
 from models import Raw, Triplet, MatchingTriplet, Word, Phrase
 
 class AIInputMethod(InputMethod):
-    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
+    location = "<imethod.v7ai.AIInputMethod>"
+    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.', verbose=1) -> None:
         super().__init__(flexible_tones, strict_k, flexible_k, null_consonant, end_of_rhyme)
         self.mode = "[AI]"
         self.SOS = "tôi" # start of string
-        self.model = get_model()
+        
+        if verbose:
+            print(f"{AIInputMethod.location} Loaded:")
+        self.model = get_model(verbose=verbose)
     
     def accept(self, crt: Triplet, crst: MatchingTriplet):
         consonant, rhyme, tone = crt.unpack()

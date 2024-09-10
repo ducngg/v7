@@ -6,7 +6,7 @@ from typing import List, Optional
 from models import RhymeFamily, RawTriplet, Raw, MatchingTriplet, Word, Phrase
 
 class InputMethod():
-    location = "<inputmethod.InputMethod>"
+    location = "<imethod.v7.InputMethod>"
     def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
         self.mode = "[Dictionary]"
         self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7

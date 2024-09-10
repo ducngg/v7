@@ -143,4 +143,8 @@ changes:
     research: ''
     change: 'Update docs for public to socal media, support VNI 6 tones system for AI mode'
     description: 'Happy Vietnam Independence day!'
-  
+  - timestamp: '2024-10-09 10:52 AM'
+    research: 'May cost from 5% to 10% more time'
+    change: 'Use typing and pydantic models to make the code more readable, add AI.md'
+    description: 'On branch `typing`'
+
