@@ -7,11 +7,10 @@ from models import RhymeFamily, RawTriplet, Raw, MatchingTriplet, Word, Phrase
 
 class InputMethod():
     location = "<imethod.v7.InputMethod>"
-    def __init__(self, flexible_tones=False, strict_k=False, flexible_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
+    def __init__(self, vni_tones=False, strict_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
         self.mode = "[Dictionary]"
-        self.flexible_tones = flexible_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
+        self.vni_tones = vni_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
         self.strict_k = strict_k
-        self.flexible_k = flexible_k # Only works is strict_k is False: flexible_k helps `q`, `c`, and `k` yields the same predicted words. Set to False so when you type `c`, `k`, or `q`, it just predict the words that start with that consonant.
         self.null_consonant = null_consonant # Currently support 1 or 2 character only.
         self.end_of_rhyme = end_of_rhyme # `co5ve4tr0` cannot yields `cọ vẽ tranh`, and it`s impossible to type `cọ vẽ tranh` using CASE 4 typing because `cọ` is not frequently used. `end_of_rhyme` is created to fix this: `co{EOR}5ve4tr0`'. Currently support 1 character only.
         
@@ -27,7 +26,7 @@ class InputMethod():
             if tone not in Vietnamese.tones:
                 return None
             #
-            # TODO: Add if tone == 6, 7 for flexible-tones
+            # TODO: Add if tone == 6, 7 for vni_tones
             #
         except Exception:
             return None
@@ -59,6 +58,7 @@ class InputMethod():
         
         Return a `MatchingTriplet`.
         '''
+        IS_Q_CASE = False
         if not raw_triplet:
             return None
         
@@ -68,31 +68,31 @@ class InputMethod():
             if self.strict_k:
                 return None
             # User may input qua/que instead of coa/coe -> replace `u` to `o`
-            if consonant in ['q'] and len(rhyme) > 1 and rhyme[0] in ['u'] and rhyme[1] in ['a', 'e']:
-                rhyme = rhyme.replace('u', 'o', 1)
-            
-            if self.flexible_k:
-                consonant = 'k'
-            # Else consonant is kept as `c` or `q`
-            
+            if consonant == 'q':
+                IS_Q_CASE = True
+                        
         if consonant in ['dd']:
             consonant = 'đ'
         if consonant in ['', self.null_consonant]:
             consonant = '0'
             
         # CHECK RHYME
-        rhymes = self.rhymeRecognizer(rhyme)
+        rhymes = self.rhymeRecognizer(rhyme, IS_Q_CASE)
         
         if not rhymes:
             return None
         
         return MatchingTriplet(consonant=consonant, rhyme=rhymes, tone=tone)
     
-    def rhymeRecognizer(self, raw_rhyme: str) -> List[RhymeFamily]:
+    def rhymeRecognizer(self, raw_rhyme: str, is_q_case = False) -> List[RhymeFamily]:
         '''
         Return the rhymes that match the rhyme part(rh).
         '''
-        possibilities = Vietnamese.rhymes_families.copy()
+        if is_q_case:
+            possibilities = Vietnamese.rhymes_families_with_q.copy()
+        else:
+            possibilities = Vietnamese.rhymes_families.copy()
+        
         # If no vowel -> any
         if not raw_rhyme:
             return possibilities
@@ -116,6 +116,12 @@ class InputMethod():
                     lambda rhyme: len(rhyme) > idx and self.match(rhyme[idx], char),
                     possibilities
                 ))
+        
+        if is_q_case and len(raw_rhyme) >= 2 and raw_rhyme[1] in ['a', 'e']: # see Vietnamese.rhymes_families_with_q
+            possibilities = list(map(
+                lambda rhyme: rhyme.replace('ua', 'oa').replace('uă' ,'oă').replace('ue', 'oe'),
+                possibilities
+            ))
             
         return possibilities
     
@@ -154,9 +160,9 @@ class InputMethod():
     def get(self, triplets: List[MatchingTriplet], max=25, freq_threshold=2):
         '''
         Use Dictionary.get() with self configurations. 
-        '''        
-        # If flexible_k then we don't need to care
-        if self.flexible_k:
+        '''      
+        # If strict_k then we don't need to care
+        if self.strict_k:
             words_possibilities = Dictionary.get(triplets, max=max, freq_threshold=freq_threshold)
             return words_possibilities
         # If not -> Just take the words that start with original `consonant` in crts
@@ -169,7 +175,6 @@ class InputMethod():
                 else:
                     query_c = c
                 query_triplets.append(MatchingTriplet(consonant=query_c, rhyme=rs, tone=t))
-                
             words_possibilities = Dictionary.get(query_triplets, max=max, freq_threshold=freq_threshold)
             if words_possibilities is None:
                 return None
@@ -181,7 +186,7 @@ class InputMethod():
                     word_possibilities = list(filter(lambda word: word[0] == c, word_possibilities))
                     # CASE 4 can make this list empty because `max` is very low -> Query again with high `max`
                     if not word_possibilities:
-                        word_possibilities = Dictionary.get([('k', rs, t)], max=50, freq_threshold=0)[0]
+                        word_possibilities = Dictionary.get([MatchingTriplet(consonant='k', rhyme=rs, tone=t)], max=50, freq_threshold=0)[0]
                         word_possibilities = list(filter(lambda word: word[0] == c, word_possibilities))[:max]
                 final_words_possibilities.append(word_possibilities)
                 
@@ -199,7 +204,7 @@ class InputMethod():
             - eg. `co1` -> [`có`, `cố`, `cớ`] (instead of showing others like `cốm`, `cống`, ...)
                 - Complexity = max=100 (+ max=default)? ~ O(1)
         - Case 3: Multiple raws (<=3), have the phrases with that pattern in the dictionary: Result will be those phrases. If no phrases with that pattern in the dictionary, switch to Case 4.
-            - eg. `t3q6` -> [`tổng kết`, `tổng quát`, `tổ quốc`, `tẩm quất`] (flexible_k=True)
+            - eg. `t3k6` -> [`tổng kết`, `tổng quát`, `tổ quốc`, `tẩm quất`] (strict_k=True)
                 - Complexity = (max=50)**n (+ (max=5|3|2)**n)? ~ O(50^n): n<=3
         - Case 4: Multiple raws (>3) or unrecognized Case 3: Result will be the most frequent words of each raw combined.
             - eg. `thu6dde0` -> [`thức đêm`, `thức đen`, `thuốc đêm`, `thuốc đen`] (Note that all of the words are most frequent used words)
@@ -224,7 +229,7 @@ class InputMethod():
                         
             # NOTE: Case 1: Wildcard rhyme
             if raw_r == '':
-                # Set high max because when filter out `c`, `q`, `k` in non-flexible_k, the list return less than 9 words.
+                # Set high max because when filter out `c`, `q`, `k`, the list may return less than 9 words.
                 combination_possibilities = self.get(CRsTs, max=100)[0]
                 
             # NOTE: Case 2: User may wants to input a word that doesn't exist in the dictionary 0 -> set freq_threshold=0
@@ -236,10 +241,10 @@ class InputMethod():
                 ))
                 
                 # If user input something like hie2/cu6, there will be no combination_possibilities associated with `coequal_rs``, then just use `rs`.
-                combination_possibilities = self.get([(c, coequal_rs, t)], max=100, freq_threshold=0) # This may return None
+                combination_possibilities = self.get([MatchingTriplet(consonant=c, rhyme=coequal_rs, tone=t)], max=100, freq_threshold=0) # This may return None
 
                 if not combination_possibilities:
-                    combination_possibilities = self.get([(c, rs, t)], freq_threshold=0)
+                    combination_possibilities = self.get([MatchingTriplet(consonant=c, rhyme=rs, tone=t)], freq_threshold=0)
                 
                 combination_possibilities = combination_possibilities[0]
             

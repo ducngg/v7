@@ -1,10 +1,10 @@
-from typing import List, Tuple, Optional, Union, Literal, TypedDict
-from pydantic import BaseModel
-from .primitive import Triplet
+from typing import Union, Literal
+from .primitive import ConsonantFamily, Triplet
     
-Raw = str # Looks like `v7` / `ho2` / 'tie1`, ...
+Raw = str # Looks like `v7` / `ho2` / 'tie1` / 'a1', ...
 
 class RawTriplet(Triplet):
+    consonant: Union[ConsonantFamily, Literal['q'], Literal['c'], Literal['']]
     rhyme: Union[str, Literal['']]
     
     def unpack(self):

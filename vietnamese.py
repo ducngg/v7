@@ -4,13 +4,16 @@ from models import ConsonantFamily, RhymeFamily, Tone, Triplet, Word
 class Alphabet():
     ALL = 'abcdefghijklmnopqrstuvwxyz'
     LATIN = [letter for letter in ALL]
-    CONSONANTS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
+    CONSONANTS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z']
+    CONSONANTS_Y = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
     VOWELS = ['a', 'e', 'i', 'o', 'u']
     VOWELS_Y = ['a', 'e', 'i', 'o', 'u', 'y']
 
 class Vietnamese(Alphabet):
     """
-    Controversial very rare words like `Đắk Lắk, Kạn, Kon, ... is not included in Vietnamese`
+    Controversial very rare words like `Đắk Lắk, Kạn, Kon, quin/quịt, qui/quí ... is not included in Vietnamese`
+    Note: quin/quịt, qui/quí still can be recognized as a Vietnamese word (see Vietnamese.analyze), but you cannot 
+    type quin/quịt, qui/quí in v7. (see Vietnamese.synthesize)
     """
     location = "<vietnamese.Vietnamese>"
     
@@ -611,23 +614,23 @@ class Vietnamese(Alphabet):
     ]
     # rhymes_families_with_q_start_with_o = ['oa', 'oan', 'oanh', 'oang', 'oam', 'oăn', 'oăng', 'oăm', 'oe', 'oen', 'oai', 'oay', 'oao', 'oau', 'oeo']
     rhymes_families_with_q = [
-        'ua',
-        'uan',
-        'uanh',
-        'uang',
-        'uam',
-        'uăn',
-        'uăng',
-        'uăm',
+        'ua', # originally oa
+        'uan', # originally oan
+        'uanh', # originally oanh
+        'uang', # originally oang
+        'uam', # originally oam
+        'uăn', # originally oăn
+        'uăng', # originally oăng
+        'uăm', # originally oăm
         'uân',
         'uâng',
-        'ue',
-        'uen',
+        'ue', # originally oe
+        'uen', # originally oen
         'uê',
         'uên',
         'uênh', #
-        'uy', 'ui', #
-        'uyn', 'uin', #
+        'uy', # NO qui
+        'uyn', # NO quin
         'uynh',
         'uym',
         'uông', # Special: quốc

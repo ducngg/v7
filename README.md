@@ -97,8 +97,8 @@ To run the app in AI Mode, follow these steps:
     ```
 3. Start the application:
     ```bash
-    python main.py --lang en --ai true --flexibletones false 
-    # use [--flexibletones true] if you want VNI 6-tone
+    python main.py --lang en --ai true --vni_tones false 
+    # use [--vni_tones true] if you want VNI 6-tone
     ```
 
 <!-- ## Details -->
