@@ -1,8 +1,13 @@
 __pycache__/
+
 checkpoints/common.json
+checkpoints/freq-transformer.txt
+checkpoints/v7gpt.pth
+
 *.py[cod]
 .DS_Store
 .vscode
+
 data
 testlog.txt
 assets/record

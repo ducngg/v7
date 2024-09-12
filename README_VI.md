@@ -94,8 +94,8 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
     ```
 3. Khởi động ứng dụng:
     ```bash
-    python main.py --lang vi --ai true --flexibletones false 
-    # hãy chọn [--flexibletones true] nếu muốn dùng hệ 6 dấu của VNI
+    python main.py --lang vi --ai true --vni_tones false 
+    # hãy chọn [--vni_tones true] nếu muốn dùng hệ 6 dấu của VNI
     ```
 
 <!-- ## Details -->

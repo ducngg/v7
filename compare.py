@@ -5,6 +5,7 @@ from dictionary import Dictionary
 from functools import reduce
 import statistics
 
+from models import Triplet
 
 class TelexOrVNI():
     '''
@@ -151,10 +152,10 @@ class TelexOrVNI():
         return TelexOrVNI.get_keys_needed_from_crt(Vietnamese.analyze(word))
 
     @staticmethod
-    def get_keys_needed_from_crt(crt: str):
-        cf, rf, t = crt
-        if None in crt:
+    def get_keys_needed_from_crt(crt: Triplet):
+        if not isinstance(crt, Triplet):
             return None
+        cf, rf, t = crt.unpack()
         
         total_keys = 0
         # ng -> c
@@ -181,10 +182,10 @@ class V7():
     '''
     inputAgent = InputMethod()
     @staticmethod
-    def get_full_from_crt(crt):
-        cf, rf, t = crt
-        if None in crt:
+    def get_full_from_crt(crt: Triplet):
+        if not isinstance(crt, Triplet):
             return None
+        cf, rf, t = crt.unpack()
         
         total_keys = 0
         # null consonant
@@ -205,11 +206,11 @@ class V7():
     def get_least_from_words(words: list[str]):
         crts = [Vietnamese.analyze(word) for word in words]
         for crt in crts:
-            if None in crt:
+            if not isinstance(crt, Triplet):
                 raise Exception
         
         if len(words) == 1:
-            cf, rf, t = crts[0]
+            cf, rf, t = crts[0].unpack()
             if cf == '0':
                 return V7.get_full_from_crt((cf, rf, t))
             else:
@@ -239,7 +240,7 @@ class V7():
 
     @staticmethod
     def get_keys_needed_from_crt(crt: tuple[str, str, str]):
-        if None in crt:
+        if not isinstance(crt, Triplet):
             return None
         
         return V7.get_full_from_crt(crt)

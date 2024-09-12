@@ -1,20 +1,26 @@
+from typing import List, Tuple, Union, Optional
+from models import ConsonantFamily, RhymeFamily, Tone, Triplet, Word
+
 class Alphabet():
     ALL = 'abcdefghijklmnopqrstuvwxyz'
     LATIN = [letter for letter in ALL]
-    CONSONANTS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
+    CONSONANTS = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z']
+    CONSONANTS_Y = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
     VOWELS = ['a', 'e', 'i', 'o', 'u']
     VOWELS_Y = ['a', 'e', 'i', 'o', 'u', 'y']
 
 class Vietnamese(Alphabet):
     """
-    Controversial very rare words like `Đắk Lắk, Kạn, Kon, ... is not included in Vietnamese`
+    Controversial very rare words like `Đắk Lắk, Kạn, Kon, quin/quịt, qui/quí ... is not included in Vietnamese`
+    Note: quin/quịt, qui/quí still can be recognized as a Vietnamese word (see Vietnamese.analyze), but you cannot 
+    type quin/quịt, qui/quí in v7. (see Vietnamese.synthesize)
     """
     location = "<vietnamese.Vietnamese>"
     
-    tones = [0, 1, 2, 3, 4, 5, 6, 7]
+    tones: List[Tone] = [0, 1, 2, 3, 4, 5, 6, 7]
     
     # Treat `i` and `y` the same so there will be no `y`; treat `p`, `t`, `c`, `ch`  and  `m`, `n`, `ng`, `nh` the same
-    rhymes_families = [
+    rhymes_families: List[RhymeFamily] = [
         'a',
         'an',
         'anh',
@@ -608,23 +614,23 @@ class Vietnamese(Alphabet):
     ]
     # rhymes_families_with_q_start_with_o = ['oa', 'oan', 'oanh', 'oang', 'oam', 'oăn', 'oăng', 'oăm', 'oe', 'oen', 'oai', 'oay', 'oao', 'oau', 'oeo']
     rhymes_families_with_q = [
-        'ua',
-        'uan',
-        'uanh',
-        'uang',
-        'uam',
-        'uăn',
-        'uăng',
-        'uăm',
+        'ua', # originally oa
+        'uan', # originally oan
+        'uanh', # originally oanh
+        'uang', # originally oang
+        'uam', # originally oam
+        'uăn', # originally oăn
+        'uăng', # originally oăng
+        'uăm', # originally oăm
         'uân',
         'uâng',
-        'ue',
-        'uen',
+        'ue', # originally oe
+        'uen', # originally oen
         'uê',
         'uên',
         'uênh', #
-        'uy', 'ui', #
-        'uyn', 'uin', #
+        'uy', # NO qui
+        'uyn', # NO quin
         'uynh',
         'uym',
         'uông', # Special: quốc
@@ -763,7 +769,7 @@ class Vietnamese(Alphabet):
         'x', 
     ]
     # Grouped similar consonants to a family
-    consonant_families = [
+    consonant_families: List[ConsonantFamily] = [
         '0',
         'b', 
         'ch', 
@@ -901,7 +907,7 @@ class Vietnamese(Alphabet):
     y_s = ['y', 'ý', 'ỳ', 'ỷ', 'ỹ', 'ỵ']
     
     @staticmethod
-    def chars_with_diacritic(char: str) -> list[str]:
+    def chars_with_diacritic(char: str) -> List[str]:
         '''
         From a non-diacritic Vietnamese `vowel` to a list of 6 characters of that vowel with diacritics.
         '''
@@ -918,7 +924,7 @@ class Vietnamese(Alphabet):
         ]
     
     @staticmethod
-    def rhyme_with_tones(rhyme_family: str, consonant_family: str) -> list[str]:
+    def rhyme_with_tones(rhyme_family: RhymeFamily, consonant_family: ConsonantFamily) -> List[str]:
         """
         From a `rhyme_family` to a list of toned rhyme of that family.
         If the rhyme family is enterable (ends with a consonant), the list will contain 8 tones, otherwise 6 tones.
@@ -978,7 +984,7 @@ class Vietnamese(Alphabet):
         return final_rhymes
     
     @staticmethod
-    def word_with_tones(consonant_family: str, rhyme_family: str) -> list[list[str]]:
+    def word_with_tones(consonant_family: ConsonantFamily, rhyme_family: RhymeFamily) -> List[List[Word]]:
         '''
         More general function of synthesize, obtain all tones of a given consonant_family and rhyme_family.
         
@@ -1039,7 +1045,7 @@ class Vietnamese(Alphabet):
             return [[final_consonant + rhyme_with_tone for rhyme_with_tone in rhyme_with_tones]] 
     
     @staticmethod
-    def synthesize(consonant_family: str, rhyme_family: str, tone: int) -> list[str]:
+    def synthesize(consonant_family: ConsonantFamily, rhyme_family: RhymeFamily, tone: Tone) -> List[Word]:
         """
         Reverse function of `analyze()`.
 
@@ -1105,7 +1111,7 @@ class Vietnamese(Alphabet):
         return word
     
     @staticmethod
-    def diacritic(word: str):
+    def diacritic(word: Word):
         """Return the diacritic number of a word, the index in the word which the diacritic occurs, and the vowel index on `Vietnamese.diacritic_{n}_chars`.
         
         Note that diacritic is different from tone, 
@@ -1164,10 +1170,10 @@ class Vietnamese(Alphabet):
         return current_diacritic, idx_in_word, char_idx
             
     @staticmethod
-    def analyze(word: str) -> tuple[str, str, int] | tuple[str, None, None]:
+    def analyze(word: Word) -> Union[Triplet, str]:
         """
         Please use lower-case word.
-        Return the consonant family, rhyme family, and tone of the word. If the word is not recognized as a Vietnamese word, return `(word, None, None)` instead.
+        Return the consonant family, rhyme family, and tone of the word. If the word is not recognized as a Vietnamese word, return `word` instead.
         - Consonant families: ∈`Vietnamese.consonant_families` 
             - `q`, `c`, `k` -> `k`
             - `ng`, `ngh` -> `ng`
@@ -1189,7 +1195,7 @@ class Vietnamese(Alphabet):
         original_word = word
         diacritic, idx_in_word, char_idx = Vietnamese.diacritic(word)
         if diacritic is None:
-            return original_word, None, None
+            return original_word
         
         # Replace character with diacritic with its non-diacritic counterpart
         if idx_in_word is not None:
@@ -1210,51 +1216,51 @@ class Vietnamese(Alphabet):
         
         # Now 'word' is clean (in the structure of CONSONANT+RHYME_FAMILY)
         if word in Vietnamese.rhymes_families_isolated:
-            return '0', Vietnamese.y2i(word), tone
+            return Triplet(consonant='0', rhyme=Vietnamese.y2i(word), tone=tone)
         if word[:1] == 'c' and word[1:] in Vietnamese.rhymes_families_with_c:
-            return 'k', word[1:], tone
+            return Triplet(consonant='k', rhyme=word[1:], tone=tone)
         if word[:1] == 'q' and word[1:] in Vietnamese.rhymes_families_with_q:
             # `qua` is actually `koa`, `quen` is actually `koen`, quau is actually `koau`, `queo` is actually `koeo`
             if word[2] == 'a' or word[2] == 'ă' or word[2] == 'e':
-                return 'k', 'o' + word[2:], tone
+                return Triplet(consonant='k', rhyme='o' + word[2:], tone=tone)
             if word[1:] == 'ui':
-                return 'k', 'uy', tone
+                return Triplet(consonant='k', rhyme='uy', tone=tone)
             if word[1:] == 'uin':
-                return 'k', 'uyn', tone
-            return 'k', word[1:], tone
+                return Triplet(consonant='k', rhyme='uyn', tone=tone)
+            return Triplet(consonant='k', rhyme=word[1:], tone=tone)
         if word[:1] == 'k' and word[1:] in Vietnamese.rhymes_families_with_k:
-            return 'k', Vietnamese.y2i(word[1:]), tone
+            return Triplet(consonant='k', rhyme=Vietnamese.y2i(word[1:]), tone=tone)
         if word[:1] == 'g' and word[1:] in Vietnamese.rhymes_families_with_g:
-            return 'g', word[1:], tone
+            return Triplet(consonant='g', rhyme=word[1:], tone=tone)
         if word[:2] == 'ng' and word[2:] in Vietnamese.rhymes_families_with_ng:
-            return 'ng', word[2:], tone
+            return Triplet(consonant='ng', rhyme=word[2:], tone=tone)
         if word[:2] == 'gh' and word[2:] in Vietnamese.rhymes_families_with_ngh_gh:
-            return 'g', word[2:], tone
+            return Triplet(consonant='g', rhyme=word[2:], tone=tone)
         if word[:3] == 'ngh' and word[3:] in Vietnamese.rhymes_families_with_ngh_gh:
-            return 'ng', word[3:], tone
+            return Triplet(consonant='ng', rhyme=word[3:], tone=tone)
         if word[:2] == 'gi' and word[2:] in Vietnamese.rhymes_families_with_gi:
             # `gi` is z+i
             if word[2:] == '':
-                return 'z', 'i', tone
+                return Triplet(consonant='z', rhyme='i', tone=tone)
             # `gin` is z+in
             elif word[2:] == 'n':
-                return 'z', 'in', tone
+                return Triplet(consonant='z', rhyme='in', tone=tone)
             # `giết`, `giêng`
             elif word[2:] == 'ên' or word[2:] == 'êng':
-                return 'z', 'i' + word[2:], tone
-            return 'z', word[2:], tone
+                return Triplet(consonant='z', rhyme='i' + word[2:], tone=tone)
+            return Triplet('z', rhyme=word[2:], tone=tone)
         if word[:1] in Vietnamese.other_consonants and word[1:] in Vietnamese.rhymes_families_with_other_consonants:
-            return word[:1], Vietnamese.y2i(word[1:]), tone
+            return Triplet(consonant=word[:1], rhyme=Vietnamese.y2i(word[1:]), tone=tone)
         if word[:2] in Vietnamese.other_consonants and word[2:] in Vietnamese.rhymes_families_with_other_consonants:
-            return word[:2], Vietnamese.y2i(word[2:]), tone
+            return Triplet(consonant=word[:2], rhyme=Vietnamese.y2i(word[2:]), tone=tone)
         
-        # No match with Vietnamese structure
-        return original_word, None, None
+        # No match with any Vietnamese word
+        return original_word
     
     def isVietnamese(word: str) -> bool:
-        return None not in Vietnamese.analyze(word)
+        return isinstance(Vietnamese.analyze(word), Triplet)
     
     @staticmethod
-    def areVietnamese(words: list[str]) -> bool:
+    def areVietnamese(words: List[str]) -> bool:
         return all(Vietnamese.isVietnamese(word) for word in words)
         

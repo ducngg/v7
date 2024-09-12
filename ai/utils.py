@@ -60,12 +60,13 @@ def generate(model: GPT, seq: str, n: int):
             
     return tokenizer.detokenize(generated_tokens)
 
-def get_model(path=MODEL_PATH):
+def get_model(path=MODEL_PATH, verbose=1):
     model = GPT()
     model.load_state_dict(torch.load(path, map_location=torch.device(DEVICE)), strict=False)
-    print(f"Model loaded from {path}")
     
-    total_params = sum(p.numel() for p in model.parameters())
-    print(f"Total number of parameters: {total_params}")
+    if verbose:
+        print(f"\tCheckpoint path: {path}")
+        total_params = sum(p.numel() for p in model.parameters())
+        print(f"\tTotal number of parameters: {total_params}")
     
     return model
