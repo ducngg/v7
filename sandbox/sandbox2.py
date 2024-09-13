@@ -4,8 +4,8 @@ This sandbox is for testing the functionality, don't need to care
 import sys, os, time, json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from vietnamese import Vietnamese
-import utils
+from utils.vietnamese import Vietnamese
+import utils.preprocess as preprocess
 import time
 
 
@@ -30,7 +30,7 @@ def main():
             # if l > max_line:
             #     break
             
-            for word in utils.separate_words(line.strip().lower()):
+            for word in preprocess.seperate_words(line.strip().lower()):
                 cf, rf, t = Vietnamese.analyze(word)
                 total += 1
                 if cf and not rf:
@@ -79,7 +79,7 @@ def main3():
         words = []
         i = 0
         for line in file:
-            words.extend(utils.separate_words(line.strip().lower()))
+            words.extend(preprocess.seperate_words(line.strip().lower()))
             i += 1
             if i >= max_lines:
                 break

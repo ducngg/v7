@@ -208,8 +208,8 @@ In contrast to analyzing, synthesizing is the process of mapping a tuple of `(co
 Use `Vietnamese.synthesize(consonant: str, rhyme: str, tone: int)` or you can use `Dictionary.db[consonant][rhyme][tone]` for this process. Both methods yield the same result, but the second method is generally faster as it directly retrieves the keys. 
 
 ```python
-from vietnamese import Vietnamese
-from dictionary import Dictionary
+from utils.vietnamese import Vietnamese
+from utils.dictionary import Dictionary
 
 print(Vietnamese.synthesize('k', 'u', 4))
 print(Vietnamese.synthesize('k', 'uông', 6))
@@ -270,7 +270,8 @@ print(Dictionary.db['k']['ưu'][3])
 This is the process showcased in the demo GIF above. If you prefer testing via a Python script, you can use the following code.
 
 ```python
-from inputmethod import InputMethod
+from imethod.v7 import InputMethod # Dictionary mode
+# from imethod.v7ai import AIInputMethod # AI mode
 inputAgent = InputMethod()
 
 print(inputAgent.predict('xi0chao2mo5ng2'))

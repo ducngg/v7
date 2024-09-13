@@ -1,10 +1,12 @@
-from vietnamese import Vietnamese
 import json
 import copy
 import time
 import sys
 import os
-import utils
+
+from . import preprocess
+from .vietnamese import Vietnamese
+
 from functools import reduce
 from itertools import product
 
@@ -148,7 +150,7 @@ class Dictionary():
                 continue
             
             file_path = os.path.join(path, file_path)
-            total_lines = utils.count_lines(file_path)
+            total_lines = preprocess.count_lines(file_path)
             
             print(f'Processing on {file_path}...')
             with open(LOG_PATH, 'a') as f:
@@ -165,7 +167,7 @@ class Dictionary():
                 for line in file:
                     # Process each line here
                     l += 1
-                    line = utils.standardize_data(line)
+                    line = preprocess.standardize_data(line)
                     
                     for word in line.split():
                         cf, rf, t = Vietnamese.analyze(word)

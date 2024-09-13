@@ -2,7 +2,7 @@ import re
 from functools import reduce
 import sys
 
-def separate_words(paragraph):
+def seperate_words(paragraph):
     # Define the regular expression pattern to split the paragraph into words
     pattern = r'\b\w+\b'  # This pattern matches word boundaries (\b), followed by one or more word characters (\w+), and another word boundary (\b)
 
@@ -24,7 +24,7 @@ def getVietnameseTextFrom_vndictyaml(verbosity=0):
         
         if verbosity >= 1:
             print(len(text))
-            print(len(separate_words(text)))
+            print(len(seperate_words(text)))
 
     return text
 
@@ -69,7 +69,7 @@ def count_lines(file_path):
     return line_count
 
 def get_words_line_by_line(path):
-    from vietnamese import Vietnamese
+    from .vietnamese import Vietnamese
     with open(path, 'r') as file:
         for line in file:
             line = standardize_data(line)
@@ -86,31 +86,3 @@ def get_line_by_line(path):
     with open(path, 'r') as file:
         for line in file:
             yield line
-            
-import time
-from typing import Callable, TypeVar
-
-R = TypeVar('R')
-
-UTILS_START_TIME = time.time()
-
-def set_time():
-    global UTILS_START_TIME
-    UTILS_START_TIME = time.time()
-    
-def finish_log(task_name: str):
-    global UTILS_START_TIME
-    print(f"\tFinished `{task_name}` in {time.time() - UTILS_START_TIME:.5f} seconds")
-
-def exec(task_name: str, func: Callable[..., R], *args, verbose: int = 1, **kwargs) -> R:
-    """
-    Use this function to log the executing time of `func`.
-    """
-    set_time()
-    result = func(*args, **kwargs)
-    
-    if verbose > 0:
-        finish_log(task_name)
-        
-    return result
-

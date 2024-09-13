@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLine
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
-from vietnamese import Vietnamese
-from dictionary import Dictionary
+from utils.vietnamese import Vietnamese
+from utils.dictionary import Dictionary
 from assets.properties import Assets
 
 from typing import TYPE_CHECKING, Union
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from imethod.v7 import InputMethod
     from imethod.v7ai import AIInputMethod
 
-from compare import TelexOrVNI
+from utils.compare import TelexOrVNI
         
 HISTORY_PATH = os.path.join('history')
 if not os.path.exists(HISTORY_PATH):

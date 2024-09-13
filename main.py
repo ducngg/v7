@@ -5,7 +5,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from app.app import V7App
 from app.utils import str_to_bool
-from vietnamese import Alphabet
+from utils.vietnamese import Alphabet
 
 from models import Args
 
@@ -53,7 +53,9 @@ if __name__ == '__main__':
     
     # You cannot use a number either!
     assert args.null_consonant not in USED_COMBINATIONS, f"ERROR: {args.null_consonant} is a reserved combination!"
+    assert len(args.null_consonant) <= 2, f"ERROR: null_consonant must have length of 1 or 2!"
     assert args.end_of_rhyme not in USED_COMBINATIONS, f"ERROR: {args.end_of_rhyme} is a reserved combination!"
+    assert len(args.end_of_rhyme) == 1, f"ERROR: end_of_rhyme must have length of 1!"
     
     session = str(time.time())
     if args.ai:

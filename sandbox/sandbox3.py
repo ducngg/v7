@@ -4,14 +4,14 @@ This sandbox is for testing the functionality, don't need to care
 import sys, os, time, json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from vietnamese import Vietnamese
-import utils
+from utils.vietnamese import Vietnamese
+import utils.preprocess as preprocess
     
 rhymes = set()
 
-text = utils.getVietnameseTextFrom_vndictyaml()
+text = preprocess.getVietnameseTextFrom_vndictyaml()
 
-for word in utils.separate_words(text):
+for word in preprocess.seperate_words(text):
     cf, rf, t = Vietnamese.CRT(word.lower())
     if rf is not None:
         # if rf == 'uym':

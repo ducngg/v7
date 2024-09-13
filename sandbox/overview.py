@@ -1,9 +1,9 @@
 import sys, os, time, json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from vietnamese import Vietnamese, Alphabet
-from dictionary import Dictionary
-import utils
+from utils.vietnamese import Vietnamese, Alphabet
+from utils.dictionary import Dictionary
+import utils.preprocess as preprocess
 import time
 import numpy as np
 import statistics

@@ -1,5 +1,5 @@
-from vietnamese import Vietnamese, Alphabet
-from dictionary import Dictionary
+from utils.vietnamese import Vietnamese, Alphabet
+from utils.dictionary import Dictionary
 
 import re
 from typing import List, Optional

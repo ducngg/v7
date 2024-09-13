@@ -1,10 +1,10 @@
 import sys, os, time, json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from vietnamese import Vietnamese, Alphabet
-from dictionary import Dictionary
+from utils.vietnamese import Vietnamese, Alphabet
+from utils.dictionary import Dictionary
 from imethod.v7 import InputMethod
-import utils
+import utils.preprocess as preprocess
 import time
 import numpy as np
 import statistics
@@ -23,7 +23,7 @@ def main1():
             pass
         
 def main2():
-    object_size = utils.get_object_size(Dictionary.db)
+    object_size = preprocess.get_object_size(Dictionary.db)
     print(f"Size of Dictionary: {object_size/1024/1024:.2f} MB")
     print(f"len(db)          ~ {len(Dictionary.db)}")
     print(f"len(db[c])       ~ {len(Dictionary.db['0'])}")
@@ -63,7 +63,7 @@ def main2():
 
  
 def main22():
-    object_size = utils.get_object_size(Dictionary.db)
+    object_size = preprocess.get_object_size(Dictionary.db)
     print(f"Size of Dictionary: {object_size/1024/1024:.2f} MB")
     print(f"len(db)          ~ {len(Dictionary.db)}")
     print(f"len(db[c])       ~ {len(Dictionary.db['0'])}")
@@ -99,9 +99,9 @@ def main22():
         
 
 def main3():
-    print(f"Size of Dictionary.db_freq    : {utils.get_object_size(Dictionary.db_freq)/1024/1024:.2f} MB")
-    print(f"Size of Dictionary.db         : {utils.get_object_size(Dictionary.db)/1024/1024:.2f} MB")
-    print(f"Size of Dictionary.dictionary : {utils.get_object_size(Dictionary.dictionary)/1024/1024:.2f} MB")
+    print(f"Size of Dictionary.db_freq    : {preprocess.get_object_size(Dictionary.db_freq)/1024/1024:.2f} MB")
+    print(f"Size of Dictionary.db         : {preprocess.get_object_size(Dictionary.db)/1024/1024:.2f} MB")
+    print(f"Size of Dictionary.dictionary : {preprocess.get_object_size(Dictionary.dictionary)/1024/1024:.2f} MB")
     inputAgent = InputMethod()
     INPUT = ""
     while True:

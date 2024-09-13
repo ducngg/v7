@@ -205,8 +205,8 @@ Ngược lại với Phân tách, Hợp nhất là quá trình từ một bộ b
 Sử dụng `Vietnamese.synthesize(consonant: str, rhyme: str, tone: int)` hoặc `Dictionary.db[consonant][rhyme][tone]` cho quá trình này. Cả hai đều cho kết quả giống nhau nhưng cách thứ hai sẽ nhanh hơn vì nó truy xuất trực tiếp trên các khóa của Python Dictionary.
 
 ```python
-from vietnamese import Vietnamese
-from dictionary import Dictionary
+from utils.vietnamese import Vietnamese
+from utils.dictionary import Dictionary
 
 print(Vietnamese.synthesize('k', 'u', 4))
 print(Vietnamese.synthesize('k', 'uông', 6))
@@ -267,7 +267,8 @@ print(Dictionary.db['k']['ưu'][3])
 Quá trình này tương tự với GIF ở trên. Có thể sử dụng code như dưới đây nếu muốn dùng trực tiếp bằng Python thay vì nhập trên app.
 
 ```python
-from inputmethod import InputMethod
+from imethod.v7 import InputMethod # Chế độ Từ Điển
+# from imethod.v7ai import AIInputMethod # Chế độ AI
 inputAgent = InputMethod()
 
 print(inputAgent.predict('xi0chao2mo5ng2'))

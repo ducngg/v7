@@ -1,8 +1,10 @@
 import json
 from models import Triplet, Word
 
+from utils.decorators import singleton
+
+@singleton
 class Tokenizer:
-    location = "<ai.tokenizer.Tokenizer>"
     def __init__(
         self, 
         enum_path="checkpoints/enum.json", 
@@ -10,6 +12,8 @@ class Tokenizer:
         renum_crt_path="checkpoints/renum_crt.json",
         verbose=1
     ):  
+        self.location = "<ai.tokenizer.Tokenizer>"
+        
         with open(enum_path, 'r') as f:
             self.enum: dict[str, int] = json.load(f)
         with open(renum_path, 'r') as f:
@@ -19,8 +23,8 @@ class Tokenizer:
         self.renum_triplet = [None] + [Triplet(consonant=c, rhyme=r, tone=t) for c, r, t in self.renum_crt[1:]]
         
         if verbose:
-            print(f"{Tokenizer.location} Loaded: {len(self.renum_triplet)} tokens")
-            
+            print(f"{self.location} Loaded: {len(self.renum_triplet)} tokens")
+
                             
     def tokenize(self, words: list[str]) -> list[int]:
         return [self.enum[word] for word in words if word in self.enum]

@@ -2,7 +2,7 @@ import sys, os, time, json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from ai import tokenizer, get_model, generate, next
-from utils import exec
+from utils.logging import exec
 
 # def main1():
 #     model = exec('Load model', get_model)

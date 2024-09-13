@@ -1,6 +1,6 @@
 from imethod.v7 import InputMethod
-from vietnamese import Vietnamese
-from dictionary import Dictionary
+from .vietnamese import Vietnamese
+from .dictionary import Dictionary
 
 from functools import reduce
 import statistics

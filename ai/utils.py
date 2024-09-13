@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 import time
-from utils import standardize_data
+from utils.preprocess import standardize_data
 from .tokenizer import tokenizer
 from .configs import MAX_SEQUENCE_LEN, DEVICE, MODEL_PATH
 from .model import GPT

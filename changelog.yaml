@@ -151,4 +151,9 @@ changes:
     research: 'quin/quịt, qui/quí still can be recognized as a Vietnamese word (see Vietnamese.analyze), but you cannot type quin/quịt, qui/quí in v7. (see Vietnamese.synthesize)'
     change: 'Remove `flexible_k` since no one will need that feature anyway. Rename `flexible_tones` to `vni_tones`. (self.flexible_k = flexible_k # Only works is strict_k is False: flexible_k helps `q`, `c`, and `k` yields the same predicted words. Set to False so when you type `c`, `k`, or `q`, it just predict the words that start with that consonant.'
     description: 'Support distinct k, q, c in AI mode. Handle `quen0` problem where it just show `quen`, does not show `quên`. More general: `uê*`-`oe*` and `uâ*`-`oa*` problem'
+  - timestamp: '2024-13-09 11:19 AM'
+    research: ''
+    change: 'Add singleton to tokenizer, update docs, rename some utils files'
+    description: 'Refactor codebase: move vietnamese.py, dictionary.py... to utils/'
   
+
