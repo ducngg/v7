@@ -95,6 +95,12 @@ class InputMethod():
         
         # If no vowel -> any
         if not raw_rhyme:
+            if is_q_case:
+                possibilities = list(map(
+                    lambda rhyme: rhyme.replace('ua', 'oa').replace('uă' ,'oă').replace('ue', 'oe'),
+                    possibilities
+                ))
+                
             return possibilities
         
         # TODO: Recognizer for faster typing like {mj -> manh / minh, ty -> toi, tai, tui...}

@@ -61,6 +61,7 @@ if __name__ == '__main__':
     if args.ai:
         from imethod.v7ai import AIInputMethod
         inputAgent = AIInputMethod(**input_agent_args)
+        
     else:
         from imethod.v7 import InputMethod
         inputAgent = InputMethod(**input_agent_args)

@@ -14,7 +14,7 @@ from typing import List, Tuple, Union, Optional, Dict
 from models import ConsonantFamily, RhymeFamily, Tone, Triplet, MatchingTriplet, Word, Phrase, WordFreq
 
 class Dictionary():
-    location = "<dictionary.Dictionary>"
+    location = "<utils.dictionary.Dictionary>"
     db = {} # database
     
     db = {consonant: {} for consonant in Vietnamese.consonant_families}

@@ -15,7 +15,7 @@ class Vietnamese(Alphabet):
     Note: quin/quịt, qui/quí still can be recognized as a Vietnamese word (see Vietnamese.analyze), but you cannot 
     type quin/quịt, qui/quí in v7. (see Vietnamese.synthesize)
     """
-    location = "<vietnamese.Vietnamese>"
+    location = "<utils.vietnamese.Vietnamese>"
     
     tones: List[Tone] = [0, 1, 2, 3, 4, 5, 6, 7]
     
@@ -1248,7 +1248,7 @@ class Vietnamese(Alphabet):
             # `giết`, `giêng`
             elif word[2:] == 'ên' or word[2:] == 'êng':
                 return Triplet(consonant='z', rhyme='i' + word[2:], tone=tone)
-            return Triplet('z', rhyme=word[2:], tone=tone)
+            return Triplet(consonant='z', rhyme=word[2:], tone=tone)
         if word[:1] in Vietnamese.other_consonants and word[1:] in Vietnamese.rhymes_families_with_other_consonants:
             return Triplet(consonant=word[:1], rhyme=Vietnamese.y2i(word[1:]), tone=tone)
         if word[:2] in Vietnamese.other_consonants and word[2:] in Vietnamese.rhymes_families_with_other_consonants:
