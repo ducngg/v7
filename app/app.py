@@ -105,7 +105,7 @@ class DictUpdateWindow(QDialog):
         self.change_log.append(f"{status}: {input}")
 
 class V7App(QWidget):
-    def __init__(self, lang, inputAgent: Union["InputMethod", "AIInputMethod"], session: str = None):
+    def __init__(self, lang, inputAgent: Union["InputMethod", "AIInputMethod"], session: str = None, **kwargs):
         super().__init__()
         self.assets = Assets(lang)
         self.session = session
