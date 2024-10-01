@@ -1,4 +1,6 @@
 from typing import Literal
+# TODO: check os type for [⌘①-⌘⑨]
+
 
 class Assets:
     _title = {
@@ -18,8 +20,8 @@ class Assets:
         'vi': "Dự đoán"
     }
     _usage = {
-        'en': "Usage: Press key [①-⑨] ← → ⌫ ⏎ ",
-        'vi': "Sử dụng: Dùng phím [①-⑨] ← → ⌫ ⏎ "
+        'en': "Usage: Press key [①-⑨] [⌘①-⌘⑨] ← → ⌫ ⏎ ",
+        'vi': "Sử dụng: Dùng phím [①-⑨] [⌘①-⌘⑨] ← → ⌫ ⏎ "
     }
     _copy = {
         'en': "Copy",

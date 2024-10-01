@@ -1,13 +1,25 @@
 import sys, time, os
 import argparse
 import json
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QLabel, QPushButton, QHBoxLayout, QSpacerItem, QMessageBox, QDialog
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import (
+    QApplication, 
+    QWidget, 
+    QVBoxLayout, 
+    QTextEdit, 
+    QLineEdit, 
+    QLabel, 
+    QPushButton, 
+    QHBoxLayout, 
+    QSpacerItem, 
+    QMessageBox, 
+    QDialog
+)
+from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt
 
 from utils.vietnamese import Vietnamese
 from utils.dictionary import Dictionary
-from assets.properties import Assets
+from .properties import Assets
 
 from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
@@ -15,6 +27,7 @@ if TYPE_CHECKING:
     from imethod.v7ai import AIInputMethod
 
 from utils.compare import TelexOrVNI
+from models import PredictionState
         
 HISTORY_PATH = os.path.join('history')
 if not os.path.exists(HISTORY_PATH):
@@ -105,17 +118,15 @@ class DictUpdateWindow(QDialog):
         self.change_log.append(f"{status}: {input}")
 
 class V7App(QWidget):
-    def __init__(self, lang, inputAgent: Union["InputMethod", "AIInputMethod"], session: str = None, **kwargs):
+    def __init__(self, lang, inputAgent: Union["InputMethod", "AIInputMethod"], session: str = None, verbose: int = 0):
         super().__init__()
+        self.verbose = verbose
         self.assets = Assets(lang)
         self.session = session
         self.inputAgent = inputAgent
         self.ready = False              # If ready, pressing a number will choose the combination number shown
-        self.predictions = {
-            'lst': [],
-            'page': 0,
-            'maxpage': 0
-        }
+        self.prediction_state = PredictionState()
+        
         self.initUI()
 
     def initUI(self):
@@ -139,7 +150,7 @@ class V7App(QWidget):
         self.input_box = QLineEdit()
         self.input_box.setStyleSheet("background-color: #FFF; color: #224938; border: 1px solid #6D8C68; border-radius: 1px; font-size: 20px; font-weight: bold;")
         self.input_box.keyPressEvent = self.keyPressEventInputBox
-        self.input_box.textChanged.connect(self.predict)
+        # self.input_box.textChanged.connect(self.predict) # No need anymore
         self.input_box.returnPressed.connect(self.addRaw)
         layout.addWidget(self.input_box)
         
@@ -219,32 +230,68 @@ class V7App(QWidget):
         )
         self.common_dict_window.show()
     
-    def keyPressEventInputBox(self, event):
+    def keyPressEventInputBox(self, event: QKeyEvent):
+        
+        modifiers = event.modifiers()
+        # print(modifiers)
+        # print('\t', modifiers == Qt.ControlModifier)
+        # modifiers == Qt.MetaModifier
+        
+        # Remove the last term
         if event.key() == Qt.Key_Backspace:
-            # Remove the last term
             input = self.input_box.text()
             if input != "":
                 raws = self.inputAgent.seperate_raws(input)
                 self.input_box.setText("".join(raws[:-1]))
+                
+                self.prediction_state.buffer = self.prediction_state.buffer[:-1]
+                self.predict()
             
             # Remove the last word from result_box
             else:
                 current_result_box = self.result_box.toPlainText()
                 self.result_box.setPlainText(" ".join(current_result_box.split()[:-1]))
-                
+        
+        # Previous page
         elif self.ready and event.key() == Qt.Key_Left:
-            if self.predictions['page'] > 1:
-                self.predictions['page'] -= 1
+            if self.prediction_state.page > 1:
+                self.prediction_state.page -= 1
+            chosen_index = 0 + 9*(self.prediction_state.page - 1)
+            top_comb = self.prediction_state.lst[chosen_index]
+            self.prediction_state.buffer = top_comb.split()
             self.update_pred_result()
+        
+        # Next page
         elif self.ready and event.key() == Qt.Key_Right:
-            if self.predictions['page'] < self.predictions['maxpage']:
-                self.predictions['page'] += 1
+            if self.prediction_state.page < self.prediction_state.maxpage:
+                self.prediction_state.page += 1
+            chosen_index = 0 + 9*(self.prediction_state.page - 1)
+            top_comb = self.prediction_state.lst[chosen_index]
+            self.prediction_state.buffer = top_comb.split()
             self.update_pred_result()
+            
+        # ADVANCED: Handle Ctrl/Cmd + 1-9 key combinations: Move the chosen one to top
+        elif self.ready and modifiers & Qt.ControlModifier and Qt.Key_1 <= event.key() <= Qt.Key_9:
+            number = event.key() - Qt.Key_0  # Convert Qt.Key_1, Qt.Key_2,... to 1, 2, ...
+            true_index = number - 1
+            chosen_index = true_index + 9*(self.prediction_state.page - 1)
+            try:
+                chosen_comb = self.prediction_state.lst.pop(chosen_index)
+                self.prediction_state.lst.insert(0, chosen_comb)
+                self.prediction_state.buffer = chosen_comb.split()
+                
+                self.prediction_state.page = 1
+                self.update_pred_result()
+            except:
+                pass
+        
+        # Handle 1-9 key: Choose the combination
         elif self.ready and (event.key() >= Qt.Key_1 and event.key() <= Qt.Key_9):
             number = int(event.text())
             true_index = number - 1
+            chosen_index = true_index + 9*(self.prediction_state.page - 1)
             try:
-                comb = self.predictions['lst'][true_index + 9*(self.predictions['page'] - 1)]
+                comb = self.prediction_state.lst[chosen_index]
                 self.update_result_box(comb)
                 self.update_improvement_log(comb)
                 
@@ -252,19 +299,28 @@ class V7App(QWidget):
                     with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a') as history:
                         history.write(f"{self.input_box.text()} {comb}\n")
                 
-                self.reset_input_box()            
+                self.reset_input_box()
+                self.reset_predict_box()   
             except:
                 pass
+        
+        # Base case: normal input to the input_box
         else:
             QLineEdit.keyPressEvent(self.input_box, event)
+        
+            # just predict if event is key A -> Z or 0 -> 9       
+            if (event.key() >= Qt.Key_A and event.key() <= Qt.Key_Z) or \
+            (event.key() >= Qt.Key_0 and event.key() <= Qt.Key_9):
+                self.predict()
     
     def reset_input_box(self):
         self.input_box.clear()
-        self.predictions = {
-            'lst': [],
-            'page': 0,
-            'maxpage': 0
-        }
+        self.prediction_state.reset()
+        self.ready = False
+    
+    def reset_predict_box(self):
+        self.predict_box.clear()
+        self.predict_info.setText(f"")
         self.ready = False
         
     def clear_text(self):
@@ -282,28 +338,68 @@ class V7App(QWidget):
         Check if the current inpot_box is predictable or not.
         '''
         try:
-            # combination_possibilities = run_function_with_timeout(self.inputAgent.predict, timeout_seconds=3, input_string=input)
-            combination_possibilities = self.inputAgent.predict(input, context=context)
+            # AI Mode
+            if "AI" in self.inputAgent.mode:
+                
+                # Nothing in buffer
+                if not self.prediction_state.buffer:
+                    combination_possibilities = self.inputAgent.predict(input, context=context)
+                    
+                # Buffer has something
+                else:
+                    raws = self.inputAgent.seperate_raws(input)
+                    last = raws[-1]
+                    
+                    # len(raws) == len(buffer) => Just after delete
+                    if len(raws) == len(self.prediction_state.buffer):
+                        buffer = ' '.join(self.prediction_state.buffer[:-1])
+                    
+                        combination_possibilities = self.inputAgent.predict(
+                            last, 
+                            context=context+' '+buffer
+                        )
+                        combination_possibilities.remove(self.prediction_state.buffer[-1])
+                        combination_possibilities.insert(0, self.prediction_state.buffer[-1])
+                        
+                        combination_possibilities = [
+                            (buffer + ' ' + combination_possibility).strip()
+                            for combination_possibility in combination_possibilities
+                        ]
+                        
+                    # Forward predicting
+                    else:
+                        buffer = ' '.join(self.prediction_state.buffer)
+                    
+                        combination_possibilities = self.inputAgent.predict(
+                            last, 
+                            context=context+' '+buffer
+                        )
+                        
+                        combination_possibilities = [
+                            buffer + ' ' + combination_possibility
+                            for combination_possibility in combination_possibilities
+                        ]
+                        
+                    if self.verbose:
+                        print(f"{raws=} -> {last=} || {context=} + {buffer=}")
+            
+            # Dictionary Mode
+            else:
+                combination_possibilities = self.inputAgent.predict(input, context=context)
+            
             if combination_possibilities is None:
                 raise Exception
-            '''
-            # If predicting process is timed out
-            except TimeoutError:
-                print("Function execution exceeded timeout")
-                self.reset_input_box()
-            '''
             
         # If not predictable
         except:
-            self.predict_box.clear()
-            self.predict_info.setText(f"")
-            self.ready = False
+            self.reset_predict_box()
         
         # If predictable  
         else:
-            self.predictions['lst'] = combination_possibilities
-            self.predictions['page'] = 1
-            self.predictions['maxpage'] = (len(combination_possibilities) - 1) // 9 + 1
+            self.prediction_state.lst = combination_possibilities
+            self.prediction_state.page = 1
+            self.prediction_state.maxpage = (len(combination_possibilities) - 1) // 9 + 1
+            self.prediction_state.buffer = self.prediction_state.lst[0].split()
             self.update_pred_result()    
             self.ready = True
     
@@ -313,17 +409,19 @@ class V7App(QWidget):
     
     def update_predict_box(self):
         self.predict_box.clear()            
-        showing = self.predictions['lst'][
-            0 + 9*(self.predictions['page'] - 1):
-            9 + 9*(self.predictions['page'] - 1)
+        showing = self.prediction_state.lst[
+            0 + 9*(self.prediction_state.page - 1):
+            9 + 9*(self.prediction_state.page - 1)
         ]
-        for i, comb in enumerate(showing, start=1):
+        
+        self.predict_box.append(f"{1}\t{showing[0]}\t←")
+        for i, comb in enumerate(showing[1:], start=2):
             self.predict_box.append(f"{i}\t{comb}")
             # self.predict_box.append(f"{i} ⎯⎯⎯ {comb}")
             # self.predict_box.append(f"{i}{' '*(3+(i-1)//3*2)}{comb}")
             
     def update_predict_info(self):
-        self.predict_info.setText(f"{self.assets.page}\n{self.predictions['page']}/{self.predictions['maxpage']}")
+        self.predict_info.setText(f"{self.assets.page}\n{self.prediction_state.page}/{self.prediction_state.maxpage}")
     def update_pred_result(self):
         self.update_predict_box()
         self.update_predict_info()

@@ -1,11 +1,24 @@
-from typing import Union, Literal
+from typing import List, Union, Literal
 from pydantic import BaseModel
+from .primitive import Phrase, Word
 
 class Args(BaseModel):
     verbose: int = 0
-    lang: str = Union[Literal["en"], Literal["vi"]]
+    lang: Union[Literal["en"], Literal["vi"]]
     ai: bool
     vni_tones: bool
     strict_k: bool
     null_consonant: str
     end_of_rhyme: str
+
+class PredictionState(BaseModel):
+    lst: List[Phrase] = []
+    page: int = 0
+    maxpage: int = 0
+    buffer: List[Word] = []
+    
+    def reset(self):
+        self.lst = []
+        self.page = 0
+        self.maxpage = 0
+        self.buffer = []
