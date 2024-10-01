@@ -44,6 +44,15 @@ Currently, you can use the below script to open an app to try `v7` method, futur
 
 This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis).
 
+<!-- {0: 1811243,
+ 1: 1177092,
+ 2: 1486109,
+ 3: 987875,
+ 4: 353059,
+ 5: 972686,
+ 6: 815346,
+ 7: 703205} -->
+
 **Note:** *If you aren't familiar with 8-tone system, you can still config to use traditional VNI 6-tone. But using 8-tone system is highly recommended for much much better AI result!* 
 
 ### Modes
