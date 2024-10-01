@@ -6,8 +6,21 @@ from models import Raw, Triplet, MatchingTriplet, Word, Phrase
 
 class AIInputMethod(InputMethod):
     location = "<imethod.v7ai.AIInputMethod>"
-    def __init__(self, vni_tones=False, strict_k=False, null_consonant='hh', end_of_rhyme='.', verbose=1) -> None:
-        super().__init__(vni_tones, strict_k, null_consonant, end_of_rhyme)
+    def __init__(
+        self, 
+        *, 
+        vni_tones=False, 
+        strict_k=False, 
+        null_consonant='hh', 
+        end_of_rhyme='.', 
+        verbose=1
+    ) -> None:
+        super().__init__(
+            vni_tones=vni_tones, 
+            strict_k=strict_k, 
+            null_consonant=null_consonant, 
+            end_of_rhyme=end_of_rhyme
+        )
         self.mode = "[AI]"
         self.SOS = "tôi" # start of string
         

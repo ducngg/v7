@@ -2,6 +2,7 @@ from typing import Union, Literal
 from pydantic import BaseModel
 
 class Args(BaseModel):
+    verbose: int = 0
     lang: str = Union[Literal["en"], Literal["vi"]]
     ai: bool
     vni_tones: bool

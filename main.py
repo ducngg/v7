@@ -42,6 +42,10 @@ if __name__ == '__main__':
         default=".",
         help="Specify the end of rhyme (to yield exact short rhyme)."
     )
+    parser.add_argument("-y", "--verbose", type=int, # y for yapping
+        default=0,
+        help="Specify the verbosity level."
+    )
     
     args: Args = parser.parse_args()
     input_agent_args = {
@@ -68,6 +72,7 @@ if __name__ == '__main__':
         
     app = QApplication(sys.argv)
     run_app = V7App(
+        verbose=args.verbose,
         lang=args.lang,
         inputAgent=inputAgent, 
         session=session

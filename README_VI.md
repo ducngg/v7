@@ -4,6 +4,8 @@
 
 Dự án này phân tích tiếng Việt để phát triển một phương pháp gõ nhanh hơn bằng cách dự đoán từ dựa trên một phần từ muốn nhập. Ví dụ, chỉ cần nhập `x0ch2` sẽ có thể dự đoán ra `xin chào`.
 
+*Độ toàn diện:* Nói ngắn gọn, `v7` có thể xem như là một VNI phiên bản nhanh hơn, vì vậy bạn hoàn toàn có thể nhập tất cả mọi từ tiếng Việt có thể nhập.
+
 Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để mở ứng dụng để sử dụng `v7`, trong tương lai sẽ tích hợp trực tiếp lên bàn phím để có thể sử dụng trực tiếp không cần qua app.
 
 ![Demo](assets/v7ai.gif)
@@ -35,6 +37,9 @@ Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để m
   - `5` cho dấu nặng (thanh ["trầm khứ"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis)): `nhậm`, `phụng`, `độn`, `mạnh`... (xem thanh `7` để thấy sự khác biệt)
   - `6` cho thanh ["phù nhập"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis): `cấp`, `tiếc`, `tất`, `thích`... (các từ có dấu sắc và kết thúc bằng `p`, `c`, `t`, `ch` sẽ là thanh `6`)
   - `7` cho thanh ["trầm nhập"](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis): `nhập`, `phục`, `đột`, `mạch`... (các từ có dấu nặng và kết thúc bằng `p`, `c`, `t`, `ch` sẽ là thanh `7`)
+  
+- **Nguyên âm đặc biệt**:
+  - Chả cần quan tâm `ă`, `â`, `ê`, `ô`, `ơ`, `ư`. Vì chỉ cần nhập `a`, `e`, `o`, `u` là `v7` có thể hiểu được và đưa ra dự đoán đúng ý nhất! Tính năng này giúp giảm đáng kể thời gian nhập.
 
 Thanh điệu được mở rộng so với 6 dấu của VNI. Xem [Hệ 8 thanh điệu trong tiếng Việt](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis) để hiểu rõ hơn về 8 thanh điệu.
 

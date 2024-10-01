@@ -4,6 +4,8 @@
 
 This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting only `x0ch2` should yield `xin chào` as the predicted output.
 
+*Completeness:* `v7` is basically better VNI, everything VNI can do, `v7` also can do. So you can input any possible Vietnamese words with `v7`.
+
 Currently, you can use the below script to open an app to try `v7` method, future plans will integrate with the keyboard so that you don't have to open the app to use `v7` method anymore.
 
 ![Demo](assets/v7ai.gif)
@@ -36,6 +38,9 @@ Currently, you can use the below script to open an app to try `v7` method, futur
   - `5` for normal underdot: `nhậm`, `phụng`, `độn`, `mạnh`... (compare with `7` to see the differences)
   - `6` for `entering` acute: `cấp`, `tiếc`, `tất`, `thích`... (everything with acute and ends with `p`, `t`, `c`, `ch` must be tone `6`)
   - `7` for `entering` underdot: `nhập`, `phục`, `đột`, `mạch`... (everything with underdot and ends with `p`, `t`, `c`, `ch` must be tone `7`)
+  
+- **Nguyên âm đặc biệt**:
+  - Lots of `ă`, `â`, `ê`, `ô`, `ơ`, `ư` when typing Vietnamese? Not a problem anymore because just typing `a`, `e`, `o`, `u` and `v7` will predict the most suitable ones for you! This feature also helps reducing number of keys you have to type!
 
 This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis).
 

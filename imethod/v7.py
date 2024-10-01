@@ -7,7 +7,14 @@ from models import RhymeFamily, RawTriplet, Raw, MatchingTriplet, Word, Phrase
 
 class InputMethod():
     location = "<imethod.v7.InputMethod>"
-    def __init__(self, vni_tones=False, strict_k=False, null_consonant='hh', end_of_rhyme='.') -> None:
+    def __init__(
+        self, 
+        *, 
+        vni_tones=False, 
+        strict_k=False, 
+        null_consonant='hh', 
+        end_of_rhyme='.'
+    ) -> None:
         self.mode = "[Dictionary]"
         self.vni_tones = vni_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7
         self.strict_k = strict_k

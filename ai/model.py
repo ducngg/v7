@@ -12,6 +12,15 @@ from .configs import MAX_SEQUENCE_LEN, TOTAL_WORDS
 # -----------------------------------------------------------------------------
 # From Andrej Karpathy build nanoGPT
 
+@dataclass
+class GPTConfig:
+    block_size: int = MAX_SEQUENCE_LEN # Current max sequence length
+    vocab_size: int = TOTAL_WORDS # Run overview.py for more information
+    n_layer: int = 8 # number of layers
+    n_head: int = 8 # number of heads
+    n_embd: int = 256 # embedding dimension
+
+
 class CausalSelfAttention(nn.Module):
 
     def __init__(self, config):
@@ -70,15 +79,7 @@ class Block(nn.Module):
         x = x + self.attn(self.ln_1(x))
         x = x + self.mlp(self.ln_2(x))
         return x
-
-@dataclass
-class GPTConfig:
-    block_size: int = MAX_SEQUENCE_LEN # Current max sequence length
-    vocab_size: int = TOTAL_WORDS # Run overview.py for more information
-    n_layer: int = 8 # number of layers
-    n_head: int = 8 # number of heads
-    n_embd: int = 256 # embedding dimension
-
+    
 class GPT(nn.Module):
 
     def __init__(self, config: GPTConfig = GPTConfig()):
