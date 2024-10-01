@@ -41,6 +41,15 @@ Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để m
 - **Nguyên âm đặc biệt**:
   - Chả cần quan tâm `ă`, `â`, `ê`, `ô`, `ơ`, `ư`. Vì chỉ cần nhập `a`, `e`, `o`, `u` là `v7` có thể hiểu được và đưa ra dự đoán đúng ý nhất! Tính năng này giúp giảm đáng kể thời gian nhập.
 
+<!-- {0: 1811243,
+ 1: 1177092,
+ 2: 1486109,
+ 3: 987875,
+ 4: 353059,
+ 5: 972686,
+ 6: 815346,
+ 7: 703205} -->
+
 Thanh điệu được mở rộng so với 6 dấu của VNI. Xem [Hệ 8 thanh điệu trong tiếng Việt](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis) để hiểu rõ hơn về 8 thanh điệu.
 
 **Lưu ý:** *Nếu không quen với hệ 8 thanh điệu, ta hoàn toàn có thể chọn dùng 6 dấu như VNI thông thường. Nhưng sử dụng hệ 8 thanh điệu sẽ có kết quả dự đoán tốt hơn rất nhiều!*
