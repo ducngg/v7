@@ -19,6 +19,7 @@ from PyQt5.QtCore import Qt
 
 from utils.vietnamese import Vietnamese
 from utils.dictionary import Dictionary
+from utils.logging import exec
 from .properties import Assets
 
 from typing import TYPE_CHECKING, Union
@@ -131,7 +132,7 @@ class V7App(QWidget):
 
     def initUI(self):
         self.setWindowTitle(self.assets.title + ' ' + self.inputAgent.mode)
-        self.setGeometry(100, 100, 700, 500)
+        self.setGeometry(100, 100, 900, 500)
         self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #123d2c); color: #FFF;};")
         # TODO: Add logo
         layout = QVBoxLayout()
@@ -140,6 +141,13 @@ class V7App(QWidget):
         
         welcome_label = QLabel(self.assets.welcome)
         welcome_layout.addWidget(welcome_label)
+        
+        logo_label = QLabel()
+        logo_pixmap = QPixmap("assets/v7ai.1.png")
+        logo_pixmap = logo_pixmap.scaledToHeight(30, Qt.SmoothTransformation)
+        # logo_pixmap = logo_pixmap.scaled(30, 30, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        logo_label.setPixmap(logo_pixmap)
+        welcome_layout.addWidget(logo_label)
         
         help_button = QPushButton(self.assets.help)
         help_button.setFixedWidth(50)
@@ -330,65 +338,76 @@ class V7App(QWidget):
         clipboard = QApplication.clipboard()
         clipboard.setText(self.result_box.toPlainText())
         
-    def predict(self):
+    def call_predict(self):
         input = self.input_box.text()
         context = self.result_box.toPlainText()
         
+        # AI Mode
+        if "AI" in self.inputAgent.mode:
+            # Nothing in buffer
+            if not self.prediction_state.buffer:
+                combination_possibilities = self.inputAgent.predict(input, context=context)
+                
+            # Buffer has something
+            else:
+                raws = self.inputAgent.seperate_raws(input)
+                last = raws[-1]
+                
+                # len(raws) == len(buffer) => Just after delete
+                if len(raws) == len(self.prediction_state.buffer):
+                    buffer = ' '.join(self.prediction_state.buffer[:-1])
+                
+                    combination_possibilities = self.inputAgent.predict(
+                        last, 
+                        context=context+' '+buffer
+                    )
+                    
+                    # Still let the word in buffer to the top
+                    combination_possibilities.remove(self.prediction_state.buffer[-1])
+                    combination_possibilities.insert(0, self.prediction_state.buffer[-1])
+                    
+                    combination_possibilities = [
+                        (buffer + ' ' + combination_possibility).strip()
+                        for combination_possibility in combination_possibilities
+                    ]
+                    
+                # Forward predicting
+                else:
+                    buffer = ' '.join(self.prediction_state.buffer)
+
+                    # Just predict the last term, then concatenate with buffer
+                    combination_possibilities = self.inputAgent.predict(
+                        last, 
+                        context=context+' '+buffer
+                    )
+                    
+                    combination_possibilities = [
+                        buffer + ' ' + combination_possibility
+                        for combination_possibility in combination_possibilities
+                    ]
+                    
+                if self.verbose:
+                    print(f"{raws=} -> {last=} || {context=} + {buffer=}")
+                    
+        # Dictionary Mode
+        else:
+            combination_possibilities = self.inputAgent.predict(input, context=context)
+            
+        return combination_possibilities
+        
+    def predict(self):
         '''
         Check if the current inpot_box is predictable or not.
         '''
         try:
-            # AI Mode
-            if "AI" in self.inputAgent.mode:
-                
-                # Nothing in buffer
-                if not self.prediction_state.buffer:
-                    combination_possibilities = self.inputAgent.predict(input, context=context)
-                    
-                # Buffer has something
-                else:
-                    raws = self.inputAgent.seperate_raws(input)
-                    last = raws[-1]
-                    
-                    # len(raws) == len(buffer) => Just after delete
-                    if len(raws) == len(self.prediction_state.buffer):
-                        buffer = ' '.join(self.prediction_state.buffer[:-1])
-                    
-                        combination_possibilities = self.inputAgent.predict(
-                            last, 
-                            context=context+' '+buffer
-                        )
-                        combination_possibilities.remove(self.prediction_state.buffer[-1])
-                        combination_possibilities.insert(0, self.prediction_state.buffer[-1])
-                        
-                        combination_possibilities = [
-                            (buffer + ' ' + combination_possibility).strip()
-                            for combination_possibility in combination_possibilities
-                        ]
-                        
-                    # Forward predicting
-                    else:
-                        buffer = ' '.join(self.prediction_state.buffer)
-                    
-                        combination_possibilities = self.inputAgent.predict(
-                            last, 
-                            context=context+' '+buffer
-                        )
-                        
-                        combination_possibilities = [
-                            buffer + ' ' + combination_possibility
-                            for combination_possibility in combination_possibilities
-                        ]
-                        
-                    if self.verbose:
-                        print(f"{raws=} -> {last=} || {context=} + {buffer=}")
-            
-            # Dictionary Mode
-            else:
-                combination_possibilities = self.inputAgent.predict(input, context=context)
+            combination_possibilities = exec(
+                "call_predict",
+                self.call_predict,
+                verbose=self.verbose
+            )
             
             if combination_possibilities is None:
-                raise Exception
+                raise Exception # TODO: may raise something more clever
             
         # If not predictable
         except:
