@@ -39,7 +39,7 @@ Currently, you can use the below script to open an app to try `v7` method, futur
   - `6` for `entering` acute: `cấp`, `tiếc`, `tất`, `thích`... (everything with acute and ends with `p`, `t`, `c`, `ch` must be tone `6`)
   - `7` for `entering` underdot: `nhập`, `phục`, `đột`, `mạch`... (everything with underdot and ends with `p`, `t`, `c`, `ch` must be tone `7`)
   
-- **Nguyên âm đặc biệt**:
+- **Special vowels**:
   - Lots of `ă`, `â`, `ê`, `ô`, `ơ`, `ư` when typing Vietnamese? Not a problem anymore because just typing `a`, `e`, `o`, `u` and `v7` will predict the most suitable ones for you! This feature also helps reducing number of keys you have to type!
 
 This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikipedia.org/wiki/Vietnamese_phonology#Eight-tone_analysis).
