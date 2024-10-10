@@ -159,5 +159,12 @@ changes:
     research: 'Buffer for AI, and use Cmd/Ctrl+Position for changing top predicted word or something. Greatly improve performance'
     change: 'Update README, change the behaviour of input event when typing'
     description: 'HUGE FRONT-END IMPROVEMENTS'
+  - timestamp: '2024-03-10 10:10 PM'
+    research: ''
+    change: ''
+    description: 'Make a simple logo, enable minimalism mode'
+  - timestamp: '2024-10-10 10:18 AM'
+    research: 'GET READY FOR INTEGRATED KEYBOARD'
+    change: 'css styles will be in assets'
+    description: 'Enable size config'
   
-

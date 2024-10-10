@@ -3,14 +3,16 @@ from pydantic import BaseModel
 from .primitive import Phrase, Word
 
 class Args(BaseModel):
-    verbose: int = 0
+    verbose: int
+    minimal: bool
+    size: str
     lang: Union[Literal["en"], Literal["vi"]]
     ai: bool
     vni_tones: bool
     strict_k: bool
     null_consonant: str
     end_of_rhyme: str
-
+    
 class PredictionState(BaseModel):
     lst: List[Phrase] = []
     page: int = 0

@@ -1,5 +1,7 @@
 import argparse
 
+SUPPORTED_SIZES = ['s', 'l']
+
 def str_to_bool(value: str) -> bool:
     if value.lower() in ('true', 'yes', 'y', '1'):
         return True

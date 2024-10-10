@@ -1,8 +1,50 @@
 from typing import Literal
 # TODO: check os type for [⌘①-⌘⑨]
 
-
+GOLDEN_RATIO = 1.618
 class Assets:
+    _background_color = "qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #123d2c)"
+    _color = "#FFF"
+    _logo_path = "assets/v7ai.1.png"
+    
+    _geometry = {
+        's': (200, 100, int(260*GOLDEN_RATIO), 260),
+        'l': (200, 100, int(500*GOLDEN_RATIO), 500)
+    }
+    _logo_height = {
+        's': 15,
+        'l': 30
+    }
+    _app_font_size = {
+        's': 10,
+        'l': 14
+    }
+    _help_button_width = {
+        's': 50,
+        'l': 50
+    }
+    _input_box_font_size = {
+        's': 10,
+        'l': 20
+    }
+    _predict_box_font_size = {
+        's': 10,
+        'l': 20
+    }
+    _predict_box_height = {
+        's': 120,
+        'l': 230
+    }
+    _result_box_font_size = {
+        's': 10,
+        'l': 20
+    }
+    _result_box_height = {
+        's': 60,
+        'l': 120
+    }
+    
+    
     _title = {
         'en': "v7 Typing Method",
         'vi': "Bộ gõ v7"
@@ -100,8 +142,71 @@ Thanh điệu:
         'vi': "Xóa"
     }
     
-    def __init__(self, lang: Literal['en', 'vi']):
+    def __init__(
+        self, 
+        lang: Literal['en', 'vi'],
+        size: str,
+    ):
         self.lang = lang
+        self.size = size
+    
+    @property
+    def app_styleSheet(self):
+        return (
+            "QWidget {"
+                f"background-color: {Assets._background_color};"
+                f"color: {Assets._color};"
+                f"font-size: {Assets._app_font_size}px;"
+            "};"
+        )
+    @property
+    def default_styleSheet(self):
+        return (
+            f"font-size: {Assets._app_font_size[self.size]}px;"
+        )
+    @property
+    def input_box_styleSheet(self):
+        return (
+            "background-color: #FFF;"
+            "color: #224938;"
+            "border: 1px solid #6D8C68;"
+            "border-radius: 1px;"
+            f"font-size: {Assets._input_box_font_size[self.size]}px;"
+            "font-weight: bold;"
+        )
+    @property
+    def predict_box_styleSheet(self):
+        return (
+            f"font-size: {Assets._predict_box_font_size[self.size]}px;"
+            "font-weight: bold;"
+        )
+    @property
+    def result_box_styleSheet(self):
+        return (
+            f"font-size: {Assets._result_box_font_size[self.size]}px;"
+            "font-weight: bold;"
+        )
+
+
+    @property
+    def logo_path(self):
+        return Assets._logo_path
+
+    @property
+    def geometry(self):
+        return Assets._geometry[self.size]
+    @property
+    def logo_height(self):
+        return Assets._logo_height[self.size] 
+    @property
+    def help_button_width(self):
+        return Assets._help_button_width[self.size]
+    @property
+    def predict_box_height(self):
+        return Assets._predict_box_height[self.size]
+    @property
+    def result_box_height(self):
+        return Assets._result_box_height[self.size]
             
     @property
     def title(self):

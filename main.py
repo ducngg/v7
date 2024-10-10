@@ -4,7 +4,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 from app.app import V7App
-from app.utils import str_to_bool
+from app.utils import str_to_bool, SUPPORTED_SIZES
 from utils.vietnamese import Alphabet
 
 from models import Args
@@ -46,6 +46,15 @@ if __name__ == '__main__':
         default=0,
         help="Specify the verbosity level."
     )
+    parser.add_argument("-m", "--minimal", type=str_to_bool,
+        default=True,
+        help="Minimalism."
+    )
+    parser.add_argument("-s", "--size", type=str,
+        default="s",
+        choices=SUPPORTED_SIZES,
+        help="Specify the size of the app."
+    )
     
     args: Args = parser.parse_args()
     input_agent_args = {
@@ -69,10 +78,12 @@ if __name__ == '__main__':
     else:
         from imethod.v7 import InputMethod
         inputAgent = InputMethod(**input_agent_args)
-        
+                
     app = QApplication(sys.argv)
     run_app = V7App(
         verbose=args.verbose,
+        minimal=args.minimal,
+        size=args.size,
         lang=args.lang,
         inputAgent=inputAgent, 
         session=session

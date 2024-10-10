@@ -35,7 +35,12 @@ if not os.path.exists(HISTORY_PATH):
     os.makedirs(HISTORY_PATH)
 
 class DictUpdateWindow(QDialog):
-    def __init__(self, parent = None, assets: Assets = None, session: str = None):
+    def __init__(
+        self, 
+        parent = None, 
+        assets: Assets = None, 
+        session: str = None
+    ):
         super().__init__(parent)
         self.assets = assets
         self.session = session
@@ -119,10 +124,20 @@ class DictUpdateWindow(QDialog):
         self.change_log.append(f"{status}: {input}")
 
 class V7App(QWidget):
-    def __init__(self, lang, inputAgent: Union["InputMethod", "AIInputMethod"], session: str = None, verbose: int = 0):
+    def __init__(
+        self, 
+        lang, 
+        inputAgent: Union["InputMethod", "AIInputMethod"], 
+        session: str = None, 
+        verbose: int = 0,
+        minimal: bool = True,
+        size: str = 's',
+    ):
         super().__init__()
         self.verbose = verbose
-        self.assets = Assets(lang)
+        self.minimal = minimal
+        self._size = size
+        self.assets = Assets(lang, size)
         self.session = session
         self.inputAgent = inputAgent
         self.ready = False              # If ready, pressing a number will choose the combination number shown
@@ -131,32 +146,35 @@ class V7App(QWidget):
         self.initUI()
 
     def initUI(self):
+        # self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowTitle(self.assets.title + ' ' + self.inputAgent.mode)
-        self.setGeometry(100, 100, 900, 500)
-        self.setStyleSheet("QWidget {background-color: qlineargradient(x1: 0, x2: 1, stop: 0 #122918, stop: 1 #123d2c); color: #FFF;};")
-        # TODO: Add logo
+        self.setGeometry(*self.assets.geometry)
+        self.setStyleSheet(self.assets.app_styleSheet)
+
         layout = QVBoxLayout()
         
         welcome_layout = QHBoxLayout()
         
         welcome_label = QLabel(self.assets.welcome)
+        welcome_label.setStyleSheet(self.assets.default_styleSheet)
         welcome_layout.addWidget(welcome_label)
         
         logo_label = QLabel()
-        logo_pixmap = QPixmap("assets/v7ai.1.png")
-        logo_pixmap = logo_pixmap.scaledToHeight(30, Qt.SmoothTransformation)
+        logo_pixmap = QPixmap(self.assets.logo_path)
+        logo_pixmap = logo_pixmap.scaledToHeight(self.assets.logo_height, Qt.SmoothTransformation)
         # logo_pixmap = logo_pixmap.scaled(30, 30, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         logo_label.setPixmap(logo_pixmap)
         welcome_layout.addWidget(logo_label)
         
         help_button = QPushButton(self.assets.help)
-        help_button.setFixedWidth(50)
+        help_button.setStyleSheet(self.assets.default_styleSheet)
+        help_button.setFixedWidth(self.assets.help_button_width)
         help_button.clicked.connect(self.show_help)
         welcome_layout.addWidget(help_button)
         layout.addLayout(welcome_layout)
         
         self.input_box = QLineEdit()
-        self.input_box.setStyleSheet("background-color: #FFF; color: #224938; border: 1px solid #6D8C68; border-radius: 1px; font-size: 20px; font-weight: bold;")
+        self.input_box.setStyleSheet(self.assets.input_box_styleSheet)
         self.input_box.keyPressEvent = self.keyPressEventInputBox
         # self.input_box.textChanged.connect(self.predict) # No need anymore
         self.input_box.returnPressed.connect(self.addRaw)
@@ -165,61 +183,73 @@ class V7App(QWidget):
         pred_label_layout = QHBoxLayout()
         
         pred_label = QLabel(self.assets.pred_label)
+        pred_label.setStyleSheet(self.assets.default_styleSheet)
         pred_label_layout.addWidget(pred_label)
         pred_help = QLabel(self.assets.usage)
+        pred_help.setStyleSheet(self.assets.default_styleSheet)
         pred_label_layout.addWidget(pred_help)
         layout.addLayout(pred_label_layout)
         
         pred_result_layout = QHBoxLayout()
         
         self.predict_box = QTextEdit()
-        self.predict_box.setMinimumHeight(230)
-        self.predict_box.setStyleSheet("font-size: 20px; font-weight: bold;")
+        self.predict_box.setMinimumHeight(self.assets.predict_box_height)
+        self.predict_box.setStyleSheet(self.assets.predict_box_styleSheet)
         self.predict_box.setReadOnly(True)
         pred_result_layout.addWidget(self.predict_box)
         
         self.predict_info = QLabel("")
+        self.predict_info.setStyleSheet(self.assets.default_styleSheet)
         pred_result_layout.addWidget(self.predict_info)
         
         layout.addLayout(pred_result_layout)
         
         self.result_box = QTextEdit()
-        self.result_box.setMinimumHeight(120)
-        self.result_box.setStyleSheet("font-size: 20px; font-weight: bold;")
+        self.result_box.setMinimumHeight(self.assets.result_box_height)
+        self.result_box.setStyleSheet(self.assets.result_box_styleSheet)
         layout.addWidget(self.result_box)
         
         self.improvement_log = QLabel(" ")
+        self.improvement_log.setStyleSheet(self.assets.default_styleSheet)
         self.improvement_log.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.improvement_log)
         
         button_layout = QVBoxLayout()
-        button_row_layout_1 = QHBoxLayout()
-
-        copy_button = QPushButton(self.assets.copy)
-        copy_button.clicked.connect(self.copy_text)
-        button_row_layout_1.addWidget(copy_button)
-
-        button_row_layout_1.addSpacerItem(QSpacerItem(10, 10))
-
-        clear_button = QPushButton(self.assets.clear)
-        clear_button.clicked.connect(self.clear_text)
-        button_row_layout_1.addWidget(clear_button)
-
-        button_layout.addLayout(button_row_layout_1)
-
-        button_row_layout_2 = QHBoxLayout()
         
-        common_dict_window_button = QPushButton(self.assets.add_phrase_button)
-        common_dict_window_button.clicked.connect(self.open_update_common_dict_window)
-        
-        button_row_layout_2.addWidget(common_dict_window_button)
+        if not self.minimal:
+            button_row_layout_1 = QHBoxLayout()
 
-        button_layout.addLayout(button_row_layout_2)
+            copy_button = QPushButton(self.assets.copy)
+            copy_button.setStyleSheet(self.assets.default_styleSheet)
+            copy_button.clicked.connect(self.copy_text)
+            button_row_layout_1.addWidget(copy_button)
 
-        layout.addLayout(button_layout)
+            button_row_layout_1.addSpacerItem(QSpacerItem(10, 10))
+
+            clear_button = QPushButton(self.assets.clear)
+            clear_button.setStyleSheet(self.assets.default_styleSheet)
+            clear_button.clicked.connect(self.clear_text)
+            button_row_layout_1.addWidget(clear_button)
+
+            button_layout.addLayout(button_row_layout_1)
+
+        # Only need `Add your common phrase` button if in Dictionary mode
+        if "Dictionary" in self.inputAgent.mode:
+            button_row_layout_2 = QHBoxLayout()
+            
+            common_dict_window_button = QPushButton(self.assets.add_phrase_button)
+            common_dict_window_button.setStyleSheet(self.assets.default_styleSheet)
+            common_dict_window_button.clicked.connect(self.open_update_common_dict_window)
+            
+            button_row_layout_2.addWidget(common_dict_window_button)
+
+            button_layout.addLayout(button_row_layout_2)
+
+        # check if button_layout has something
+        if not button_layout.isEmpty():
+            layout.addLayout(button_layout)
         
         self.setLayout(layout)
-
         self.show()
     
     def show_help(self):
@@ -468,4 +498,4 @@ class V7App(QWidget):
             color = "yellow"
 
         self.improvement_log.setText(f"{self.assets.percent_keys}: {improvements:.2f}%")
-        self.improvement_log.setStyleSheet(f"color: {color};")
+        self.improvement_log.setStyleSheet(self.assets.default_styleSheet + f"color: {color};")
