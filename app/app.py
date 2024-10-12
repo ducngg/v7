@@ -324,8 +324,12 @@ class V7App(QWidget):
                 pass
         
         # Handle 1-9 key: Choose the combination
-        elif self.ready and (event.key() >= Qt.Key_1 and event.key() <= Qt.Key_9):
-            number = int(event.text())
+        elif self.ready and (event.key() == Qt.Key_Space or (event.key() >= Qt.Key_1 and event.key() <= Qt.Key_9)):
+            if event.key() == Qt.Key_Space:
+                number = 1
+            else:
+                number = int(event.text())
+                
             true_index = number - 1
             chosen_index = true_index + 9*(self.prediction_state.page - 1)
             try:
