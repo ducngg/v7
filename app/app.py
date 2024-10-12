@@ -246,7 +246,7 @@ class V7App(QWidget):
             button_layout.addLayout(button_row_layout_2)
 
         # check if button_layout has something
-        if not button_layout.isEmpty():
+        if button_layout.count() > 0:
             layout.addLayout(button_layout)
         
         self.setLayout(layout)
