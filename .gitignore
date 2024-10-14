@@ -15,4 +15,5 @@ profile*
 history/*
 */deprecated/
 misc/
+test/
 .env

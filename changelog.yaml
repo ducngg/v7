@@ -167,4 +167,15 @@ changes:
     research: 'GET READY FOR INTEGRATED KEYBOARD'
     change: 'css styles will be in assets'
     description: 'Enable size config'
+  - timestamp: '2024-12-10 7:33 PM'
+    research:
+      - listen-to-global-keys: "Use `pynput.keyboard` library"
+      - put-predicted-words-to-typing-area: "Use `pyautogui` and `pyperclip` library (which are using clipboard). TODO/: not relying on clipboard(Solved: using pynput.keyboard)"
+      - tracking-context: "Currently just support adding context, deleted words may not be tracked. TODO: Do it!"
+      - cancle-typing-on-text-area-while-predicting: "Currently use backspace before emit because cannot intervene to the os. TODO: Research about it"
+      - open-an-interface-below:
+        - locate-caret-area: "Not yet, the position will be temporarily fixed. May using AppKit. TODO: Do it!"
+        - create-an-app-below: "Use Qt5"
+    change: 'v7 can now be a simple, not robust yet, integrated keyboard. USE EVERYWHERE'
+    description: 'Make show/hide UI shortcut, quit process (only macos). TODO: Cross platform'
   
