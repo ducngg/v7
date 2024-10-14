@@ -6,7 +6,7 @@ This project aims to analyze the Vietnamese language to develop a faster typing 
 
 *Completeness:* `v7` is basically better VNI, everything VNI can do, `v7` also can do. So you can input any possible Vietnamese words with `v7`.
 
-Currently, you can use the below script to open an app to try `v7` method, future plans will integrate with the keyboard so that you don't have to open the app to use `v7` method anymore.
+Use the below script to try `v7` method!
 
 ![Demo](assets/v7ai.gif)
 

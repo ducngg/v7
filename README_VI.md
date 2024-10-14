@@ -6,7 +6,7 @@ Dự án này phân tích tiếng Việt để phát triển một phương phá
 
 *Độ toàn diện:* Nói ngắn gọn, `v7` có thể xem như là một VNI phiên bản nhanh hơn, vì vậy bạn hoàn toàn có thể nhập tất cả mọi từ tiếng Việt có thể nhập.
 
-Hiện tại, bạn có thể sử dụng các lệnh ở phần dưới để mở ứng dụng để sử dụng `v7`, trong tương lai sẽ tích hợp trực tiếp lên bàn phím để có thể sử dụng trực tiếp không cần qua app.
+Chạy các lệnh ở phần dưới để sử dụng `v7`.
 
 ![Demo](assets/v7ai.gif)
 

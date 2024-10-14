@@ -3,7 +3,7 @@ import time
 import sys
 
 from PyQt5.QtWidgets import QApplication
-from app.gui import PredictWindow
+from app.app import V7App
 from app.utils import str_to_bool, SUPPORTED_SIZES
 from utils.vietnamese import Alphabet
 
@@ -46,6 +46,10 @@ if __name__ == '__main__':
         default=0,
         help="Specify the verbosity level."
     )
+    parser.add_argument("-m", "--minimal", type=str_to_bool,
+        default=True,
+        help="Minimalism."
+    )
     parser.add_argument("-s", "--size", type=str,
         default="s",
         choices=SUPPORTED_SIZES,
@@ -76,8 +80,9 @@ if __name__ == '__main__':
         inputAgent = InputMethod(**input_agent_args)
                 
     app = QApplication(sys.argv)
-    run_app = PredictWindow(
+    run_app = V7App(
         verbose=args.verbose,
+        minimal=args.minimal,
         size=args.size,
         lang=args.lang,
         inputAgent=inputAgent, 
