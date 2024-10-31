@@ -3,8 +3,8 @@ import torch.nn.functional as F
 import time
 from utils.preprocess import standardize_data
 from .tokenizer import tokenizer
-from .configs import MAX_SEQUENCE_LEN, DEVICE, MODEL_PATH
-from .model import GPT
+from .configs import MAX_SEQUENCE_LEN, DEVICE, BASE_MODEL_CHECKPOINT_PATH, MODEL_SIZES
+from .model import GPT, GPTConfig
 
 def next(model: GPT, seqs: list[str]) -> list[list[int]]:
     # Standardize and tokenize the input sequences
@@ -60,12 +60,14 @@ def generate(model: GPT, seq: str, n: int):
             
     return tokenizer.detokenize(generated_tokens)
 
-def get_model(path=MODEL_PATH, verbose=1):
-    model = GPT()
-    model.load_state_dict(torch.load(path, map_location=torch.device(DEVICE)), strict=False)
+def get_model(model_size='base', checkpoint_path=BASE_MODEL_CHECKPOINT_PATH, verbose=1):
+    model = GPT(
+        GPTConfig(**MODEL_SIZES[model_size])
+    )
+    model.load_state_dict(torch.load(checkpoint_path, map_location=torch.device(DEVICE)), strict=False)
     
     if verbose:
-        print(f"\tCheckpoint path: {path}")
+        print(f"\tCheckpoint path: {checkpoint_path}")
         total_params = sum(p.numel() for p in model.parameters())
         print(f"\tTotal number of parameters: {total_params}")
     

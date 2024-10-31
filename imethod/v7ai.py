@@ -13,7 +13,10 @@ class AIInputMethod(InputMethod):
         strict_k=False, 
         null_consonant='hh', 
         end_of_rhyme='.', 
-        verbose=1
+        verbose=1,
+        model='base',
+        checkpoint_path=None,
+        **kwargs
     ) -> None:
         super().__init__(
             vni_tones=vni_tones, 
@@ -25,8 +28,12 @@ class AIInputMethod(InputMethod):
         self.SOS = "tôi" # start of string
         
         if verbose:
-            print(f"{AIInputMethod.location} Loaded:")
-        self.model = get_model(verbose=verbose)
+            print(f"{AIInputMethod.location} Loading...")
+        self.model = get_model(
+            model_size=model,
+            checkpoint_path=checkpoint_path,
+            verbose=verbose
+        )
     
     def accept(self, crt: Triplet, crst: MatchingTriplet, word: Word):
         

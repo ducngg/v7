@@ -82,7 +82,7 @@ Future plans include combining both modes to create the most robust Vietnamese i
 ![Demo](assets/v7ai.gif)
 
 ## Run the App
-
+<!-- TODO: (Warn user about the computer accessibility issues) -->
 This project uses Python 3.12. 
 
 #### Using Dictionary Mode

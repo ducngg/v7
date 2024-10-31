@@ -178,4 +178,7 @@ changes:
         - create-an-app-below: "Use Qt5"
     change: 'v7 can now be a simple, not robust yet, integrated keyboard. USE EVERYWHERE'
     description: 'Make show/hide UI shortcut, quit process (only macos). TODO: Cross platform'
-  
+  - timestamp: '2024-31-10 2:06 PM'
+    research: ''
+    change: 'refactor code'
+    description: 'args parser function, more generic AI functions for future bigger models. TODO: video present gui'

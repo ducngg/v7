@@ -6,6 +6,8 @@ class Args(BaseModel):
     verbose: int
     minimal: bool
     size: str
+    model: str
+    checkpoint_path: str
     lang: Union[Literal["en"], Literal["vi"]]
     ai: bool
     vni_tones: bool

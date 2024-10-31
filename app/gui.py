@@ -151,7 +151,7 @@ class PredictWindow(QWidget):
             # time.sleep(0.01)
     
     def process_emitted_keys(self, emitted_keys: List[Key | KeyCode]):
-        if set(emitted_keys) == QUIT_COMBINATION:
+        if set(emitted_keys).issuperset(QUIT_COMBINATION):
             print('Quitting the application')
             QApplication.quit()  # Gracefully quit the app
         

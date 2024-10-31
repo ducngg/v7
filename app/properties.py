@@ -62,8 +62,8 @@ class Assets:
         'vi': "Dự đoán"
     }
     _usage = {
-        'en': "Usage: Press key [①-⑨] [⌘①-⌘⑨] ← → ⌫ ⏎ ",
-        'vi': "Sử dụng: Dùng phím [①-⑨] [⌘①-⌘⑨] ← → ⌫ ⏎ "
+        'en': "Usage: Press key [①-⑨] [⌃①-⌃⑨] Right⌘ Right⌥ ⌫ ␣ ",
+        'vi': "Sử dụng: Dùng phím [①-⑨] [⌃①-⌃⑨] Right⌘ Right⌥ ⌫ ␣ "
     }
     _copy = {
         'en': "Copy",

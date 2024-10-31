@@ -13,7 +13,8 @@ class InputMethod():
         vni_tones=False, 
         strict_k=False, 
         null_consonant='hh', 
-        end_of_rhyme='.'
+        end_of_rhyme='.',
+        **kwargs
     ) -> None:
         self.mode = "[Dictionary]"
         self.vni_tones = vni_tones        # Accute for both tone 1 and 6, underdot for both tone 5 and 7

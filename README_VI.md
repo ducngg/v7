@@ -81,7 +81,7 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
 ![Demo](assets/v7ai.gif)
 
 ## Sử dụng
-
+<!-- TODO: (Warn user about the computer accessibility issues) -->
 `v7` chạy trên Python 3.12.
 
 #### Sử Dụng Chế Độ Từ Điển

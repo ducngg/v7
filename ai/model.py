@@ -14,12 +14,11 @@ from .configs import MAX_SEQUENCE_LEN, TOTAL_WORDS
 
 @dataclass
 class GPTConfig:
-    block_size: int = MAX_SEQUENCE_LEN # Current max sequence length
-    vocab_size: int = TOTAL_WORDS # Run overview.py for more information
-    n_layer: int = 8 # number of layers
-    n_head: int = 8 # number of heads
-    n_embd: int = 256 # embedding dimension
-
+    block_size: int # Current max sequence length
+    vocab_size: int # Run overview.py for more information
+    n_layer: int # number of layers
+    n_head: int # number of heads
+    n_embd: int # embedding dimension
 
 class CausalSelfAttention(nn.Module):
 
@@ -82,7 +81,7 @@ class Block(nn.Module):
     
 class GPT(nn.Module):
 
-    def __init__(self, config: GPTConfig = GPTConfig()):
+    def __init__(self, config: GPTConfig):
         super().__init__()
         self.config = config
 
