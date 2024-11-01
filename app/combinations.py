@@ -8,6 +8,10 @@ if sys.platform == 'darwin':
     RIGHT_CONTROL_KEY = Key.cmd_r
     SPECIAL_KEY = Key.ctrl
     
+    HELP_COMBINATION = {
+        SPECIAL_KEY,
+        KeyCode(char='h')
+    }
     TOGGLE_ENABLE_COMBINATION = {
         CONTROL_KEY,
         Key.alt,
@@ -24,6 +28,8 @@ else:
     RIGHT_CONTROL_KEY = Key.ctrl_r
     SPECIAL_KEY = Key.ctrl
     
+    # TODO: Implement for window
+    HELP_COMBINATION = None
     TOGGLE_ENABLE_COMBINATION = {
         CONTROL_KEY,
         Key.alt,

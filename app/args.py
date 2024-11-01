@@ -42,6 +42,10 @@ def parse_args():
         default=0,
         help="Specify the verbosity level."
     )
+    parser.add_argument("-m", "--minimal", type=str_to_bool,
+        default=True,
+        help="Minimalism interface."
+    )
     parser.add_argument("-s", "--size", type=str,
         default="s",
         choices=SUPPORTED_SIZES,

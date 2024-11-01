@@ -1,5 +1,4 @@
 from typing import Literal
-# TODO: check os type for [⌘①-⌘⑨]
 
 GOLDEN_RATIO = 1.618
 class Assets:
@@ -7,8 +6,19 @@ class Assets:
     _color = "#FFF"
     _logo_path = "assets/v7ai.1.png"
     
+    # TODO: check os type for these
+    _HELP_COMBINATION = "⌃H"
+    _CHOOSE_COMBINATION = "[①-⑨]"
+    _MOVE_TO_TOP_COMBINATION = "[⌃①-⌃⑨]"
+    _REMOVE_LAST_TERM_COMBINATION = "⌫"
+    _NEXT_PAGE_COMBINATION = "Right⌥"
+    _PREV_PAGE_COMBINATION = "Right⌘"
+    _ADD_RAW_COMBINATION = "␣"
+    _TOGGLE_ENABLE_COMBINATION = "⌘⌥V"
+    _QUIT_COMBINATION = "⌃V"
+    
     _geometry = {
-        's': (200, 100, int(260*GOLDEN_RATIO), 260),
+        's': (200, 100, int(270*GOLDEN_RATIO), 270),
         'l': (200, 100, int(500*GOLDEN_RATIO), 500)
     }
     _logo_height = {
@@ -23,16 +33,20 @@ class Assets:
         's': 50,
         'l': 50
     }
+    _gui_help_button_width = {
+        's': 15,
+        'l': 15
+    }
     _input_box_font_size = {
         's': 10,
         'l': 20
     }
     _predict_box_font_size = {
-        's': 10,
+        's': 14,
         'l': 20
     }
     _predict_box_height = {
-        's': 120,
+        's': 130,
         'l': 230
     }
     _result_box_font_size = {
@@ -53,6 +67,10 @@ class Assets:
         'en': "Help",
         'vi': "Trợ giúp"
     }
+    _gui_help = {
+        'en': f"Help: {_HELP_COMBINATION}",
+        'vi': f"Trợ giúp: {_HELP_COMBINATION}"
+    }
     _welcome = {
         'en': "Welcome to v7 - an innovative input method for typing Vietnamese!",
         'vi': "Chào mừng đến với v7 - bộ gõ tối ưu tốc độ cho Tiếng Việt!"
@@ -62,8 +80,8 @@ class Assets:
         'vi': "Dự đoán"
     }
     _usage = {
-        'en': "Usage: Press key [①-⑨] [⌃①-⌃⑨] Right⌘ Right⌥ ⌫ ␣ ",
-        'vi': "Sử dụng: Dùng phím [①-⑨] [⌃①-⌃⑨] Right⌘ Right⌥ ⌫ ␣ "
+        'en': f"Usage: Press key {_CHOOSE_COMBINATION} {_MOVE_TO_TOP_COMBINATION} {_PREV_PAGE_COMBINATION} {_NEXT_PAGE_COMBINATION} {_REMOVE_LAST_TERM_COMBINATION} {_ADD_RAW_COMBINATION}",
+        'vi': f"Sử dụng: Dùng phím {_CHOOSE_COMBINATION} {_MOVE_TO_TOP_COMBINATION} {_PREV_PAGE_COMBINATION} {_NEXT_PAGE_COMBINATION} {_REMOVE_LAST_TERM_COMBINATION} {_ADD_RAW_COMBINATION}"
     }
     _copy = {
         'en': "Copy",
@@ -112,6 +130,31 @@ Thanh điệu:
 - 6 cho thanh sắc `nhập` (thanh phù nhập): xuất, cấp, tất, chiếc, thích, mút... 
 - 7 cho thanh nặng `nhập` (thanh trầm nhập): nhập, phục, đột, chục, mạch, kịp...
 """
+    }
+    
+    _gui_instruction = {
+        'en': (
+            f"• Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.\n"
+            f"• Typing rules is in README.md.\n"
+            f"• Press {_CHOOSE_COMBINATION} to choose the combination.\n"
+            f"• Press {_MOVE_TO_TOP_COMBINATION} to move the chosen combination to the top.\n"
+            f"• Press {_PREV_PAGE_COMBINATION}/{_NEXT_PAGE_COMBINATION} to move to previous/next prediction page.\n"
+            f"• Press {_REMOVE_LAST_TERM_COMBINATION} to delete last raw term.\n"
+            f"• Press {_ADD_RAW_COMBINATION} to keep raw input.\n"
+            f"• Press {_TOGGLE_ENABLE_COMBINATION} to toggle on/off v7.\n"
+            f"• Press {_QUIT_COMBINATION} to quit v7."
+        ),
+            'vi': (
+            f"• Tắt VNI / Telex trước khi dùng.\n"
+            f"• Typing rules is in README.md.\n"
+            f"• Press {_CHOOSE_COMBINATION} to choose the combination.\n"
+            f"• Press {_MOVE_TO_TOP_COMBINATION} to move the chosen combination to the top.\n"
+            f"• Press {_PREV_PAGE_COMBINATION}/{_NEXT_PAGE_COMBINATION} to move to previous/next prediction page.\n"
+            f"• Press {_REMOVE_LAST_TERM_COMBINATION} to delete last raw term.\n"
+            f"• Press {_ADD_RAW_COMBINATION} to keep raw input.\n"
+            f"• Press {_TOGGLE_ENABLE_COMBINATION} to toggle on/off v7.\n"
+            f"• Press {_QUIT_COMBINATION} to quit v7."
+        )
     }
     _page = {
         'en': "Showing",
@@ -202,6 +245,9 @@ Thanh điệu:
     def help_button_width(self):
         return Assets._help_button_width[self.size]
     @property
+    def gui_help_button_width(self):
+        return Assets._gui_help_button_width[self.size]
+    @property
     def predict_box_height(self):
         return Assets._predict_box_height[self.size]
     @property
@@ -214,6 +260,9 @@ Thanh điệu:
     @property
     def help(self):
         return Assets._help[self.lang]
+    @property
+    def gui_help(self):
+        return Assets._gui_help[self.lang]
     @property
     def welcome(self):
         return Assets._welcome[self.lang]
@@ -235,6 +284,9 @@ Thanh điệu:
     @property
     def instruction(self):
         return Assets._instruction[self.lang]
+    @property
+    def gui_instruction(self):
+        return Assets._gui_instruction[self.lang]
     @property
     def page(self):
         return Assets._page[self.lang]

@@ -132,6 +132,7 @@ class V7App(QWidget):
         verbose: int = 0,
         minimal: bool = True,
         size: str = 's',
+        **kwargs
     ):
         super().__init__()
         self.verbose = verbose

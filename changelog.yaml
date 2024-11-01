@@ -182,3 +182,8 @@ changes:
     research: ''
     change: 'refactor code'
     description: 'args parser function, more generic AI functions for future bigger models. TODO: video present gui'
+  - timestamp: '2024-01-11 3:53 PM'
+    research: 'TODO: change page size from 9 to lower when the predictions are too long, and move app self.ready to prediction_state'
+    change: 'Move further readings in README.md to READMORE.md, add help shortcut key combination instead of button, improve gui'
+    description: 'Improve GUI as clean as possible, change prediction font to `Monaco`.'
+  

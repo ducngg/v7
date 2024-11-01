@@ -48,6 +48,7 @@ class PredictWindow(QWidget):
         session: str = None, 
         verbose: int = 0,
         size: str = 's',
+        **kwargs
     ):
         super().__init__()
         self.verbose = verbose
@@ -69,7 +70,7 @@ class PredictWindow(QWidget):
         W = desktop_dim.width()
         H = desktop_dim.height()
         _, _, w, h = self.assets.geometry
-        self.setGeometry((W-w)//2, 0, w, h)
+        self.setGeometry((W-w)//2, 0, w, h) # Middle top
         
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setWindowTitle(self.assets.title)
@@ -77,32 +78,25 @@ class PredictWindow(QWidget):
 
         layout = QVBoxLayout()
         
+        top_line_layout = QHBoxLayout()
+        
         self.raw_label = QLabel(self.prediction_state.raw)
         self.raw_label.setStyleSheet(self.assets.default_styleSheet)
-        layout.addWidget(self.raw_label)
+        top_line_layout.addWidget(self.raw_label)
         
-        # self.input_box = QLineEdit()
-        # self.input_box.setStyleSheet(self.assets.input_box_styleSheet)
-        # self.input_box.keyPressEvent = self.keyPressEventInputBox
-        # # self.input_box.textChanged.connect(self.predict) # No need anymore
-        # self.input_box.returnPressed.connect(self.addRaw)
-        # layout.addWidget(self.input_box)
+        self.help_label = QLabel(self.assets.gui_help)
+        self.help_label.setStyleSheet(self.assets.default_styleSheet)
+        self.help_label.setFixedWidth(self.assets.help_button_width)
+        top_line_layout.addWidget(self.help_label)
         
-        pred_label_layout = QHBoxLayout()
-        
-        pred_label = QLabel(self.assets.pred_label)
-        pred_label.setStyleSheet(self.assets.default_styleSheet)
-        pred_label_layout.addWidget(pred_label)
-        pred_help = QLabel(self.assets.usage)
-        pred_help.setStyleSheet(self.assets.default_styleSheet)
-        pred_label_layout.addWidget(pred_help)
-        layout.addLayout(pred_label_layout)
+        layout.addLayout(top_line_layout)
         
         pred_result_layout = QHBoxLayout()
         
         self.predict_box = QTextEdit()
         self.predict_box.setMinimumHeight(self.assets.predict_box_height)
         self.predict_box.setStyleSheet(self.assets.predict_box_styleSheet)
+        self.predict_box.setFontFamily("monaco")
         self.predict_box.setReadOnly(True)
         pred_result_layout.addWidget(self.predict_box)
         
@@ -131,6 +125,14 @@ class PredictWindow(QWidget):
     #     help_box.setWindowTitle(self.assets.help)
     #     help_box.setFixedWidth(800) 
     #     help_box.exec_()
+    
+    def show_help(self):
+        help_text = self.assets.gui_instruction
+        help_box = QMessageBox(parent=self)
+        help_box.setText(help_text)
+        help_box.setWindowTitle(self.assets.help)
+        help_box.setFixedWidth(800) 
+        help_box.exec_()
     
     def emit(self, phrase):
         # self.warm_up_listener()
@@ -168,6 +170,11 @@ class PredictWindow(QWidget):
             return
 
         if not self.isActivate:
+            return
+        
+        if set(emitted_keys) == HELP_COMBINATION:
+            print("CASE HELP", emitted_keys)
+            self.show_help()
             return
         
         if set(emitted_keys) == REMOVE_LAST_TERM_COMBINATION:
@@ -413,9 +420,9 @@ class PredictWindow(QWidget):
             9 + 9*(self.prediction_state.page - 1)
         ]
         
-        self.predict_box.append(f"{1}\t{showing[0]}\t←")
+        self.predict_box.append(f"{1} {showing[0]} ←")
         for i, comb in enumerate(showing[1:], start=2):
-            self.predict_box.append(f"{i}\t{comb}")
+            self.predict_box.append(f"{i} {comb}")
             # self.predict_box.append(f"{i} ⎯⎯⎯ {comb}")
             # self.predict_box.append(f"{i}{' '*(3+(i-1)//3*2)}{comb}")
             
