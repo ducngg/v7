@@ -10,9 +10,7 @@ def next(model: GPT, seqs: list[str]) -> list[list[int]]:
     # Standardize and tokenize the input sequences
     seqs = [standardize_data(seq).lower() for seq in seqs]
     tokens = [tokenizer.tokenize(seq.split())[-MAX_SEQUENCE_LEN:] for seq in seqs]
-    tokens = torch.tensor(tokens, dtype=torch.long).to(DEVICE)
-
-    model = model.to(DEVICE)
+    tokens = torch.tensor(tokens, dtype=torch.long).to(model.device)
 
     with torch.no_grad():
         # Forward pass through the model
