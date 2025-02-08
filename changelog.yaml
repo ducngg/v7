@@ -186,4 +186,10 @@ changes:
     research: 'TODO: change page size from 9 to lower when the predictions are too long, and move app self.ready to prediction_state'
     change: 'Move further readings in README.md to READMORE.md, add help shortcut key combination instead of button, improve gui'
     description: 'Improve GUI as clean as possible, change prediction font to `Monaco`.'
+  - timestamp: '2025-12-01 5:07 PM'
+    research: 'New dataset: `VTSNLP/vietnamese_curated_dataset`. Add attention mask to mask completely the padding token. Train a model `v7gpt-1.1.pth` -> `v7gpt-1.3.pth` (more details in dict of pth file)'
+    change: 'Little bit of app behaviour change for the CURRENT_KEYS problem'
+    description: 'Change get_model pth file dict keys name'
+  - timestamp: ''
+    change: 'Move training code from Kaggle `smallgpt-vietnamese` notebook to this repo'    
   

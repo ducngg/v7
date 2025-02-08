@@ -34,7 +34,6 @@ def generate(model: GPT, seq: str, n: int):
     tokens = torch.tensor(tokens, dtype=torch.long)
     tokens = tokens.unsqueeze(0)
     
-    model = model.to(DEVICE)
     x = tokens.to(DEVICE)
     
     generated_tokens = []
@@ -61,10 +60,33 @@ def generate(model: GPT, seq: str, n: int):
     return tokenizer.detokenize(generated_tokens)
 
 def get_model(model_size='base', checkpoint_path=BASE_MODEL_CHECKPOINT_PATH, verbose=1):
+    if not checkpoint_path:
+        checkpoint_path = BASE_MODEL_CHECKPOINT_PATH
+        
     model = GPT(
         GPTConfig(**MODEL_SIZES[model_size])
     )
-    model.load_state_dict(torch.load(checkpoint_path, map_location=torch.device(DEVICE)), strict=False)
+    
+    try:
+        checkpoint = torch.load(checkpoint_path, map_location=torch.device(DEVICE))
+        # Remove 'module.' prefix from all keys in the checkpoint state_dict
+        checkpoint_state_dict = checkpoint['model_state_dict'] if 'model_state_dict' in checkpoint else checkpoint
+        new_state_dict = {}
+        
+        for key, value in checkpoint_state_dict.items():
+            new_key = key.replace('module.', '')  # Remove 'module.' prefix
+            new_state_dict[new_key] = value
+        
+        model.load_state_dict(new_state_dict)
+    
+    except Exception as e:
+        print(e)
+        
+        try:
+            # If direct load fails, attempt without the 'model_state_dict' key
+            model.load_state_dict(checkpoint)
+        except Exception as e:
+            raise Exception(f"Failed to load checkpoint from {checkpoint_path}: {e}")
     
     if verbose:
         print(f"\tCheckpoint path: {checkpoint_path}")

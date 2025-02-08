@@ -13,6 +13,7 @@ class Tokenizer:
         verbose=1
     ):  
         self.location = "<ai.tokenizer.Tokenizer>"
+        self.PADDING_TOKEN_INDEX = 0
         
         with open(enum_path, 'r') as f:
             self.enum: dict[str, int] = json.load(f)
