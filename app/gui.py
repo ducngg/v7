@@ -177,7 +177,7 @@ class PredictWindow(QWidget):
             self.show_help()
             return
         
-        if set(emitted_keys) == REMOVE_LAST_TERM_COMBINATION:
+        if set(emitted_keys).issuperset(REMOVE_LAST_TERM_COMBINATION):
             print("CASE DEL", emitted_keys)
             if self.prediction_state.raw != "":
                 

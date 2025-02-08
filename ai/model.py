@@ -8,6 +8,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 from .configs import MAX_SEQUENCE_LEN, TOTAL_WORDS
+from .tokenizer import tokenizer
 
 # -----------------------------------------------------------------------------
 # From Andrej Karpathy build nanoGPT
@@ -21,38 +22,35 @@ class GPTConfig:
     n_embd: int # embedding dimension
 
 class CausalSelfAttention(nn.Module):
-
-    def __init__(self, config):
+    def __init__(self, config: GPTConfig):
         super().__init__()
         assert config.n_embd % config.n_head == 0
-        # key, query, value projections for all heads, but in a batch
         self.c_attn = nn.Linear(config.n_embd, 3 * config.n_embd)
-        # output projection
         self.c_proj = nn.Linear(config.n_embd, config.n_embd)
         self.c_proj.NANOGPT_SCALE_INIT = 1
         # regularization
         self.n_head = config.n_head
         self.n_embd = config.n_embd
 
-    def forward(self, x):
-        B, T, C = x.size() # batch size, sequence length, embedding dimensionality (n_embd)
-        # calculate query, key, values for all heads in batch and move head forward to be the batch dim
-        # nh is "number of heads", hs is "head size", and C (number of channels) = nh * hs
-        # e.g. in GPT-2 (124M), n_head=12, hs=64, so nh*hs=C=768 channels in the Transformer
+    def forward(self, x: torch.Tensor, attention_mask: torch.Tensor = None, is_causal=False):
+        B, T, C = x.size()  # batch size, sequence length, embedding dimension
         qkv = self.c_attn(x)
         q, k, v = qkv.split(self.n_embd, dim=2)
-        k = k.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        y = F.scaled_dot_product_attention(q, k, v, is_causal=True) # flash attention
-        y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all head outputs side by side
-        # output projection
+        k = k.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
+        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
+        v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
+        
+        # Apply scaled dot-product attention with masking
+        y = F.scaled_dot_product_attention(q, k, v, attn_mask=attention_mask, is_causal=is_causal)
+        
+        y = y.transpose(1, 2).contiguous().view(B, T, C)  # reassemble head outputs
         y = self.c_proj(y)
         return y
 
+
 class MLP(nn.Module):
 
-    def __init__(self, config):
+    def __init__(self, config: GPTConfig):
         super().__init__()
         self.c_fc    = nn.Linear(config.n_embd, 4 * config.n_embd)
         self.gelu    = nn.GELU(approximate='tanh')
@@ -67,15 +65,15 @@ class MLP(nn.Module):
 
 class Block(nn.Module):
 
-    def __init__(self, config):
+    def __init__(self, config: GPTConfig):
         super().__init__()
         self.ln_1 = nn.LayerNorm(config.n_embd)
         self.attn = CausalSelfAttention(config)
         self.ln_2 = nn.LayerNorm(config.n_embd)
         self.mlp = MLP(config)
 
-    def forward(self, x):
-        x = x + self.attn(self.ln_1(x))
+    def forward(self, x: torch.Tensor, attention_mask: torch.Tensor = None, is_training=False):
+        x = x + self.attn(self.ln_1(x), attention_mask, is_causal=is_training)
         x = x + self.mlp(self.ln_2(x))
         return x
     
@@ -110,24 +108,35 @@ class GPT(nn.Module):
         elif isinstance(module, nn.Embedding):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
-    def forward(self, idx, targets=None):
-        # idx is of shape (B, T)
-        B, T = idx.size()
-        assert T <= self.config.block_size, f"Cannot forward sequence of length {T}, block size is only {self.config.block_size}"
-        # forward the token and posisition embeddings
-        pos = torch.arange(0, T, dtype=torch.long, device=idx.device) # shape (T)
-        pos_emb = self.transformer.wpe(pos) # position embeddings of shape (T, n_embd)
-        tok_emb = self.transformer.wte(idx) # token embeddings of shape (B, T, n_embd)
+    def forward(self, tensors, targets=None, attention_mask=None, is_training=False):
+        B, T = tensors.size()
+        assert T <= self.config.block_size, f"Sequence length exceeds {self.config.block_size=}"
+        
+        # Token and position embeddings
+        pos = torch.arange(0, T, dtype=torch.long, device=tensors.device)
+        tok_emb = self.transformer.wte(tensors)
+        pos_emb = self.transformer.wpe(pos)
         x = tok_emb + pos_emb
-        # forward the blocks of the transformer
+
+        # Generate mask if not provided
+        if attention_mask is None:
+            attention_mask = (tensors != tokenizer.PADDING_TOKEN_INDEX).unsqueeze(1).unsqueeze(2)  # (B, 1, 1, T)
+            attention_mask = attention_mask.to(dtype=x.dtype)  # Convert to float for scaling
+            # print(attention_mask, attention_mask.shape)
+             
+        # Transformer blocks
         for block in self.transformer.h:
-            x = block(x)
-        # forward the final layernorm and the classifier
+            x = block(x, attention_mask=attention_mask, is_training=is_training)
+        
+        # Final layer norm and head
         x = self.transformer.ln_f(x)
-        logits = self.lm_head(x) # (B, T, vocab_size)
+        logits = self.lm_head(x)
+
+        # TODO: Move loss outside train
         loss = None
         if targets is not None:
-            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
+            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=0)
+        
         return logits, loss
 
     # def configure_optimizers(self, weight_decay, learning_rate, device_type):
@@ -154,4 +163,3 @@ class GPT(nn.Module):
     #         print(f"using fused AdamW: {use_fused}")
     #     optimizer = torch.optim.AdamW(optim_groups, lr=learning_rate, betas=(0.9, 0.95), eps=1e-8, fused=use_fused)
     #     return optimizer
-    

@@ -57,7 +57,7 @@ def parse_args():
         help="Specify the AI model type."
     )
     parser.add_argument("--checkpoint-path", type=str,
-        default="checkpoints/v7gpt.pth",
+        default=None,
         help="Specify the path to the AI model checkpoint."
     )
     

@@ -5,6 +5,9 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from typing import List
 import time
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 CURRENT_KEYS: List[Key | KeyCode] = []
 
 class ListenerThread(QThread):
@@ -26,30 +29,39 @@ class ListenerThread(QThread):
             listener.join()  # Keep the listener running 
             
     def _on_press(self, key: KeyCode | Key):
+        global CURRENT_KEYS
+        
         # print time hh mm ss below
-        print(f"Received {key} at time: {time.time() % 1000}")
+        logging.debug(f"Received {key} at time: {time.time() % 1000}")
         CURRENT_KEYS.append(key)
-        print(f"Current: {CURRENT_KEYS} and {self.activating=}")
+        logging.debug(f"Current: {CURRENT_KEYS} and {self.activating=}")
         if self.activating:
-            print(f"Sending {CURRENT_KEYS}...")
+            logging.debug(f"Sending {CURRENT_KEYS}...")
             self.any_signal.emit(CURRENT_KEYS)
             
     def _on_release(self, key: KeyCode | Key):
+        global CURRENT_KEYS
+        
         # https://github.com/moses-palmer/pynput/issues/20
         try:
             # TODO: Sometimes CURRENT_KEYS is not removing all
             CURRENT_KEYS.remove(key)
-        except:
+            if key == Key.backspace:
+                logging.debug(f"Backspace pressed, clean {CURRENT_KEYS=} -> []")
+                CURRENT_KEYS = []
+
+        except Exception as e:
+            logging.info(e)
             pass
         
     def on(self):
         self.activating = True
-        print(f"On at time: {time.time() % 1000}")
+        logging.info(f"On at time: {time.time() % 1000}")
         
     
     def off(self):
         self.activating = False
-        print(f"Off at time: {time.time() % 1000}")
+        logging.info(f"Off at time: {time.time() % 1000}")
         time.sleep(0.1)
         
     @contextmanager
