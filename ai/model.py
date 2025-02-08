@@ -82,6 +82,7 @@ class GPT(nn.Module):
     def __init__(self, config: GPTConfig):
         super().__init__()
         self.config = config
+        self.dummy_param = nn.Parameter(torch.empty(0))
 
         self.transformer = nn.ModuleDict(dict(
             wte = nn.Embedding(config.vocab_size, config.n_embd),
@@ -96,6 +97,10 @@ class GPT(nn.Module):
 
         # init params
         self.apply(self._init_weights)
+    
+    @property
+    def device(self):
+        return self.dummy_param.device
 
     def _init_weights(self, module):
         if isinstance(module, nn.Linear):
@@ -135,7 +140,7 @@ class GPT(nn.Module):
         # TODO: Move loss outside train
         loss = None
         if targets is not None:
-            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=0)
+            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=tokenizer.PADDING_TOKEN_INDEX)
         
         return logits, loss
 

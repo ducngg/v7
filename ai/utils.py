@@ -10,9 +10,7 @@ def next(model: GPT, seqs: list[str]) -> list[list[int]]:
     # Standardize and tokenize the input sequences
     seqs = [standardize_data(seq).lower() for seq in seqs]
     tokens = [tokenizer.tokenize(seq.split())[-MAX_SEQUENCE_LEN:] for seq in seqs]
-    tokens = torch.tensor(tokens, dtype=torch.long).to(DEVICE)
-
-    model = model.to(DEVICE)
+    tokens = torch.tensor(tokens, dtype=torch.long).to(model.device)
 
     with torch.no_grad():
         # Forward pass through the model
@@ -68,7 +66,7 @@ def get_model(model_size='base', checkpoint_path=BASE_MODEL_CHECKPOINT_PATH, ver
     )
     
     try:
-        checkpoint = torch.load(checkpoint_path, map_location=torch.device(DEVICE))
+        checkpoint = torch.load(checkpoint_path, map_location='cpu')
         # Remove 'module.' prefix from all keys in the checkpoint state_dict
         checkpoint_state_dict = checkpoint['model_state_dict'] if 'model_state_dict' in checkpoint else checkpoint
         new_state_dict = {}
@@ -92,5 +90,7 @@ def get_model(model_size='base', checkpoint_path=BASE_MODEL_CHECKPOINT_PATH, ver
         print(f"\tCheckpoint path: {checkpoint_path}")
         total_params = sum(p.numel() for p in model.parameters())
         print(f"\tTotal number of parameters: {total_params}")
+        
+    model = model.to(DEVICE)
     
     return model
