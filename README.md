@@ -51,7 +51,20 @@ This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikip
  4: 353059,
  5: 972686,
  6: 815346,
- 7: 703205} -->
+ 7: 703205} 
+ 
+ # 1590000/12169131 rows on VTSNLP/vietnamese_curated_dataset
+ {0: 327807887,
+ 1: 181193062,
+ 2: 230149590,
+ 3: 130067773,
+ 4: 59128896,
+ 5: 134059571,
+ 6: 109569975,
+ 7: 87877665}
+
+ 
+ -->
 
 **Note:** *If you aren't familiar with 8-tone system, you can still config to use traditional VNI 6-tone. But using 8-tone system is highly recommended for much much better AI result!* 
 

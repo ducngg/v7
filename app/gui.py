@@ -135,18 +135,14 @@ class PredictWindow(QWidget):
         help_box.exec_()
     
     def emit(self, phrase):
-        # self.warm_up_listener()
-        # self.listener_thread.off()
-        # time.sleep(0.1)
-        
-        self.backspace(len(self.prediction_state.raw) + 1)
+        self.emit_backspace(len(self.prediction_state.raw) + 1)
+        # Extra space for backspace later
         self.controller.type(phrase + ' ')
         
-        # self.listener_thread.on()
+        # Maybe don't need this as backspace is pressed after all
+        self.listener_thread.clean_up()
         
-    def backspace(self, n):
-        # self.warm_up_listener()
-        # time.sleep(0.1)
+    def emit_backspace(self, n):
         for _ in range(n):
             # time.sleep(0.01)
             self.controller.tap(Key.backspace)
@@ -188,8 +184,9 @@ class PredictWindow(QWidget):
                 difference -= 1
                 print(f"Should delete {difference} more")
                 
+                # Backspace with deactivate
                 with self.listener_thread.deactivated():
-                    self.backspace(difference)
+                    self.emit_backspace(difference)
                 
                 self.update_raw(will_be_updated_raw)
                 
@@ -247,7 +244,8 @@ class PredictWindow(QWidget):
                 
                 return
             except:
-                pass
+                
+                return
         
         # # Handle 1-9 key: Choose the combination
         if self.ready:
@@ -274,8 +272,12 @@ class PredictWindow(QWidget):
                 try:
                     comb = self.prediction_state.lst[chosen_index]
                     
+                    # Emit with deactivate
                     with self.listener_thread.deactivated():
                         self.emit(comb)
+                        
+                    # Backspace without deactivate
+                    self.emit_backspace(1)
                     
                     self.update_improvement_log(comb)
                     
@@ -394,7 +396,7 @@ class PredictWindow(QWidget):
             combination_possibilities = exec(
                 "call_predict",
                 self.call_predict,
-                verbose=self.verbose
+                verbose=1 #self.verbose
             )
             
             if combination_possibilities is None:

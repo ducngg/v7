@@ -190,6 +190,10 @@ changes:
     research: 'New dataset: `VTSNLP/vietnamese_curated_dataset`. Add attention mask to mask completely the padding token. Train a model `v7gpt-1.1.pth` -> `v7gpt-1.3.pth` (more details in dict of pth file)'
     change: 'Little bit of app behaviour change for the CURRENT_KEYS problem'
     description: 'Change get_model pth file dict keys name'
+  - timestamp: '2025-23-03 3:17 PM'
+    research: ''
+    change: 'Change handling special modifiers, and reduce error of Keyboard Listener thread'
+    description: 'Better typing experience, from now will not give extra space after predictions'
   - timestamp: ''
     change: 'Move training code from Kaggle `smallgpt-vietnamese` notebook to this repo'    
   

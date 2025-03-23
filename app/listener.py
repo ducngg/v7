@@ -30,6 +30,8 @@ class ListenerThread(QThread):
             
     def _on_press(self, key: KeyCode | Key):
         global CURRENT_KEYS
+        if not self.activating:
+            return 
         
         # print time hh mm ss below
         logging.debug(f"Received {key} at time: {time.time() % 1000}")
@@ -41,11 +43,16 @@ class ListenerThread(QThread):
             
     def _on_release(self, key: KeyCode | Key):
         global CURRENT_KEYS
+        if not self.activating:
+            return    
         
         # https://github.com/moses-palmer/pynput/issues/20
         try:
-            # TODO: Sometimes CURRENT_KEYS is not removing all
+            # TODO: Sometimes CURRENT_KEYS is not removing all: Uppercase characters / character option+v: √ 
             CURRENT_KEYS.remove(key)
+            if key == Key.shift or key == Key.shift_r:
+                CURRENT_KEYS = [key for key in CURRENT_KEYS if not key.char.isupper()]
+                logging.debug(f"Shift released, clean -> {CURRENT_KEYS=}")
             if key == Key.backspace:
                 logging.debug(f"Backspace pressed, clean {CURRENT_KEYS=} -> []")
                 CURRENT_KEYS = []
@@ -62,7 +69,6 @@ class ListenerThread(QThread):
     def off(self):
         self.activating = False
         logging.info(f"Off at time: {time.time() % 1000}")
-        time.sleep(0.1)
         
     @contextmanager
     def deactivated(self):
@@ -71,5 +77,9 @@ class ListenerThread(QThread):
         try:
             yield
         finally:
-            time.sleep(0.1)
+            time.sleep(0.05)
             self.on()
+
+    def clean_up(self):
+        global CURRENT_KEYS
+        CURRENT_KEYS = []
