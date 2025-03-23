@@ -8,7 +8,9 @@ Dự án này phân tích tiếng Việt để phát triển một phương phá
 
 Chạy các lệnh ở phần dưới để sử dụng `v7`.
 
-![Demo](assets/v7ai.gif)
+[![Introduction to v7: Toward a Faster Vietnamese Typing Toolkit](https://img.youtube.com/vi/8oCy65ZKvzc/maxresdefault.jpg)](https://www.youtube.com/watch?v=8oCy65ZKvzc)
+
+<!-- ![Demo](assets/v7ai.gif) -->
 
 ## Động Lực Phát Triển
 - Tiếng Việt là ngôn ngữ có nhiều dấu và thanh điệu, để nhập tất cả các dấu rất tốn thời gian.

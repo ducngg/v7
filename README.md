@@ -8,7 +8,9 @@ This project aims to analyze the Vietnamese language to develop a faster typing 
 
 Use the below script to try `v7` method!
 
-![Demo](assets/v7ai.gif)
+[![Introduction to v7: Toward a Faster Vietnamese Typing Toolkit](https://img.youtube.com/vi/8oCy65ZKvzc/maxresdefault.jpg)](https://www.youtube.com/watch?v=8oCy65ZKvzc)
+
+<!-- ![Demo](assets/v7ai.gif) -->
 
 ## Motivation
 
