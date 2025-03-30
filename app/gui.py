@@ -62,6 +62,7 @@ class PredictWindow(QWidget):
         self.context = ""
         self.controller = Controller()
         self.isActivate = True
+        self.isEmitting = False
 
         self.initUI()
 
@@ -149,6 +150,10 @@ class PredictWindow(QWidget):
             # time.sleep(0.01)
     
     def process_emitted_keys(self, emitted_keys: List[Key | KeyCode]):
+
+        if self.isEmitting:
+            return
+
         if set(emitted_keys).issuperset(QUIT_COMBINATION):
             print('Quitting the application')
             QApplication.quit()  # Gracefully quit the app
@@ -185,8 +190,10 @@ class PredictWindow(QWidget):
                 print(f"Should delete {difference} more")
                 
                 # Backspace with deactivate
+                self.isEmitting = True
                 with self.listener_thread.deactivated():
                     self.emit_backspace(difference)
+                self.isEmitting = False
                 
                 self.update_raw(will_be_updated_raw)
                 
@@ -273,8 +280,10 @@ class PredictWindow(QWidget):
                     comb = self.prediction_state.lst[chosen_index]
                     
                     # Emit with deactivate
+                    self.isEmitting = True
                     with self.listener_thread.deactivated():
                         self.emit(comb)
+                    self.isEmitting = False
                         
                     # Backspace without deactivate
                     self.emit_backspace(1)
@@ -282,7 +291,7 @@ class PredictWindow(QWidget):
                     self.update_improvement_log(comb)
                     
                     if self.session:
-                        with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a') as history:
+                        with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a', encoding='utf-8') as history:
                             history.write(f"{self.prediction_state.raw} {comb}\n")
                     
                     self.update_raw('')
@@ -291,7 +300,8 @@ class PredictWindow(QWidget):
                     self.context += " " + comb
                     
                     return
-                except:
+                except Exception as e:
+                    print(e)
                     pass
                     
                 

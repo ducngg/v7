@@ -106,7 +106,7 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
     ```
 2. Tải về mô hình đã được huấn luyện:
     ```bash
-    gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt.pth
+    gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt-1.3.pth
     ```
 3. Khởi động ứng dụng:
     ```bash

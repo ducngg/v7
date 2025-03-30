@@ -26,17 +26,22 @@ else:
     CONTROL_KEY = Key.ctrl
     LEFT_CONTROL_KEY = Key.ctrl_l
     RIGHT_CONTROL_KEY = Key.ctrl_r
-    SPECIAL_KEY = Key.ctrl
+    SPECIAL_KEY = Key.alt_l
     
-    # TODO: Implement for window
-    HELP_COMBINATION = None
+    HELP_COMBINATION = {
+        SPECIAL_KEY,
+        KeyCode(char='h')
+    }
     TOGGLE_ENABLE_COMBINATION = {
         CONTROL_KEY,
-        Key.alt,
+        Key.alt_l,
         KeyCode(char='v')
     }
-    # TODO: Implement for window
-    QUIT_COMBINATION = None
+    QUIT_COMBINATION = {
+        CONTROL_KEY,
+        Key.shift,
+        KeyCode(char='\x16')
+    }
 
 REMOVE_LAST_TERM_COMBINATION = {
     Key.backspace

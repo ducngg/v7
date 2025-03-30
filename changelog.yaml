@@ -194,6 +194,10 @@ changes:
     research: ''
     change: 'Change handling special modifiers, and reduce error of Keyboard Listener thread'
     description: 'Better typing experience, from now will not give extra space after predictions. Add youtube video demo!'
+  - timestamp: '2025-31-03 00:38 AM'
+    research: ''
+    change: 'Add basic Windows key combinations, listener fix for Windows'
+    description: 'Support Windows'
   - timestamp: ''
     change: 'Move training code from Kaggle `smallgpt-vietnamese` notebook to this repo'    
   

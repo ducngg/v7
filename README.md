@@ -122,7 +122,7 @@ To run the app in AI Mode, follow these steps:
     ```
 2. Download the pretrained model checkpoint:
     ```bash
-    gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt.pth
+    gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt-1.3.pth
     ```
 3. Start the application:
     ```bash

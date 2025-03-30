@@ -1,5 +1,6 @@
-gdown==5.2.0
-PyQt5==5.15.10
-torch==2.2.2
-pynput==1.7.6
-pydantic==2.8.2
+gdown
+PyQt5
+torch
+pynput
+pydantic
+numpy
