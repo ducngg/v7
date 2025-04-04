@@ -21,6 +21,12 @@ if sys.platform == 'darwin':
         SPECIAL_KEY,
         KeyCode(char='v')
     }
+    NEXT_PAGE_COMBINATION = {
+        Key.alt_r
+    }
+    PREV_PAGE_COMBINATION = {
+        RIGHT_CONTROL_KEY
+    }
     
 else:
     CONTROL_KEY = Key.ctrl
@@ -42,15 +48,15 @@ else:
         Key.shift,
         KeyCode(char='\x16')
     }
+    NEXT_PAGE_COMBINATION = {
+        Key.ctrl_r
+    }
+    PREV_PAGE_COMBINATION = {
+        Key.alt_gr
+    }
 
 REMOVE_LAST_TERM_COMBINATION = {
     Key.backspace
-}
-NEXT_PAGE_COMBINATION = {
-    Key.alt_r
-}
-PREV_PAGE_COMBINATION = {
-    RIGHT_CONTROL_KEY
 }
 
 FAST_COMBINATION = None

@@ -76,6 +76,7 @@ class PredictWindow(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setWindowTitle(self.assets.title)
         self.setStyleSheet(self.assets.app_styleSheet)
+        self.setWindowOpacity(0.5) 
 
         layout = QVBoxLayout()
         
@@ -196,7 +197,9 @@ class PredictWindow(QWidget):
                 self.isEmitting = False
                 
                 self.update_raw(will_be_updated_raw)
-                
+                if len(self.prediction_state.raw) == 0:
+                    self.setWindowOpacity(0.5) 
+
                 self.prediction_state.buffer = self.prediction_state.buffer[:-1]
                 self.predict()
                                 
@@ -294,6 +297,7 @@ class PredictWindow(QWidget):
                         with open(os.path.join(HISTORY_PATH, f'{self.session}.txt'), 'a', encoding='utf-8') as history:
                             history.write(f"{self.prediction_state.raw} {comb}\n")
                     
+                    self.setWindowOpacity(0.5) 
                     self.update_raw('')
                     self.reset_predict_box()
                     self.prediction_state.reset()
@@ -323,6 +327,8 @@ class PredictWindow(QWidget):
             try:
                 only_key = emitted_keys[-1]
                 if isinstance(only_key, KeyCode):
+                    self.setWindowOpacity(1) 
+
                     self.update_raw(
                         self.prediction_state.raw + only_key.char
                     )
