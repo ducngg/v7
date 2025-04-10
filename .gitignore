@@ -17,3 +17,6 @@ history/*
 misc/
 test/
 .env
+
+# Test
+*.ig.*

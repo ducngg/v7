@@ -11,14 +11,14 @@ if sys.platform == 'darwin':
     HELP_COMBINATION = {
         SPECIAL_KEY,
         KeyCode(char='h')
-    }
+    } 
     TOGGLE_ENABLE_COMBINATION = {
-        CONTROL_KEY,
-        Key.alt,
-        KeyCode(char='√')
+        LEFT_CONTROL_KEY,
+        RIGHT_CONTROL_KEY
     }
     QUIT_COMBINATION = {
-        SPECIAL_KEY,
+        LEFT_CONTROL_KEY,
+        RIGHT_CONTROL_KEY,
         KeyCode(char='v')
     }
     NEXT_PAGE_COMBINATION = {
@@ -39,14 +39,13 @@ else:
         KeyCode(char='h')
     }
     TOGGLE_ENABLE_COMBINATION = {
-        CONTROL_KEY,
-        Key.alt_l,
-        KeyCode(char='v')
+        LEFT_CONTROL_KEY,
+        RIGHT_CONTROL_KEY
     }
     QUIT_COMBINATION = {
-        CONTROL_KEY,
-        Key.shift,
-        KeyCode(char='\x16')
+        LEFT_CONTROL_KEY,
+        RIGHT_CONTROL_KEY,
+        KeyCode(char='v')
     }
     NEXT_PAGE_COMBINATION = {
         Key.ctrl_r
