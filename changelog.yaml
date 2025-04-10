@@ -201,6 +201,10 @@ changes:
     research: ''
     change: 'Update opacity when idle and PREV/NEXT page key for Windows'
     description: 'UI Feature for Windows'
+  - timestamp: '2025-10-04 11:48 AM'
+    research: ''
+    change: 'Change some key combinantions and gui logic for better typing experience.'
+    description: 'Better UX'
   - timestamp: ''
     change: 'Move training code from Kaggle `smallgpt-vietnamese` notebook to this repo'    
   

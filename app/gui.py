@@ -309,10 +309,11 @@ class PredictWindow(QWidget):
                     pass
                     
                 
-        if set(emitted_keys) == ADD_RAW_COMBINATION:
+        if set(emitted_keys).issuperset(ADD_RAW_COMBINATION):
             print("CASE ADD RAW", emitted_keys)
             
             self.update_raw('')
+            self.setWindowOpacity(0.5) 
             self.reset_predict_box()
             self.prediction_state.reset()
             

@@ -19,7 +19,7 @@ if sys.platform == 'darwin':
     QUIT_COMBINATION = {
         LEFT_CONTROL_KEY,
         RIGHT_CONTROL_KEY,
-        KeyCode(char='v')
+        SPECIAL_KEY
     }
     NEXT_PAGE_COMBINATION = {
         Key.alt_r
@@ -27,7 +27,7 @@ if sys.platform == 'darwin':
     PREV_PAGE_COMBINATION = {
         RIGHT_CONTROL_KEY
     }
-    
+
 else:
     CONTROL_KEY = Key.ctrl
     LEFT_CONTROL_KEY = Key.ctrl_l
@@ -45,7 +45,7 @@ else:
     QUIT_COMBINATION = {
         LEFT_CONTROL_KEY,
         RIGHT_CONTROL_KEY,
-        KeyCode(char='v')
+        SPECIAL_KEY,
     }
     NEXT_PAGE_COMBINATION = {
         Key.ctrl_r
