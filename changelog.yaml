@@ -204,7 +204,7 @@ changes:
   - timestamp: '2025-10-04 11:48 AM'
     research: ''
     change: 'Change some key combinantions and gui logic for better typing experience.'
-    description: 'Better UX'
+    description: 'Better UX, warm up UI at start'
   - timestamp: ''
     change: 'Move training code from Kaggle `smallgpt-vietnamese` notebook to this repo'    
   

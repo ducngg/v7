@@ -120,13 +120,16 @@ class PredictWindow(QWidget):
         self.listener_thread.start()
         self.listener_thread.any_signal.connect(self.process_emitted_keys)
 
-    # def show_help(self):
-    #     help_text = self.assets.instruction
-    #     help_box = QMessageBox(parent=self)
-    #     help_box.setText(help_text)
-    #     help_box.setWindowTitle(self.assets.help)
-    #     help_box.setFixedWidth(800) 
-    #     help_box.exec_()
+        self.warm_up()
+
+    def warm_up(self):
+        print("WARMING UP UI...")
+        start_time = time.time()
+        self.predict_box.clear()
+        self.predict_box.append("abc def ghi jkl")
+        self.predict_box.clear()
+        print(f"WARMED UP IN {time.time() - start_time}s")
+
     
     def show_help(self):
         help_text = self.assets.gui_instruction
@@ -328,13 +331,20 @@ class PredictWindow(QWidget):
             try:
                 only_key = emitted_keys[-1]
                 if isinstance(only_key, KeyCode):
-                    self.setWindowOpacity(1) 
+                    code = ord(only_key.char)
 
-                    self.update_raw(
-                        self.prediction_state.raw + only_key.char
-                    )
-                    if only_key.char.isalpha() or only_key.char.isdigit():
-                        self.predict()
+                    if (
+                        (97 <= code <= 122) # Lowercase
+                        or (65 <= code <= 90) # Uppercase
+                        or (48 <= code <= 57) # Digit
+                    ):
+
+                        self.setWindowOpacity(1) 
+                        self.update_raw(
+                            self.prediction_state.raw + only_key.char
+                        )
+                        if only_key.char.isalpha() or only_key.char.isdigit():
+                            self.predict()
             except:
                 print("Fail")
                 pass
@@ -438,7 +448,7 @@ class PredictWindow(QWidget):
             0 + 9*(self.prediction_state.page - 1):
             9 + 9*(self.prediction_state.page - 1)
         ]
-        
+
         self.predict_box.append(f"{1} {showing[0]} ←")
         for i, comb in enumerate(showing[1:], start=2):
             self.predict_box.append(f"{i} {comb}")
@@ -447,6 +457,7 @@ class PredictWindow(QWidget):
             
     def update_predict_info(self):
         self.predict_info.setText(f"{self.assets.page}\n{self.prediction_state.page}/{self.prediction_state.maxpage}")
+
     def update_pred_result(self):
         self.update_predict_box()
         self.update_predict_info()
