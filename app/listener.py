@@ -8,8 +8,6 @@ import time
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-CURRENT_KEYS: List[Key | KeyCode] = []
-
 class ListenerThread(QThread):
     """Keyboard listenser, will return the set of keys pressed.
     """
@@ -19,6 +17,7 @@ class ListenerThread(QThread):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.activating = True
+        self.current_keys: List[Key | KeyCode] = []
     
     def run(self):
         # Create a listener for detecting key presses
@@ -29,33 +28,37 @@ class ListenerThread(QThread):
             listener.join()  # Keep the listener running 
             
     def _on_press(self, key: KeyCode | Key):
-        global CURRENT_KEYS
+        """Handles key press events."""
         if not self.activating:
             return 
-        
-        # print time hh mm ss below
+
         logging.debug(f"Received {key} at time: {time.time() % 1000}")
-        CURRENT_KEYS.append(key)
-        logging.debug(f"Current: {CURRENT_KEYS} and {self.activating=}")
+
+        if key not in self.current_keys:  # Prevent duplicate keys
+            self.current_keys.append(key)
+
+        logging.debug(f"Current: {self.current_keys} and {self.activating=}")
+
         if self.activating:
-            logging.debug(f"Sending {CURRENT_KEYS}...")
-            self.any_signal.emit(CURRENT_KEYS)
-            
+            logging.debug(f"Sending {self.current_keys}...")
+            self.any_signal.emit(self.current_keys)  # Emit signal with current keys
+
     def _on_release(self, key: KeyCode | Key):
-        global CURRENT_KEYS
+        """Handles key release events."""
         if not self.activating:
             return    
-        
-        # https://github.com/moses-palmer/pynput/issues/20
+
         try:
-            # TODO: Sometimes CURRENT_KEYS is not removing all: Uppercase characters / character option+v: √ 
-            CURRENT_KEYS.remove(key)
-            if key == Key.shift or key == Key.shift_r:
-                CURRENT_KEYS = [key for key in CURRENT_KEYS if not key.char.isupper()]
-                logging.debug(f"Shift released, clean -> {CURRENT_KEYS=}")
+            if key in self.current_keys:
+                self.current_keys.remove(key)
+
+            if key in (Key.shift, Key.shift_r):
+                self.current_keys = [k for k in self.current_keys if not (hasattr(k, "char") and k.char.isupper())]
+                logging.debug(f"Shift released, clean -> {self.current_keys=}")
+
             if key == Key.backspace:
-                logging.debug(f"Backspace pressed, clean {CURRENT_KEYS=} -> []")
-                CURRENT_KEYS = []
+                logging.debug(f"Backspace pressed, clean {self.current_keys=} -> []")
+                self.current_keys.clear()
 
         except Exception as e:
             logging.info(e)
@@ -81,5 +84,5 @@ class ListenerThread(QThread):
             self.on()
 
     def clean_up(self):
-        global CURRENT_KEYS
-        CURRENT_KEYS = []
+        self.current_keys = []
+    
