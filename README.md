@@ -81,11 +81,7 @@ This mode utilize `v7gpt`: a GPT-like model with a custom tokenizer only for `v7
   - Works in any circumstances.
   - Understands the context in which the user is writing to predict the most suitable next word.
   - Can effectively predict entire sentences at a time.
-
-Future plans include combining both modes to create the most robust Vietnamese input method.
-
-![Demo](assets/v7ai.gif)
-
+  
 ## Run the App
 <!-- TODO: (Warn user about the computer accessibility issues) -->
 This project uses Python 3.12. 

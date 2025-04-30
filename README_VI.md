@@ -68,10 +68,6 @@ Chế độ này sử dụng `v7gpt` - một mô hình tựa GPT với bộ toke
   - Hiểu ngữ cảnh mà người dùng đang viết để dự đoán từ tiếp theo phù hợp nhất.
   - Có thể dự đoán hiệu quả toàn bộ câu.
 
-Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương pháp nhập tiếng Việt ưu việt nhất.
-
-![Demo](assets/v7ai.gif)
-
 ## Sử dụng
 <!-- TODO: (Warn user about the computer accessibility issues) -->
 `v7` chạy trên Python 3.12.
