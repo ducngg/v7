@@ -12,7 +12,7 @@ data
 testlog.txt
 assets/record
 profile*
-history/*
+history/
 */deprecated/
 misc/
 test/
