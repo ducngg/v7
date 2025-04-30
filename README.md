@@ -72,17 +72,7 @@ This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikip
 
 ### Modes
 
-`v7` predicts the words/phrases users want to type by checking and ranking possible words/phrases. It operates in two modes:
-
-#### Dictionary Mode
-In this mode, `v7` searches for matching phrases in the dictionary and ranks them based on trained usage frequency.
-
-- **Limitations**:
-  - Can only detect phrases present in the dictionary (although users can add more phrases to the dictionary).
-  - No understanding of the context.
-  - Effective for predicting single words or one phrase in the dictionary at a time.
-
-![Demo](assets/v7dict.gif)
+`v7` predicts the words/phrases users want to type by checking and ranking possible words/phrases. 
 
 #### AI Mode
 This mode utilize `v7gpt`: a GPT-like model with a custom tokenizer only for `v7`, trained on a Vietnamese corpus, based on Andrej Karpathy's [nanoGPT](https://github.com/karpathy/build-nanogpt).
@@ -100,19 +90,6 @@ Future plans include combining both modes to create the most robust Vietnamese i
 <!-- TODO: (Warn user about the computer accessibility issues) -->
 This project uses Python 3.12. 
 
-#### Using Dictionary Mode
-To run the app in Dictionary Mode, follow these steps:
-
-1. Install the required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
-2. Start the application:
-    ```bash
-    python main.py --lang en --ai false
-    # VNI 6-tone is not yet supported for Dictionary mode
-    ```
-
 #### Using AI Mode
 To run the app in AI Mode, follow these steps:
 
@@ -126,6 +103,6 @@ To run the app in AI Mode, follow these steps:
     ```
 3. Start the application:
     ```bash
-    python main.py --lang en --ai true --vni_tones false 
+    python main.py
     # use [--vni_tones true] if you want VNI 6-tone
     ```

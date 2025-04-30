@@ -58,17 +58,7 @@ Thanh điệu được mở rộng so với 6 dấu của VNI. Xem [Hệ 8 thanh
 
 ### Các Chế Độ
 
-`v7` dự đoán các từ/cụm từ mà người dùng muốn gõ bằng cách kiểm tra và xếp hạng các từ/cụm từ có thể có. Nó hoạt động ở hai chế độ:
-
-#### Chế Độ Từ Điển
-Trong chế độ này, `v7` tìm kiếm các cụm từ phù hợp trong từ điển và xếp hạng chúng dựa trên tần suất sử dụng đã được huấn luyện.
-
-- **Hạn Chế**:
-  - Chỉ có thể phát hiện các cụm từ có trong từ điển (người dùng có thể thêm nhiều cụm từ hơn vào từ điển).
-  - Không có khả năng hiểu ngữ cảnh.
-  - Chỉ hiệu quả trong việc dự đoán các từ đơn hoặc một cụm từ có trong từ điển.
-
-![Demo](assets/v7dict.gif)
+`v7` dự đoán các từ/cụm từ mà người dùng muốn gõ bằng cách kiểm tra và xếp hạng các từ/cụm từ có thể có.
 
 #### Chế Độ AI
 Chế độ này sử dụng `v7gpt` - một mô hình tựa GPT với bộ tokenizer của riêng `v7`, được huấn luyện trên kho ngữ liệu tiếng Việt, dựa trên [nanoGPT](https://github.com/karpathy/build-nanogpt) của Andrej Karpathy.
@@ -86,18 +76,6 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
 <!-- TODO: (Warn user about the computer accessibility issues) -->
 `v7` chạy trên Python 3.12.
 
-#### Sử Dụng Chế Độ Từ Điển
-
-1. Cài đặt các thư viện cần thiết:
-    ```bash
-    pip install -r requirements.txt
-    ```
-2. Khởi động ứng dụng:
-    ```bash
-    python main.py --lang vi --ai false
-    # hiện tại chưa hỗ trợ hệ 6 dấu VNI thông thường cho chế độ này
-    ```
-
 #### Sử Dụng Chế Độ AI
 
 1. Cài đặt các thư viện cần thiết cho chế độ AI (yêu cầu Torch):
@@ -110,6 +88,6 @@ Trong tương lai sẽ kết hợp cả hai chế độ để tạo ra phương 
     ```
 3. Khởi động ứng dụng:
     ```bash
-    python main.py --lang vi --ai true --vni_tones false 
+    python main.py
     # hãy chọn [--vni_tones true] nếu muốn dùng hệ 6 dấu của VNI
     ```
