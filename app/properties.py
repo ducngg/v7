@@ -1,4 +1,5 @@
 from typing import Literal
+import sys
 
 GOLDEN_RATIO = 1.618
 class Assets:
@@ -7,15 +8,27 @@ class Assets:
     _logo_path = "assets/v7ai.1.png"
     
     # TODO: check os type for these
-    _HELP_COMBINATION = "⌃H"
-    _CHOOSE_COMBINATION = "[①-⑨]"
-    _MOVE_TO_TOP_COMBINATION = "[⌃①-⌃⑨]"
-    _REMOVE_LAST_TERM_COMBINATION = "⌫"
-    _NEXT_PAGE_COMBINATION = "Right⌥"
-    _PREV_PAGE_COMBINATION = "Right⌘"
-    _ADD_RAW_COMBINATION = "␣"
-    _TOGGLE_ENABLE_COMBINATION = "⌘⌥V"
-    _QUIT_COMBINATION = "⌃V"
+    if sys.platform == "darwin":
+        _HELP_COMBINATION = "⌃H"
+        _CHOOSE_COMBINATION = "[①-⑨]"
+        _MOVE_TO_TOP_COMBINATION = "[⌃①-⌃⑨]"
+        _REMOVE_LAST_TERM_COMBINATION = "⌫"
+        _NEXT_PAGE_COMBINATION = "Right⌥"
+        _PREV_PAGE_COMBINATION = "Right⌘"
+        _ADD_RAW_COMBINATION = "␣"
+        _TOGGLE_ENABLE_COMBINATION = "Right⌘ Left⌘"
+        _QUIT_COMBINATION = "⌃ Right⌘ Left⌘"
+        
+    else:
+        _HELP_COMBINATION = "Alt H"
+        _CHOOSE_COMBINATION = "[①-⑨]"
+        _MOVE_TO_TOP_COMBINATION = "[Alt ①-Alt ⑨]"
+        _REMOVE_LAST_TERM_COMBINATION = "⌫"
+        _NEXT_PAGE_COMBINATION = "RightCtrl"
+        _PREV_PAGE_COMBINATION = "RightAlt"
+        _ADD_RAW_COMBINATION = "␣"
+        _TOGGLE_ENABLE_COMBINATION = "RightCtrl LeftCtrl"
+        _QUIT_COMBINATION = "LeftAlt RightCtrl LeftCtrl"
     
     _geometry = {
         's': (200, 100, int(270*GOLDEN_RATIO), 270),
