@@ -323,9 +323,11 @@ class PredictWindow(QWidget):
             return
         
         if Key.cmd not in emitted_keys \
-            and Key.shift not in emitted_keys \
+            and Key.cmd_r not in emitted_keys \
             and Key.ctrl not in emitted_keys \
-            and Key.alt not in emitted_keys:
+            and Key.ctrl_r not in emitted_keys \
+            and Key.alt not in emitted_keys \
+            and Key.alt_r not in emitted_keys:
 
             print("BASE", emitted_keys)
             try:
