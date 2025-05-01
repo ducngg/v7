@@ -58,7 +58,29 @@ REMOVE_LAST_TERM_COMBINATION = {
     Key.backspace
 }
 
-FAST_COMBINATION = None
+PUNCTUATIONS = {
+    KeyCode(char='!'),
+    # KeyCode(char='"'),
+    # KeyCode(char='#'),
+    # KeyCode(char='$'),
+    # KeyCode(char='%'),
+    # KeyCode(char='&'),
+    # KeyCode(char="'"),
+    # KeyCode(char='('),
+    # KeyCode(char=')'),
+    # KeyCode(char='*'),
+    # KeyCode(char='+'),
+    KeyCode(char=','),
+    # KeyCode(char='-'),
+    KeyCode(char='.'),
+    # KeyCode(char='/'),
+    KeyCode(char=':'),
+    KeyCode(char=';'),
+    # KeyCode(char='<'),
+    # KeyCode(char='='),
+    # KeyCode(char='>'),
+    KeyCode(char='?'),
+}
 ADD_RAW_COMBINATION = {
     Key.space
 }

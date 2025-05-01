@@ -90,5 +90,7 @@ def get_model(model_size='base', checkpoint_path=BASE_MODEL_CHECKPOINT_PATH, ver
         print(f"\tCheckpoint path: {checkpoint_path}")
         total_params = sum(p.numel() for p in model.parameters())
         print(f"\tTotal number of parameters: {total_params}")
+        
+    model.eval()
     
     return model

@@ -2,11 +2,13 @@
 Run this for the app that you can type in (stable, but can only use v7 in the app)
 """
 import time
-import sys
+import sys, os
 
 from PyQt5.QtWidgets import QApplication
 from app.app import V7App
 from app.args import parse_args
+
+os.makedirs("history", exist_ok=True)
 
 if __name__ == '__main__':
     args, input_agent_args = parse_args()

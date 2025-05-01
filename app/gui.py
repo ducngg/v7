@@ -139,10 +139,10 @@ class PredictWindow(QWidget):
         help_box.setFixedWidth(800) 
         help_box.exec_()
     
-    def emit(self, phrase):
+    def emit(self, phrase, end):
         self.emit_backspace(len(self.prediction_state.raw) + 1)
         # Extra space for backspace later
-        self.controller.type(phrase + ' ')
+        self.controller.type(phrase + end + ' ')
         
         # Maybe don't need this as backspace is pressed after all
         self.listener_thread.clean_up()
@@ -263,8 +263,11 @@ class PredictWindow(QWidget):
         # # Handle 1-9 key: Choose the combination
         if self.ready:
             number = None
-            if set(emitted_keys) == FAST_COMBINATION:
+            end = ' '
+            
+            if emitted_keys[-1] in PUNCTUATIONS:
                 number = 1
+                end = emitted_keys[-1].char + end
                 
             try:
                 number_key = emitted_keys[0]
@@ -275,7 +278,7 @@ class PredictWindow(QWidget):
             except:
                 pass
 
-            print("CASE CHOOSE", emitted_keys, number)
+            print("CASE CHOOSE", emitted_keys, number, end)
             # Not choosing any combination
             if number is None:
                 pass
@@ -288,7 +291,7 @@ class PredictWindow(QWidget):
                     # Emit with deactivate
                     self.isEmitting = True
                     with self.listener_thread.deactivated():
-                        self.emit(comb)
+                        self.emit(comb, end)
                     self.isEmitting = False
                         
                     # Backspace without deactivate

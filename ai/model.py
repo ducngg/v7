@@ -41,7 +41,7 @@ class CausalSelfAttention(nn.Module):
         v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)  # (B, nh, T, hs)
         
         # Apply scaled dot-product attention with masking
-        y = F.scaled_dot_product_attention(q, k, v, attn_mask=attention_mask, is_causal=is_causal)
+        y = F.scaled_dot_product_attention(q, k, v, attn_mask=attention_mask, is_causal=bool(is_causal))
         
         y = y.transpose(1, 2).contiguous().view(B, T, C)  # reassemble head outputs
         y = self.c_proj(y)

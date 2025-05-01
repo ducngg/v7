@@ -7,7 +7,6 @@ class Assets:
     _color = "#FFF"
     _logo_path = "assets/v7ai.1.png"
     
-    # TODO: check os type for these
     if sys.platform == "darwin":
         _HELP_COMBINATION = "⌃H"
         _CHOOSE_COMBINATION = "[①-⑨]"
