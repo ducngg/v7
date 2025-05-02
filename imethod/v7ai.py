@@ -41,7 +41,6 @@ class AIInputMethod(InputMethod):
         consonant_rule, rhymes_rule, tone_rule = crst.unpack() # Possibilities from user
         
         if self.vni_tones or vni_tones:
-            print("Accepted")
             # Still accept tone=6 or tone=7 although tone_rule is 1 or 5
             if tone == 6 and tone_rule == 1:
                 tone = 1
