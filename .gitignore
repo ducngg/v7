@@ -1,5 +1,6 @@
 __pycache__/
 
+# Checkpoints
 checkpoints/common.json
 checkpoints/freq-transformer.txt
 checkpoints/*.pth
@@ -8,6 +9,7 @@ checkpoints/*.pth
 .DS_Store
 .vscode
 
+# Data
 data
 testlog.txt
 assets/record
@@ -20,3 +22,10 @@ test/
 
 # Test
 *.ig.*
+
+# App
+dist/
+build/
+
+# Env
+v7/

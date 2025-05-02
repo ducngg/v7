@@ -29,8 +29,9 @@ if TYPE_CHECKING:
 
 from utils.compare import TelexOrVNI
 from models import PredictionState
+from utils.path import resource_path
         
-HISTORY_PATH = os.path.join('history')
+HISTORY_PATH = resource_path(os.path.join('history'))
 if not os.path.exists(HISTORY_PATH):
     os.makedirs(HISTORY_PATH)
 

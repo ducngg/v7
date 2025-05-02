@@ -7,8 +7,9 @@ import sys, os
 from PyQt5.QtWidgets import QApplication
 from app.gui import PredictWindow
 from app.args import parse_args
+from utils.path import resource_path
 
-os.makedirs("history", exist_ok=True)
+os.makedirs(resource_path("history"), exist_ok=True)
 
 if __name__ == '__main__':
     args, input_agent_args = parse_args()

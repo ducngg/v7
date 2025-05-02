@@ -98,5 +98,4 @@ Chế độ này sử dụng `v7gpt` - một mô hình tựa GPT với bộ toke
 3. Khởi động ứng dụng:
     ```bash
     python main.py
-    # hãy chọn [--vni_tones true] nếu muốn dùng hệ 6 dấu của VNI
     ```

@@ -35,12 +35,13 @@ class AIInputMethod(InputMethod):
             verbose=verbose
         )
     
-    def accept(self, crt: Triplet, crst: MatchingTriplet, word: Word):
+    def accept(self, crt: Triplet, crst: MatchingTriplet, word: Word, vni_tones=False):
         
         consonant, rhyme, tone = crt.unpack() # Triplet of the AI-predicted word
         consonant_rule, rhymes_rule, tone_rule = crst.unpack() # Possibilities from user
         
-        if self.vni_tones:
+        if self.vni_tones or vni_tones:
+            print("Accepted")
             # Still accept tone=6 or tone=7 although tone_rule is 1 or 5
             if tone == 6 and tone_rule == 1:
                 tone = 1
@@ -61,7 +62,7 @@ class AIInputMethod(InputMethod):
                 
         return True
         
-    def predict(self, input_string: str, context: str):
+    def predict(self, input_string: str, context: str, vni_tones=False):
         if context.strip() == "":
             context = self.SOS
         raws = self.seperate_raws(input_string)
@@ -82,7 +83,7 @@ class AIInputMethod(InputMethod):
         # else:
         #     combination_possibilities = self.predict_super(input_string, CRsTs, context)
         
-        combination_possibilities = self.top_1_predict(input_string, CRsTs, context)
+        combination_possibilities = self.top_1_predict(input_string, CRsTs, context, vni_tones)
     
         return [self.apply_capitalization(combination, cap_pos) for combination in combination_possibilities]
 
@@ -114,7 +115,7 @@ class AIInputMethod(InputMethod):
                                                     
     #     return results
     
-    def top_1_predict(self, input_string, CRsTs: List[MatchingTriplet], context: str):  
+    def top_1_predict(self, input_string, CRsTs: List[MatchingTriplet], context: str, vni_tones=False):  
         
         current_result = []
         for CRsT in CRsTs[:-1]:
@@ -122,7 +123,7 @@ class AIInputMethod(InputMethod):
             prediction.remove(0)
             
             for triplet, word in zip(tokenizer.triplets(prediction), tokenizer.detokenize(prediction)):
-                if self.accept(triplet, CRsT, word):
+                if self.accept(triplet, CRsT, word, vni_tones):
                     context += ' ' + word
                     current_result.append(word)
                     break
@@ -135,7 +136,7 @@ class AIInputMethod(InputMethod):
         for triplet, word in zip(tokenizer.triplets(prediction), tokenizer.detokenize(prediction)):
             if len(results) >= LIMIT:
                 break
-            if self.accept(triplet, CRsTs[-1], word):
+            if self.accept(triplet, CRsTs[-1], word, vni_tones):
                 results.append(' '.join(current_result + [word]))
                                                     
         return results

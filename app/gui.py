@@ -27,8 +27,10 @@ from imethod.v7 import InputMethod
 from utils.compare import TelexOrVNI
 from models import PredictionState
 from typing import Set, List
-        
-HISTORY_PATH = os.path.join('history')
+from utils.path import resource_path
+
+HISTORY_PATH = resource_path(os.path.join('history'))
+
 if not os.path.exists(HISTORY_PATH):
     os.makedirs(HISTORY_PATH)
     
@@ -63,6 +65,7 @@ class PredictWindow(QWidget):
         self.controller = Controller()
         self.isActivate = True
         self.isEmitting = False
+        self.vni_tones = False
 
         self.initUI()
 
@@ -91,6 +94,12 @@ class PredictWindow(QWidget):
         self.help_label.setFixedWidth(self.assets.help_button_width)
         top_line_layout.addWidget(self.help_label)
         
+        self.tone_toggle_btn = QPushButton("6 dấu" if self.vni_tones else "8 Thanh")
+        self.tone_toggle_btn.setStyleSheet(self.assets.default_styleSheet)
+        self.tone_toggle_btn.setFixedWidth(self.assets.toggle_mode_button_width)
+        self.tone_toggle_btn.clicked.connect(self.toggle_tone_mode)
+        top_line_layout.addWidget(self.tone_toggle_btn)
+                
         layout.addLayout(top_line_layout)
         
         pred_result_layout = QHBoxLayout()
@@ -130,13 +139,16 @@ class PredictWindow(QWidget):
         self.predict_box.clear()
         print(f"WARMED UP IN {time.time() - start_time}s")
 
+    def toggle_tone_mode(self):
+        self.vni_tones = not self.vni_tones
+        self.tone_toggle_btn.setText("6 dấu" if self.vni_tones else "8 Thanh")
     
     def show_help(self):
         help_text = self.assets.gui_instruction
         help_box = QMessageBox(parent=self)
         help_box.setText(help_text)
         help_box.setWindowTitle(self.assets.help)
-        help_box.setFixedWidth(800) 
+        help_box.setFixedWidth(1200) 
         help_box.exec_()
     
     def emit(self, phrase, end):
@@ -371,7 +383,7 @@ class PredictWindow(QWidget):
         if "AI" in self.inputAgent.mode:
             # Nothing in buffer
             if not self.prediction_state.buffer:
-                combination_possibilities = self.inputAgent.predict(input, context=context)
+                combination_possibilities = self.inputAgent.predict(input, context=context, vni_tones=self.vni_tones)
                 
             # Buffer has something
             else:
@@ -384,7 +396,8 @@ class PredictWindow(QWidget):
                 
                     combination_possibilities = self.inputAgent.predict(
                         last, 
-                        context=context+' '+buffer
+                        context=context+' '+buffer,
+                        vni_tones=self.vni_tones
                     )
                     
                     # Still let the word in buffer to the top
@@ -403,7 +416,8 @@ class PredictWindow(QWidget):
                     # Just predict the last term, then concatenate with buffer
                     combination_possibilities = self.inputAgent.predict(
                         last, 
-                        context=context+' '+buffer
+                        context=context+' '+buffer,
+                        vni_tones=self.vni_tones
                     )
                     
                     combination_possibilities = [

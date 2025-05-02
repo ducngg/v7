@@ -30,7 +30,7 @@ class Assets:
         _QUIT_COMBINATION = "LeftAlt RightCtrl LeftCtrl"
     
     _geometry = {
-        's': (200, 100, int(270*GOLDEN_RATIO), 270),
+        's': (200, 100, int(285*GOLDEN_RATIO), 285),
         'l': (200, 100, int(500*GOLDEN_RATIO), 500)
     }
     _logo_height = {
@@ -44,6 +44,10 @@ class Assets:
     _help_button_width = {
         's': 70,
         'l': 70
+    }
+    _toggle_mode_button_width = {
+        's': 100,
+        'l': 100
     }
     _gui_help_button_width = {
         's': 15,
@@ -148,7 +152,17 @@ Thanh điệu:
         'en': (
             f"• Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.\n"
             f"• CapsLock is not supported yet.\n"
-            f"• Typing rules is in README.md.\n"
+            f"• Typing rules:\n"
+            f"    Special consonants:\n"
+            f"    - `g` for both `g` and `gh`\n"
+            f"    - `ng` for both `ng` and `ngh`\n"
+            f"    - `z` for `gi`. (z6  → giúp, giết, giáp, ...)\n"
+            f"    - `dd` for `đ`. (dd4 → đã, đãi, đỗ, ...)\n"
+            f"    Tones:\n"
+            f"    - 0 for no tones\n"
+            f"    - [1-5] for tones from 1 to 5 (VNI style)\n"
+            f"    - 6 for `entering` accute: xuất, cấp, tất, chiếc, thích, mút...\n"
+            f"    - 7 for `entering` underdot: nhập, phục, đột, chục, mạch, kịp...\n"
             f"• Press {_CHOOSE_COMBINATION} to choose the combination.\n"
             f"• Press {_MOVE_TO_TOP_COMBINATION} to move the chosen combination to the top.\n"
             f"• Press {_PREV_PAGE_COMBINATION}/{_NEXT_PAGE_COMBINATION} to move to previous/next prediction page.\n"
@@ -160,7 +174,17 @@ Thanh điệu:
             'vi': (
             f"• Tắt VNI / Telex trước khi dùng.\n"
             f"• Chưa hỗ trợ CapsLock.\n"
-            f"• Cách gõ nằm trong file README_VI.md.\n"
+            f"• Cách gõ:\n"
+            f"    Phụ âm đặc biệt:\n"
+            f"    - `g` cho cả `g` và `gh`.\n"
+            f"    - `ng` cho cả `ng` và `ngh`\n"
+            f"    - `z` cho `gi`. (z6  → giúp, giết, giáp, ...)\n"
+            f"    - `dd` cho `đ`. (dd4 → đã, đãi, đỗ, ...)\n"
+            f"    Thanh điệu:\n"
+            f"    - 0 cho không dấu (thanh ngang)\n"
+            f"    - [1-5] cho sắc, huyền, hỏi, ngã, nặng (tương tự như VNI)\n"
+            f"    - 6 cho thanh sắc `nhập` (thanh phù nhập): xuất, cấp, tất, chiếc, thích, mút...\n"
+            f"    - 7 cho thanh nặng `nhập` (thanh trầm nhập): nhập, phục, đột, chục, mạch, kịp...\n"
             f"• Dùng {_CHOOSE_COMBINATION} để xuất cụm từ mong muốn.\n"
             f"• Dùng {_MOVE_TO_TOP_COMBINATION} để chuyển cụm từ mong muốn lên trên.\n"
             f"• Dùng {_PREV_PAGE_COMBINATION}/{_NEXT_PAGE_COMBINATION} để chuyển trang dự đoán trước/sau.\n"
@@ -258,6 +282,9 @@ Thanh điệu:
     @property
     def help_button_width(self):
         return Assets._help_button_width[self.size]
+    @property
+    def toggle_mode_button_width(self):
+        return Assets._toggle_mode_button_width[self.size]
     @property
     def gui_help_button_width(self):
         return Assets._gui_help_button_width[self.size]
