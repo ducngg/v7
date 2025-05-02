@@ -42,8 +42,8 @@ class Assets:
         'l': 14
     }
     _help_button_width = {
-        's': 50,
-        'l': 50
+        's': 70,
+        'l': 70
     }
     _gui_help_button_width = {
         's': 15,
@@ -147,6 +147,7 @@ Thanh điệu:
     _gui_instruction = {
         'en': (
             f"• Please turn off Unikey or other keyboard input tools when using this app to avoid conflicts.\n"
+            f"• CapsLock is not supported yet.\n"
             f"• Typing rules is in README.md.\n"
             f"• Press {_CHOOSE_COMBINATION} to choose the combination.\n"
             f"• Press {_MOVE_TO_TOP_COMBINATION} to move the chosen combination to the top.\n"
@@ -158,14 +159,15 @@ Thanh điệu:
         ),
             'vi': (
             f"• Tắt VNI / Telex trước khi dùng.\n"
-            f"• Typing rules is in README.md.\n"
-            f"• Press {_CHOOSE_COMBINATION} to choose the combination.\n"
-            f"• Press {_MOVE_TO_TOP_COMBINATION} to move the chosen combination to the top.\n"
-            f"• Press {_PREV_PAGE_COMBINATION}/{_NEXT_PAGE_COMBINATION} to move to previous/next prediction page.\n"
-            f"• Press {_REMOVE_LAST_TERM_COMBINATION} to delete last raw term.\n"
-            f"• Press {_ADD_RAW_COMBINATION} to keep raw input.\n"
-            f"• Press {_TOGGLE_ENABLE_COMBINATION} to toggle on/off v7.\n"
-            f"• Press {_QUIT_COMBINATION} to quit v7."
+            f"• Chưa hỗ trợ CapsLock.\n"
+            f"• Cách gõ nằm trong file README_VI.md.\n"
+            f"• Dùng {_CHOOSE_COMBINATION} để xuất cụm từ mong muốn.\n"
+            f"• Dùng {_MOVE_TO_TOP_COMBINATION} để chuyển cụm từ mong muốn lên trên.\n"
+            f"• Dùng {_PREV_PAGE_COMBINATION}/{_NEXT_PAGE_COMBINATION} để chuyển trang dự đoán trước/sau.\n"
+            f"• Dùng {_REMOVE_LAST_TERM_COMBINATION} để xóa thô.\n"
+            f"• Dùng {_ADD_RAW_COMBINATION} để xuất thô.\n"
+            f"• Dùng {_TOGGLE_ENABLE_COMBINATION} để đóng/mở v7.\n"
+            f"• Dùng {_QUIT_COMBINATION} để tắt v7."
         )
     }
     _page = {

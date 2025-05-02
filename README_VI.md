@@ -56,6 +56,18 @@ Thanh điệu được mở rộng so với 6 dấu của VNI. Xem [Hệ 8 thanh
 
 **Lưu ý:** *Nếu không quen với hệ 8 thanh điệu, ta hoàn toàn có thể chọn dùng 6 dấu như VNI thông thường. Nhưng sử dụng hệ 8 thanh điệu sẽ có kết quả dự đoán tốt hơn rất nhiều!*
 
+### Tương thích
+
+**Hệ điều hành**:
+- ✅ **macOS** – Chuyển sang bàn phím tiếng Anh khi dùng
+- ✅ **Windows** – Chuyển sang bàn phím tiếng Anh khi dùng
+- ⛔ **Linux** – Chưa được hỗ trợ
+
+**Hạn chế hiện tại**:
+- 🚫 **CapsLock**: Chưa được hỗ trợ. Vui lòng tắt CapsLock khi gõ.  
+- ⚠️ **Quyền truy cập hệ thống**: Một số nền tảng (ví dụ macOS) có thể yêu cầu cấp quyền truy cập bàn phím để công cụ hoạt động chính xác.
+- Đang trong quá trình phát triển phiên bản ổn định...
+
 ### Các Chế Độ
 
 `v7` dự đoán các từ/cụm từ mà người dùng muốn gõ bằng cách kiểm tra và xếp hạng các từ/cụm từ có thể có.
@@ -81,6 +93,7 @@ Chế độ này sử dụng `v7gpt` - một mô hình tựa GPT với bộ toke
 2. Tải về mô hình đã được huấn luyện:
     ```bash
     gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt-1.3.pth
+    # Hoặc tải file model https://drive.google.com/file/d/12ZBG5IBOKmgmv7mh32uFdDUqr-K0SzPS/view?usp=drive_link về checkpoints/v7gpt-1.3.pth
     ```
 3. Khởi động ứng dụng:
     ```bash

@@ -70,6 +70,18 @@ This 8-tone system follows the [Vietnamese Eight-Tone Analysis](https://en.wikip
 
 **Note:** *If you aren't familiar with 8-tone system, you can still config to use traditional VNI 6-tone. But using 8-tone system is highly recommended for much much better AI result!* 
 
+### Platform Support
+
+**Operating Systems**:
+- ✅ **macOS** - Please switch to English keyboard
+- ✅ **Windows** - Please switch to English keyboard
+- ⛔ **Linux** – Not supported *yet*
+
+**Current Limitations**:
+- 🚫 **CapsLock**: Not currently supported. Please make sure CapsLock is off when typing.
+- ⚠️ **Accessibility**: Some platforms (e.g., macOS) may require enabling accessibility permissions such as input monitoring for the tool to function correctly.
+- Stable version in progress...
+
 ### Modes
 
 `v7` predicts the words/phrases users want to type by checking and ranking possible words/phrases. 
@@ -96,6 +108,7 @@ To run the app in AI Mode, follow these steps:
 2. Download the pretrained model checkpoint:
     ```bash
     gdown 1dDP0jIJ79syE6vt6QnVl05_4fYpuwrqd -O checkpoints/v7gpt-1.3.pth
+    # Or download the file at https://drive.google.com/file/d/12ZBG5IBOKmgmv7mh32uFdDUqr-K0SzPS/view?usp=drive_link to checkpoints/v7gpt-1.3.pth
     ```
 3. Start the application:
     ```bash

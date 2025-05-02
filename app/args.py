@@ -14,7 +14,7 @@ def parse_args():
     )
     parser.add_argument("-l", "--lang", type=str,
         choices=["en", "vi"],
-        default="en",
+        default="vi",
         help="Specify the app's language."
     )
     # add ai argument: -a --ai, true or false
