@@ -2,14 +2,15 @@ import json
 from models import Triplet, Word
 
 from utils.decorators import singleton
+from utils.path import resource_path
 
 @singleton
 class Tokenizer:
     def __init__(
         self, 
-        enum_path="checkpoints/enum.json", 
-        renum_path="checkpoints/renum.json", 
-        renum_crt_path="checkpoints/renum_crt.json",
+        enum_path=resource_path("checkpoints/enum.json"), 
+        renum_path=resource_path("checkpoints/renum.json"), 
+        renum_crt_path=resource_path("checkpoints/renum_crt.json"),
         verbose=1
     ):  
         self.location = "<ai.tokenizer.Tokenizer>"

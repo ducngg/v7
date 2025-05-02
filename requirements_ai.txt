@@ -1,6 +1,7 @@
 gdown
 PyQt5
 torch
+pillow
 pynput
 pydantic
 numpy

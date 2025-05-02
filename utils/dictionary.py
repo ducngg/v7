@@ -13,6 +13,8 @@ from itertools import product
 from typing import List, Tuple, Union, Optional, Dict
 from models import ConsonantFamily, RhymeFamily, Tone, Triplet, MatchingTriplet, Word, Phrase, WordFreq
 
+from utils.path import resource_path
+
 class Dictionary():
     location = "<utils.dictionary.Dictionary>"
     db = {} # database
@@ -250,7 +252,7 @@ class Dictionary():
         
     def reload(verbose=0):
         word_count = 0
-        with open('checkpoints/db.json', 'r') as f:
+        with open(resource_path('checkpoints/db.json'), 'r') as f:
             Dictionary.db_freq = json.load(f)
             for consonant in Dictionary.db_freq.keys():
                 for rhyme in Dictionary.db_freq[consonant].keys():
@@ -263,11 +265,11 @@ class Dictionary():
             print(f"{Dictionary.location} Loaded: {word_count} words")
         
         dictionary = []
-        with open('checkpoints/dict.json', 'r') as f:
+        with open(resource_path('checkpoints/dict.json'), 'r') as f:
             dictionary = dictionary + json.load(f)
             
-        if os.path.exists('checkpoints/common.json'):
-            with open('checkpoints/common.json', 'r') as f:
+        if os.path.exists(resource_path('checkpoints/common.json')):
+            with open(resource_path('checkpoints/common.json'), 'r') as f:
                 dictionary = dictionary + json.load(f)
             
         Dictionary.dictionary = set(dictionary)
