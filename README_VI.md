@@ -1,4 +1,5 @@
 [**English**](README.md) | [**Tiếng Việt**](README_VI.md)
+[[IJCAI 2025 Accepted Paper Preprint]](assets/v7_preprint.pdf) 
 
 # Bộ gõ Tiếng Việt `v7`
 

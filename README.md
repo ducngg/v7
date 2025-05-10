@@ -1,5 +1,5 @@
 [**English**](README.md) | [**Tiếng Việt**](README_VI.md)
-
+[[IJCAI 2025 Accepted Paper Preprint]](assets/v7_preprint.pdf)
 # `v7` Input Method
 
 This project aims to analyze the Vietnamese language to develop a faster typing method by implementing word prediction based on partial input. For instance, inputting only `x0ch2` should yield `xin chào` as the predicted output.
