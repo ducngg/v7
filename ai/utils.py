@@ -5,12 +5,13 @@ from utils.preprocess import standardize_data
 from .tokenizer import tokenizer
 from .configs import MAX_SEQUENCE_LEN, DEVICE, BASE_MODEL_CHECKPOINT_PATH, MODEL_SIZES
 from .model import GPT, GPTConfig
+import builtins
 
 def next(model: GPT, seqs: list[str]) -> list[list[int]]:
     # Standardize and tokenize the input sequences
     seqs = [standardize_data(seq).lower() for seq in seqs]
     tokens = [tokenizer.tokenize(seq.split())[-MAX_SEQUENCE_LEN:] for seq in seqs]
-    tokens = torch.tensor(tokens, dtype=torch.long).to(model.device)
+    tokens = torch.tensor(tokens, dtype=torch.long).to(builtins.next(model.parameters()).device)
 
     with torch.no_grad():
         # Forward pass through the model
