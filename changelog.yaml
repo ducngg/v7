@@ -209,6 +209,10 @@ changes:
     research: 'xe tăng húc vào IJCAI'
     change: 'better listener, event handling'
     description: 'minor feature for better typing experience, improve docs and helpers'
+  - timestamp: '2025-13-05 09:26 AM'
+    research: 'better UX, minor AI fix'
+    change: 'add LICENSE, logo, preprint'
+    description: 'change 6/8 tone mode easily, movable gui window'
   - timestamp: ''
     change: 'Move training code from Kaggle `smallgpt-vietnamese` notebook to this repo'    
   

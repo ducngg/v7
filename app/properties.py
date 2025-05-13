@@ -30,7 +30,7 @@ class Assets:
         _QUIT_COMBINATION = "LeftAlt RightCtrl LeftCtrl"
     
     _geometry = {
-        's': (200, 100, int(285*GOLDEN_RATIO), 285),
+        's': (200, 100, int(295*GOLDEN_RATIO), 295),
         'l': (200, 100, int(500*GOLDEN_RATIO), 500)
     }
     _logo_height = {

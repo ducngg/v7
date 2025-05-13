@@ -74,6 +74,8 @@ class PredictWindow(QWidget):
         W = desktop_dim.width()
         H = desktop_dim.height()
         _, _, w, h = self.assets.geometry
+        self.old_pos = None
+
         self.setGeometry((W-w)//2, 0, w, h) # Middle top
         
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -150,6 +152,20 @@ class PredictWindow(QWidget):
         help_box.setWindowTitle(self.assets.help)
         help_box.setFixedWidth(1200) 
         help_box.exec_()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.old_pos = event.globalPos()
+
+    def mouseMoveEvent(self, event):
+        if self.old_pos:
+            delta = event.globalPos() - self.old_pos
+            self.move(self.x() + delta.x(), self.y() + delta.y())
+            self.old_pos = event.globalPos()
+
+    def mouseReleaseEvent(self, event):
+        self.old_pos = None
+
     
     def emit(self, phrase, end):
         self.emit_backspace(len(self.prediction_state.raw) + 1)

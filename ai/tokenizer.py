@@ -16,11 +16,11 @@ class Tokenizer:
         self.location = "<ai.tokenizer.Tokenizer>"
         self.PADDING_TOKEN_INDEX = 0
         
-        with open(enum_path, 'r') as f:
+        with open(enum_path, 'r', encoding='utf-8') as f:
             self.enum: dict[str, int] = json.load(f)
-        with open(renum_path, 'r') as f:
+        with open(renum_path, 'r', encoding='utf-8') as f:
             self.renum: dict[int, str] = json.load(f)
-        with open(renum_crt_path, 'r') as f:
+        with open(renum_crt_path, 'r', encoding='utf-8') as f:
             self.renum_crt: list[tuple[str, str, int]] = json.load(f)
         self.renum_triplet = [None] + [Triplet(consonant=c, rhyme=r, tone=t) for c, r, t in self.renum_crt[1:]]
         
